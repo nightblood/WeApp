@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/ll_add_todo"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:layout_gravity="center_horizontal"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:background="#f5f5f5"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TODO LIST"
+        android:textSize="@dimen/sp_20"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:textStyle="bold"
+        android:textColor="@color/color8"
+        />
+
+    <android.support.v4.widget.Space
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_weight="1"/>
+
+    <ImageView
+        android:id="@+id/iv_add_todo"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginRight="@dimen/dp_10"
+        android:src="@drawable/icon_add_todo"/>
+
+</LinearLayout>
+
+

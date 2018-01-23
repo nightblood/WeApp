@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">WeApp</string>
+    <string name="diary">日记</string>
+    <string name="hint_record_diary">快来记录你的心情吧</string>
+    <string name="toast_no_data">没有数据</string>
+    <string name="toast_no_more_data">已加载所有数据</string>
+    <string name="toast_input_something">没有内容呦</string>
+    <string name="title_todo">备忘录</string>
+</resources>

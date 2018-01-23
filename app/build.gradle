@@ -1,0 +1,54 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.3"
+    defaultConfig {
+        applicationId "com.weapp.zlf.weapp"
+        minSdkVersion 21
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        renderscriptTargetApi 19
+        renderscriptSupportModeEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:appcompat-v7:25.3.0'
+    compile 'org.xutils:xutils:3.5.0'
+    compile 'com.android.support:design:25.3.0'
+    compile 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
+    compile project(':base_recyclerview_adapter_helper')
+    compile 'com.android.support:cardview-v7:25.3.0'
+    compile 'com.melnykov:floatingactionbutton:1.3.0'
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'//一个开源gif控件
+    compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.4'
+    compile 'io.reactivex.rxjava2:rxjava:2.0.1'
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'com.youth.banner:banner:1.4.10'
+    compile 'cn.pedant.sweetalert:library:1.3'
+    compile 'cn.dreamtobe.kpswitch:library:1.6.0'
+    compile 'me.iwf.photopicker:PhotoPicker:0.9.12@aar'
+
+    compile 'com.github.mmin18:realtimeblurview:1.1.0'
+    compile 'com.github.bumptech.glide:glide:4.1.1'
+    compile 'com.flyco.dialog:FlycoDialog_Lib:1.3.2@aar'
+    compile 'com.haibin:calendarview:3.1.2'
+    compile "com.daimajia.swipelayout:library:1.2.0@aar"
+    compile 'com.daimajia.easing:library:2.0@aar'
+    compile 'com.daimajia.androidanimations:library:2.3@aar'
+    compile 'me.bakumon:bulletinview:1.0.0'
+    compile 'com.github.AndroidMsky:RandomTextView:v1.4'
+    compile 'com.github.ybq:parallaxviewpager:2.0.0'
+    compile 'jp.wasabeef:glide-transformations:3.0.1'
+    compile 'com.inuker.bluetooth:library:1.4.0'
+}

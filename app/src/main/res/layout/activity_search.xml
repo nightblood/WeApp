@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <include layout="@layout/ui_title_bar" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="@string/app_name"/>
+
+    <com.weapp.zlf.weapp.ui.widge.RadarViewGroup
+        android:id="@+id/radar"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_gravity="center_horizontal">
+
+        <com.weapp.zlf.weapp.ui.widge.RadarView
+            android:id="@id/id_scan_circle"
+            android:layout_width="280dp"
+            android:layout_height="280dp" />
+    </com.weapp.zlf.weapp.ui.widge.RadarViewGroup>
+
+    <RelativeLayout
+        android:id="@+id/ry_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="25dp"
+        android:clipChildren="false">
+
+        <com.weapp.zlf.weapp.ui.widge.CustomViewPager
+            android:id="@+id/vp"
+            android:layout_width="130dp"
+            android:layout_height="160dp"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="120dp"
+            android:layout_marginRight="120dp" />
+    </RelativeLayout>
+
+</LinearLayout>

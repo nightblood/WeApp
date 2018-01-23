@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="mood_emoji">
+        <item>@drawable/in_love</item>
+        <item>@drawable/angry</item>
+        <item>@drawable/sad</item>
+        <item>@drawable/sleeping</item>
+        <item>@drawable/celebrity</item>
+        <item>@drawable/cool</item>
+        <item>@drawable/kiss_1</item>
+        <item>@drawable/crying</item>
+        <item>@drawable/happy</item>
+    </array>
+    <array name="weather">
+        <item>@drawable/cloudy</item>
+        <item>@drawable/gale</item>
+        <item>@drawable/heavy_rain</item>
+        <item>@drawable/light_rain</item>
+        <item>@drawable/heavy_snow</item>
+        <item>@drawable/light_snow</item>
+        <item>@drawable/storm</item>
+        <item>@drawable/overcast</item>
+    </array>
+    <array name="tag">
+        <item>@drawable/tag_2c2c2c</item>
+        <item>@drawable/tag_008573</item>
+        <item>@drawable/tag_c3bed4</item>
+        <item>@drawable/tag_ddf0ed</item>
+        <item>@drawable/tag_fd5b78</item>
+    </array>
+    <string-array name="tag_color">
+        <item>"#2c2c2c"</item>
+        <item>"#008573"</item>
+        <item>"#c3bed4"</item>
+        <item>"#ddf0ed"</item>
+        <item>"#fd5b78"</item>
+    </string-array>
+</resources>
