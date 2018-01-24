@@ -1,8 +1,11 @@
 package com.weapp.zlf.weapp.ui.activity;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -11,22 +14,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.inuker.bluetooth.library.BluetoothClient;
-import com.inuker.bluetooth.library.Constants;
-import com.inuker.bluetooth.library.beacon.Beacon;
-import com.inuker.bluetooth.library.connect.listener.BluetoothStateListener;
-import com.inuker.bluetooth.library.receiver.listener.BluetoothBondListener;
-import com.inuker.bluetooth.library.search.SearchRequest;
-import com.inuker.bluetooth.library.search.SearchResult;
-import com.inuker.bluetooth.library.search.response.SearchResponse;
-import com.inuker.bluetooth.library.utils.BluetoothLog;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.BtMacInfo;
+import com.weapp.zlf.weapp.common.BluetoothChatService;
 import com.weapp.zlf.weapp.ui.widge.CustomViewPager;
 import com.weapp.zlf.weapp.ui.widge.FixedSpeedScroller;
 import com.weapp.zlf.weapp.ui.widge.RadarViewGroup;
@@ -39,6 +35,7 @@ import org.xutils.view.annotation.ViewInject;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by zhuliangfei on 2018/1/23.
@@ -47,6 +44,11 @@ import java.util.List;
 public class SearchActivity extends BaseActivity implements ViewPager.OnPageChangeListener, RadarViewGroup.IRadarClickListener {
 
     private static final String TAG = SearchActivity.class.getSimpleName();
+    public static final int MESSAGE_READ = 1;
+    public static final int MESSAGE_TOAST = 2;
+    public static final int MESSAGE_DEVICE_NAME = 3;
+    public static final String TOAST = "toast";
+    public static final String DEVICE_NAME = "name";
     private int[] mResIds = {R.drawable.plant, R.drawable.plant_1, R.drawable.plant_2, R.drawable.plant_3,
             R.drawable.plant_4};
     @ViewInject(R.id.vp)
@@ -64,12 +66,24 @@ public class SearchActivity extends BaseActivity implements ViewPager.OnPageChan
     private FixedSpeedScroller scroller;
     private int mPosition;
     private ViewpagerAdapter mViewPagerAdapter;
-    private BluetoothClient mClient;
+    private BluetoothChatService mChatService;
+    private ListenerThread StartListenThread;
+    @ViewInject(R.id.text)
+    private TextView mTvText;
+    private String mBluetoothType;
+    private String mAddress;
 
     @Override
     protected void initView() {
         super.initView();
         mIvRight.setVisibility(View.GONE);
+
+        initBluetooth();
+        initViewPager();
+        radarViewGroup.setiRadarClickListener(this);
+    }
+
+    private void initBluetooth() {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, "本地蓝牙不可用", Toast.LENGTH_SHORT).show();
@@ -77,107 +91,22 @@ public class SearchActivity extends BaseActivity implements ViewPager.OnPageChan
 
         String address = mBluetoothAdapter.getAddress(); //获取本机蓝牙MAC地址
         String name = mBluetoothAdapter.getName();   //获取本机蓝牙名称
-// 若蓝牙没打开
+        // 若蓝牙没打开
         if (!mBluetoothAdapter.isEnabled()) {
             mBluetoothAdapter.enable();  //打开蓝牙，需要BLUETOOTH_ADMIN权限
         }
-// 打印信息
-        Log.i("getAddress() : ", address);
-        Log.i("getName() : ", name);
 
         mTvName.setText(name + "\n" + address);
-        mClient = new BluetoothClient(this);
 
-        mClient.registerBluetoothBondListener(mBluetoothBondListener);
-        mClient.registerBluetoothStateListener(mBluetoothStateListener);
-
-        SearchRequest request = new SearchRequest.Builder()
-                .searchBluetoothLeDevice(3000, 3)   // 先扫BLE设备3次，每次3s
-                .searchBluetoothClassicDevice(5000) // 再扫经典蓝牙5s
-                .searchBluetoothLeDevice(2000)      // 再扫BLE设备2s
-                .build();
-
-        mClient.search(request, new SearchResponse() {
-            @Override
-            public void onSearchStarted() {
-
-            }
-
-            @Override
-            public void onDeviceFounded(SearchResult device) {
-                Beacon beacon = new Beacon(device.scanRecord);
-                BluetoothLog.v(String.format("beacon for %s\n%s", device.getAddress(), beacon.toString()));
-            }
-
-            @Override
-            public void onSearchStopped() {
-
-            }
-
-            @Override
-            public void onSearchCanceled() {
-
-            }
-        });
-
-
-/*
-        mBtHelperClient = BtHelperClient.from(this);
-        mBtHelperClient.searchDevices(new OnSearchDeviceListener() {
-
-            @Override
-            public void onStartDiscovery() {
-                // Call before discovery devices
-                Log.d(TAG, "onStartDiscovery()");
-
-            }
-
-            @Override
-            public void onNewDeviceFounded(BluetoothDevice bluetoothDevice) {
-                Log.d(TAG, "new device: " + bluetoothDevice.getName() + " " + bluetoothDevice.getAddress());
-
-            }
-
-            @Override
-            public void onSearchCompleted(List<BluetoothDevice> bondedList, List<BluetoothDevice> newList) {
-                // Call when the discovery process completed
-                Log.d(TAG, "SearchCompleted: bondedList" + bondedList.toString());
-                Log.d(TAG, "SearchCompleted: newList" + newList.toString());
-
-                for (BluetoothDevice device : newList) {
-                    mDatas.add(new BtMacInfo(device.getAddress(), device.getName()));
-                }
-                radarViewGroup.setDatas(mDatas);
-
-                notifyRefreshAdapter();
-            }
-
-            @Override
-            public void onError(Exception e) {
-                e.printStackTrace();
-            }
-
-        });*/
-
-        initViewPager();
-        radarViewGroup.setiRadarClickListener(this);
+        //获取已配对蓝牙设备
+        Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
+        Log.d(TAG, "bonded device size =" + devices.size());
+        for (BluetoothDevice bonddevice : devices) {
+            Log.d(TAG, "bonded device name =" + bonddevice.getName() + " address" + bonddevice.getAddress());
+            mDatas.add(new BtMacInfo(bonddevice.getAddress(), bonddevice.getName()));
+        }
     }
-    private final BluetoothStateListener mBluetoothStateListener = new BluetoothStateListener() {
-        @Override
-        public void onBluetoothStateChanged(boolean openOrClosed) {
 
-        }
-
-    };
-    private final BluetoothBondListener mBluetoothBondListener = new BluetoothBondListener() {
-        @Override
-        public void onBondStateChanged(String mac, int bondState) {
-            // bondState = Constants.BOND_NONE, BOND_BONDING, BOND_BONDED
-            if (bondState == Constants.BOND_BONDED) {
-
-            }
-        }
-    };
 
     private void notifyRefreshAdapter() {
         if (mViewPagerAdapter != null) {
@@ -218,13 +147,6 @@ public class SearchActivity extends BaseActivity implements ViewPager.OnPageChan
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mClient.unregisterBluetoothStateListener(mBluetoothStateListener);
-        mClient.unregisterBluetoothBondListener(mBluetoothBondListener);
-    }
-
     public static void launch(Context context) {
         Intent intent = new Intent(context, SearchActivity.class);
         context.startActivity(intent);
@@ -256,7 +178,6 @@ public class SearchActivity extends BaseActivity implements ViewPager.OnPageChan
 
     @Override
     public void onPageScrollStateChanged(int state) {
-
     }
 
     @Override
@@ -315,7 +236,130 @@ public class SearchActivity extends BaseActivity implements ViewPager.OnPageChan
     }
 
     private void sendMsg(String mac) {
-
+        mAddress = mac;
+        StartListenThread = new ListenerThread();
+        StartListenThread.start();
     }
 
+    @Override
+    public synchronized void onResume() {
+        super.onResume();
+        Log.e(TAG, "+ ON RESUME +");
+        // Performing this check in onResume() covers the case in which BT was
+        // not enabled during onStart(), so we were paused to enable it...
+        // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
+        if (mChatService != null) {
+            // Only if the state is STATE_NONE, do we know that we haven't started already
+            if (mChatService.getState() == BluetoothChatService.STATE_NONE) {
+                // Start the Bluetooth chat services
+                StartListenThread = new ListenerThread();
+                StartListenThread.start();
+            }
+        }
+    }
+
+    private String strReceiveData;
+    // The Handler that gets information back from the BluetoothChatService
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+
+                case MESSAGE_READ:
+                    byte[] readBuf = (byte[]) msg.obj;
+                    // construct a string from the valid bytes in the buffer
+                    String readMessage = new String(readBuf, 0, msg.arg1);
+                    strReceiveData += readMessage + "\n";
+                    System.out.println("rev :" + readMessage);
+                    mTvText.setText(strReceiveData);
+                    // mConversationArrayAdapter.add(mConnectedDeviceName+":  " + readMessage);
+                    break;
+            }
+        }
+    };
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // Stop the Bluetooth chat services
+        if (mChatService != null)
+            mChatService.stop();
+        Log.e(TAG, "--- ON DESTROY ---");
+    }
+
+    /**
+     * This thread runs while listening for incoming connections. It behaves
+     * like a server-side client. It runs until a connection is accepted
+     * (or until cancelled).
+     */
+    private class ListenerThread extends Thread {
+        // The local server socket
+
+        public void run() {
+            // Listen to the server socket if we're not connected
+            for (int i = 0; i < 100; i++) {
+                if (mBluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
+                    if ("server".equals(mBluetoothType)) {
+                        mChatService.start();
+                    } else if ("client".equals(mBluetoothType) && !TextUtils.isEmpty(mAddress)) {
+                        if(mChatService.getState() != BluetoothChatService.STATE_CONNECTED)
+                            connectDevice(mAddress);
+                    }
+                    break;
+                } else {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+    private void sendMessage(String message) {
+        // Check that we're actually connected before trying anything
+        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
+            Toast.makeText(this, "Î´Á¬½Ó", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check that there's actually something to send
+        if (message.length() > 0) {
+            // Get the message bytes and tell the BluetoothChatService to write
+            byte[] send = message.getBytes();
+            mChatService.write(send);
+
+            // Reset out string buffer to zero and clear the edit text field
+            // mOutStringBuffer.setLength(0);
+            //  mOutEditText.setText(mOutStringBuffer);
+        }
+    }
+
+    private void connectDevice(String address ) {
+        // Get the device MAC address
+        // Get the BluetoothDevice object
+        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+        // Attempt to connect to the device
+        mChatService.connect(device, false);
+    }
+
+    @Event(value = R.id.btn_accept)
+    private void acceptClick(View view) {
+        mBluetoothType = "server";
+        if (null == mChatService)
+            mChatService = new BluetoothChatService(this, mHandler, "server");
+    }
+    @ViewInject(R.id.et_content)
+    private EditText mEtContent;
+    @Event(value = R.id.btn_send)
+    private void sendClick(View view) {
+        mBluetoothType = "client";
+        if (null == mChatService)
+            mChatService = new BluetoothChatService(this);
+        String content = mEtContent.getText().toString();
+        if (!TextUtils.isEmpty(content)) {
+            sendMessage(content);
+        }
+    }
 }

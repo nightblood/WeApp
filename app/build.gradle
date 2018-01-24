@@ -50,5 +50,4 @@ dependencies {
     compile 'com.github.AndroidMsky:RandomTextView:v1.4'
     compile 'com.github.ybq:parallaxviewpager:2.0.0'
     compile 'jp.wasabeef:glide-transformations:3.0.1'
-    compile 'com.inuker.bluetooth:library:1.4.0'
 }
