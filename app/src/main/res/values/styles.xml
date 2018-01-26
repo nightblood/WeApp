@@ -9,9 +9,18 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
     
-    <style name="TranparentTheme" parent="Theme.AppCompat.Light.Dialog">
-        <item name="windowActionBar">false</item>
+    <style name="TranparentTheme" parent="AppTheme">
+       <!-- <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/dialog_color</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>-->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:fitsSystemWindows">false</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
     <style name="PhotoFullScreen" parent="AppTheme">
         <item name="android:windowFullscreen">true</item>
@@ -66,4 +75,5 @@
         <item name="colorPrimaryDark">#CCa500</item>
     </style>
 
+    <color name="dialog_color">#11ffffff</color>
 </resources>

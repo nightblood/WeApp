@@ -244,7 +244,6 @@ public class SearchActivity extends BaseActivity implements ViewPager.OnPageChan
     @Override
     public synchronized void onResume() {
         super.onResume();
-        Log.e(TAG, "+ ON RESUME +");
         // Performing this check in onResume() covers the case in which BT was
         // not enabled during onStart(), so we were paused to enable it...
         // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
@@ -281,11 +280,9 @@ public class SearchActivity extends BaseActivity implements ViewPager.OnPageChan
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         // Stop the Bluetooth chat services
         if (mChatService != null)
             mChatService.stop();
-        Log.e(TAG, "--- ON DESTROY ---");
     }
 
     /**
@@ -304,6 +301,7 @@ public class SearchActivity extends BaseActivity implements ViewPager.OnPageChan
                         mChatService.start();
                     } else if ("client".equals(mBluetoothType) && !TextUtils.isEmpty(mAddress)) {
                         if(mChatService.getState() != BluetoothChatService.STATE_CONNECTED)
+                            Log.d(TAG, "run: connecting...");
                             connectDevice(mAddress);
                     }
                     break;
@@ -320,7 +318,7 @@ public class SearchActivity extends BaseActivity implements ViewPager.OnPageChan
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
         if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
-            Toast.makeText(this, "Î´Á¬½Ó", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "not connected!!!", Toast.LENGTH_SHORT).show();
             return;
         }
 

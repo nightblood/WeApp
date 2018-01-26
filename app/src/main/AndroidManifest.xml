@@ -42,8 +42,8 @@
         <activity android:name=".ui.activity.TodoEditActivity"/>
         <activity android:name=".ui.activity.SearchActivity"/>
 
-        <service
-            android:name="com.inuker.bluetooth.library.BluetoothService" />
+        <activity android:name=".ui.activity.CommunicateBluetoothActivity"/>
+
     </application>
 
 </manifest>

@@ -18,6 +18,8 @@ import org.xutils.x;
 
 public class BaseActivity extends AppCompatActivity {
 
+    protected int statusBarHeight;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +31,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void initView() {
-        int statusBarHeight = BarUtils.getStatusBarHeight(this);
+        statusBarHeight = BarUtils.getStatusBarHeight(this);
         View titlebar = findViewById(R.id.v_status_bar);
         if (titlebar != null) {
             ViewGroup.LayoutParams layoutParams = titlebar.getLayoutParams();

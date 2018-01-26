@@ -43,6 +43,8 @@ public class DiaryBean implements Serializable{
 
     @Column(name = "id",isId = true,autoGen = true,property = "NOT NULL")
     private int id;
+    private String year;
+    private String month;
 
     public DiaryBean() {
 
@@ -183,4 +185,36 @@ public class DiaryBean implements Serializable{
     public void setTimeMillis(long timeMillis) {
         this.timeMillis = timeMillis;
     }
+
+    public String getYear() {
+        if (TextUtils.isEmpty(year)) {
+            Date date = new Date(timeMillis);
+            String time = TimeUtils.date2String(date, "yyyy/MM");
+            String[] split = time.split("/");
+            year = split[0];
+            month = split[1];
+        }
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getMonth() {
+        if (TextUtils.isEmpty(year)) {
+            Date date = new Date(timeMillis);
+            String time = TimeUtils.date2String(date, "yyyy/MM");
+            String[] split = time.split("/");
+            year = split[0];
+            month = split[1];
+        }
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
+    }
+
+
 }

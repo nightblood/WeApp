@@ -268,7 +268,8 @@ public class MainActivity extends BaseActivity {
     }
     @Event(value = R.id.ll_search)
     private void searchClick(View view) {
-        SearchActivity.launch(this);
+//        SearchActivity.launch(this);
+        CommunicateBluetoothActivity.launch(this);
     }
 
     @Event(value = {R.id.tv_reset, R.id.tv_submit})

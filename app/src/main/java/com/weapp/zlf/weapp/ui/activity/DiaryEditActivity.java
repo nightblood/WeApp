@@ -1,7 +1,9 @@
 package com.weapp.zlf.weapp.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
+import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -95,6 +97,7 @@ public class DiaryEditActivity extends BaseActivity implements OnBannerListener 
     private ArrayList<Integer> moodlist;
     private ArrayList<Integer> weatherlist;
     private boolean isEditMode;
+    private DiaryBean mData;
 
     @Override
     protected void initView() {
@@ -387,5 +390,11 @@ public class DiaryEditActivity extends BaseActivity implements OnBannerListener 
         } else {
             finishAfterTransition();
         }
+    }
+
+    public static void launch(Context context, DiaryBean data) {
+        Intent intent = new Intent(context, DiaryEditActivity.class);
+        intent.putExtra("data", data);
+        context.startActivity(intent);
     }
 }

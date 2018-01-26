@@ -310,8 +310,7 @@ public class BluetoothChatService {
         }
 
         public void run() {
-            if (D) Log.d(TAG, "Socket Type: " + mSocketType +
-                    "BEGIN mAcceptThread" + this);
+            if (D) Log.d(TAG, "Socket Type: " + mSocketType + " BEGIN mAcceptThread" + this + ", state: " + mState);
             setName("AcceptThread" + mSocketType);
 
             BluetoothSocket socket = null;

@@ -11,14 +11,20 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.DiaryBean;
+import com.weapp.zlf.weapp.ui.adapter.DiaryPhotoAdapter;
 
 import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 
 import java.io.Serializable;
@@ -32,44 +38,72 @@ import java.util.List;
 @ContentView(R.layout.activity_diary_detail)
 public class DiaryDetailActivity extends BaseActivity {
 
-    @ViewInject(R.id.viewpager)
-    private ViewPager mVpContainer;
+
+    @ViewInject(R.id.rv_photos)
+    private RecyclerView mRvPhoto;
+
     private DiaryBean mData;
-    private LayoutInflater mInflater;
+    private DiaryPhotoAdapter mAdapter;
 
     @Override
     protected void initView() {
-//        super.initView();
+        super.initView();
 
-        mInflater = LayoutInflater.from(this);
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         Serializable data = bundle.getSerializable("data");
         if (null == data)
             finish();
         mData = (DiaryBean) data;
-        List<DiaryBean> list = new ArrayList<>();
-        list.add(mData);
-        /*mVpContainer.setPageTransformer(true, new ViewPager.PageTransformer() {
-            @Override
-            public void transformPage(View page, float position) {
-                seightDis(page, position);
-            }
-        });*/
-        mVpContainer.setAdapter(new DiaryDetailAdapter(list));
+
+
+
+        initPhotos();
 
     }
 
-    public void seightDis(View view, float position) {
-        if (position >= -1 && position <= 1) {
-            ViewGroup vg = (ViewGroup) view.findViewById(R.id.rl);
-            for (int i = 0; i < vg.getChildCount(); i++) {
-                View child = vg.getChildAt(i);
-                child.setTranslationX(Math.abs(position) * child.getWidth() * 2);
-            }
-        }
+    private void initPhotos() {
+        mRvPhoto.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new DiaryPhotoAdapter(mData.getImages());
+        mRvPhoto.setAdapter(mAdapter);
+
+        View header = LayoutInflater.from(this).inflate(R.layout.header_diary_detail, null);
+        header.findViewById(R.id.tv_content);
+
+        TextView tvYearMonth = (TextView) header.findViewById(R.id.tv_year_month);
+        TextView tvWeekTime = (TextView) header.findViewById(R.id.tv_week_time);
+        TextView tvName = (TextView) header.findViewById(R.id.tv_name);
+        TextView tvContent = (TextView) header.findViewById(R.id.tv_content);
+        TextView tvDay = (TextView) header.findViewById(R.id.tv_day);
+        ImageView ivWeather = (ImageView) header.findViewById(R.id.iv_weather);
+        ImageView ivTag = (ImageView) header.findViewById(R.id.iv_tag);
+        ImageView ivMood = (ImageView) header.findViewById(R.id.iv_mood);
+        ImageView ivDismiss = (ImageView) header.findViewById(R.id.iv_dismiss);
+        View bar = header.findViewById(R.id.v_status_bar);
+        ViewGroup.LayoutParams layoutParams = bar.getLayoutParams();
+        layoutParams.height = statusBarHeight;
+
+        StringBuilder yearmonth = new StringBuilder();
+        yearmonth.append(mData.getYear()).append("年").append(mData.getMonth()).append("月");
+        tvYearMonth.setText(yearmonth.toString());
+        StringBuilder weektime = new StringBuilder();
+        weektime.append(mData.getWeek()).append(" ").append(mData.getTime());
+        tvWeekTime.setText(weektime.toString());
+        tvName.setText(mData.getTitle());
+        tvContent.setText(mData.getContent());
+        tvDay.setText(mData.getDate());
+
+        mAdapter.addHeaderView(header);
     }
 
+    @Event(R.id.iv_delete)
+    private void delete(View view) {
+        finish();
+    }
+    @Event(R.id.iv_edit)
+    private void edit(View view) {
+        DiaryEditActivity.launch(this, mData);
+    }
     public static void launch(Activity activity, DiaryBean item) {
         Intent intent = new Intent(activity, DiaryDetailActivity.class);
         Bundle bundle = new Bundle();
@@ -78,31 +112,4 @@ public class DiaryDetailActivity extends BaseActivity {
         activity.startActivity(intent);
     }
 
-    private class DiaryDetailAdapter extends PagerAdapter {
-
-
-        private final List<DiaryBean> mList;
-
-        public DiaryDetailAdapter(List<DiaryBean> list) {
-            this.mList = list;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            View view = mInflater.inflate(R.layout.ui_diary_detail_item, container, false);
-
-            container.addView(view);
-            return view;
-        }
-
-        @Override
-        public int getCount() {
-            return mList.size();
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
-        }
-    }
 }
