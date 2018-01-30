@@ -19,10 +19,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.DiaryBean;
+import com.weapp.zlf.weapp.common.utils.TimeUtils;
+import com.weapp.zlf.weapp.common.utils.Utils;
 import com.weapp.zlf.weapp.ui.adapter.DiaryPhotoAdapter;
 
+import org.xutils.DbManager;
+import org.xutils.ex.DbException;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
@@ -36,11 +42,13 @@ import java.util.List;
  */
 
 @ContentView(R.layout.activity_diary_detail)
-public class DiaryDetailActivity extends BaseActivity {
+public class DiaryDetailActivity extends BaseActivity implements View.OnClickListener {
 
 
     @ViewInject(R.id.rv_photos)
     private RecyclerView mRvPhoto;
+    @ViewInject(R.id.iv_delete)
+    private ImageView mIvDelete;
 
     private DiaryBean mData;
     private DiaryPhotoAdapter mAdapter;
@@ -56,20 +64,29 @@ public class DiaryDetailActivity extends BaseActivity {
             finish();
         mData = (DiaryBean) data;
 
-
-
         initPhotos();
-
+        if (!TimeUtils.isToday(mData.getTimeMillis())) {
+            mIvDelete.setVisibility(View.GONE);
+        }
     }
 
     private void initPhotos() {
         mRvPhoto.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new DiaryPhotoAdapter(mData.getImages());
+        if (null == mData.getImages() || mData.getImages().isEmpty()) {
+            List<String> data = new ArrayList<>();
+            data.add("NONE");
+            mAdapter = new DiaryPhotoAdapter(data);
+        } else {
+            mAdapter = new DiaryPhotoAdapter(mData.getImages());
+        }
         mRvPhoto.setAdapter(mAdapter);
 
         View header = LayoutInflater.from(this).inflate(R.layout.header_diary_detail, null);
         header.findViewById(R.id.tv_content);
 
+        View bar = header.findViewById(R.id.v_status_bar);
+        ViewGroup.LayoutParams layoutParams = bar.getLayoutParams();
+        layoutParams.height = statusBarHeight;
         TextView tvYearMonth = (TextView) header.findViewById(R.id.tv_year_month);
         TextView tvWeekTime = (TextView) header.findViewById(R.id.tv_week_time);
         TextView tvName = (TextView) header.findViewById(R.id.tv_name);
@@ -79,9 +96,23 @@ public class DiaryDetailActivity extends BaseActivity {
         ImageView ivTag = (ImageView) header.findViewById(R.id.iv_tag);
         ImageView ivMood = (ImageView) header.findViewById(R.id.iv_mood);
         ImageView ivDismiss = (ImageView) header.findViewById(R.id.iv_dismiss);
-        View bar = header.findViewById(R.id.v_status_bar);
-        ViewGroup.LayoutParams layoutParams = bar.getLayoutParams();
-        layoutParams.height = statusBarHeight;
+
+        ivWeather.setOnClickListener(this);
+        ivTag.setOnClickListener(this);
+        ivMood.setOnClickListener(this);
+        ivDismiss.setOnClickListener(this);
+        if (mData.getWeather() != Integer.MAX_VALUE) {
+            ivWeather.setImageResource(MainActivity.weatherlist.get(mData.getWeather()));
+            ivWeather.setVisibility(View.VISIBLE);
+        }
+        if (mData.getTag() != Integer.MAX_VALUE) {
+            ivTag.setImageResource(MainActivity.taglist.get(mData.getTag()));
+            ivTag.setVisibility(View.VISIBLE);
+        }
+        if (mData.getMood() != Integer.MAX_VALUE) {
+            ivMood.setImageResource(MainActivity.moodlist.get(mData.getMood()));
+            ivMood.setVisibility(View.VISIBLE);
+        }
 
         StringBuilder yearmonth = new StringBuilder();
         yearmonth.append(mData.getYear()).append("年").append(mData.getMonth()).append("月");
@@ -98,11 +129,18 @@ public class DiaryDetailActivity extends BaseActivity {
 
     @Event(R.id.iv_delete)
     private void delete(View view) {
+        DbManager dbManager = Utils.getContext().getDbManager();
+        try {
+            dbManager.delete(mData);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
         finish();
     }
     @Event(R.id.iv_edit)
     private void edit(View view) {
         DiaryEditActivity.launch(this, mData);
+        finish();
     }
     public static void launch(Activity activity, DiaryBean item) {
         Intent intent = new Intent(activity, DiaryDetailActivity.class);
@@ -112,4 +150,18 @@ public class DiaryDetailActivity extends BaseActivity {
         activity.startActivity(intent);
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_weather:
+            case R.id.iv_tag:
+            case R.id.iv_mood:
+                YoYo.with(Techniques.Bounce)
+                        .playOn(v);
+                break;
+            case R.id.iv_dismiss:
+                finish();
+                break;
+        }
+    }
 }
