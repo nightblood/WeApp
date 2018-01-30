@@ -82,4 +82,8 @@ public class RoundTextView extends View {
         mBgPaint.setColor(mBgColor);
         invalidate();
     }
+    public void setTextColor(int color) {
+        mPaint.setColor(color);
+        invalidate();
+    }
 }

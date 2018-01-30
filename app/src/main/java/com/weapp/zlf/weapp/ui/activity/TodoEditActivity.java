@@ -21,6 +21,7 @@ import com.flyco.dialog.listener.OnBtnClickL;
 import com.flyco.dialog.widget.ActionSheetDialog;
 import com.flyco.dialog.widget.MaterialDialog;
 import com.weapp.zlf.weapp.R;
+import com.weapp.zlf.weapp.bean.AnniversaryBean;
 import com.weapp.zlf.weapp.bean.TodoBean;
 import com.weapp.zlf.weapp.common.utils.TimeUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
@@ -55,6 +56,8 @@ import io.reactivex.schedulers.Schedulers;
 public class TodoEditActivity extends BaseActivity{
 
     private static final String TAG = TodoEditActivity.class.getSimpleName();
+    public static final int TYPE_ANNIVERSARY = 1; //纪念日
+    public static final int TYPE_TODO = 2; //备忘录
     @ViewInject(R.id.et_content)
     private EditText mEtContent;
     @ViewInject(R.id.tv_title_name)
@@ -68,13 +71,23 @@ public class TodoEditActivity extends BaseActivity{
     private long mTimeMills;
     @ViewInject(R.id.tv_time)
     private TextView mTvTime;
+    private int mType;
 
     @Override
     protected void initView() {
         super.initView();
-        mTvTitle.setText(getString(R.string.title_todo));
+        Intent intent = getIntent();
+        mType = intent.getIntExtra("type", TYPE_TODO);
+        if (mType == TYPE_TODO) {
+            mTvTitle.setText(getString(R.string.title_todo));
+            mTvTodo.setHint(getString(R.string.title_todo));
+            mRtvTag.setText("备");
+        } else {
+            mTvTitle.setText(getString(R.string.title_anniversary));
+            mTvTodo.setHint(getString(R.string.title_anniversary));
+            mRtvTag.setText("纪");
+        }
         mRtvTag.setColor(Color.parseColor(mTagColor));
-        mRtvTag.setText("备");
         mTimeMills = System.currentTimeMillis();
         mTvTime.setText(TimeUtils.date2String(new Date(mTimeMills), TimeUtils.DEFAULT_PATTERN));
     }
@@ -150,52 +163,109 @@ public class TodoEditActivity extends BaseActivity{
                 }
             });
         } else {
-            Observable.create(new ObservableOnSubscribe<TodoBean>() {
-                @Override
-                public void subscribe(ObservableEmitter<TodoBean> observableEmitter) throws Exception {
-                    TodoBean bean = new TodoBean();
-                    bean.setTitle(todoName);
-                    bean.setContent(mEtContent.getText().toString());
-                    bean.setGender(0);
-                    bean.setTagColor(Color.parseColor(mTagColor));
-                    if (TextUtils.isEmpty(mTag)) {
-                        bean.setTagName(todoName.substring(0, 1));
-                    } else {
-                        bean.setTagName(mTag);
-                    }
-                    bean.setTimeMillis(mTimeMills);
-                    observableEmitter.onNext(bean);
-                }
-            })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(new Observer<TodoBean>() {
-                        @Override
-                        public void onSubscribe(Disposable disposable) {
-                        }
+            if (TYPE_ANNIVERSARY == mType) {
+                submitAnniversary(todoName);
+            } else {
+                submitTodo(todoName);
+            }
 
-                        @Override
-                        public void onNext(TodoBean todoBean) {
-                            DbManager dbManager = Utils.getContext().getDbManager();
-                            try {
-                                dbManager.save(todoBean);
-                                finish();
-                            } catch (DbException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable throwable) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
         }
+    }
+
+    private void submitAnniversary(final String anniversaryName) {
+        Observable.create(new ObservableOnSubscribe<AnniversaryBean>() {
+            @Override
+            public void subscribe(ObservableEmitter<AnniversaryBean> observableEmitter) throws Exception {
+                AnniversaryBean bean = new AnniversaryBean();
+                bean.setName(anniversaryName);
+                bean.setContent(mEtContent.getText().toString());
+                bean.setGender(0);
+                bean.setTagColor(Color.parseColor(mTagColor));
+                if (TextUtils.isEmpty(mTag)) {
+                    bean.setTagName(anniversaryName.substring(0, 1));
+                } else {
+                    bean.setTagName(mTag);
+                }
+                bean.setTimeMillis(mTimeMills);
+                observableEmitter.onNext(bean);
+            }
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<AnniversaryBean>() {
+                    @Override
+                    public void onSubscribe(Disposable disposable) {
+                    }
+
+                    @Override
+                    public void onNext(AnniversaryBean bean) {
+                        DbManager dbManager = Utils.getContext().getDbManager();
+                        try {
+                            dbManager.save(bean);
+                            finish();
+                        } catch (DbException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    private void submitTodo(final String todoName) {
+        Observable.create(new ObservableOnSubscribe<TodoBean>() {
+            @Override
+            public void subscribe(ObservableEmitter<TodoBean> observableEmitter) throws Exception {
+                TodoBean bean = new TodoBean();
+                bean.setTitle(todoName);
+                bean.setContent(mEtContent.getText().toString());
+                bean.setGender(0);
+                bean.setTagColor(Color.parseColor(mTagColor));
+                if (TextUtils.isEmpty(mTag)) {
+                    bean.setTagName(todoName.substring(0, 1));
+                } else {
+                    bean.setTagName(mTag);
+                }
+                bean.setTimeMillis(mTimeMills);
+                observableEmitter.onNext(bean);
+            }
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<TodoBean>() {
+                    @Override
+                    public void onSubscribe(Disposable disposable) {
+                    }
+
+                    @Override
+                    public void onNext(TodoBean todoBean) {
+                        DbManager dbManager = Utils.getContext().getDbManager();
+                        try {
+                            dbManager.save(todoBean);
+                            finish();
+                        } catch (DbException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     @Event(value = R.id.ll_time)
@@ -223,7 +293,12 @@ public class TodoEditActivity extends BaseActivity{
     }
 
     public static void launch(Context context) {
+        launch(context, TodoEditActivity.TYPE_TODO);
+    }
+
+    public static void launch(Context context, int type) {
         Intent intent = new Intent(context, TodoEditActivity.class);
+        intent.putExtra("type", type);
         context.startActivity(intent);
     }
 }

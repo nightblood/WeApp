@@ -1153,4 +1153,10 @@ public class TimeUtils {
                 ? month - 1
                 : (month + 10) % 12];
     }
+
+    public static boolean isToday(long millis) {
+        String date = date2String(new Date(millis), "yyyy-MM-dd");
+        String currDate = date2String(new Date(System.currentTimeMillis()), "yyyy-MM-dd");
+        return date.equals(currDate);
+    }
 }

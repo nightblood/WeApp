@@ -46,7 +46,7 @@
         android:layout_height="40dp"
         android:layout_gravity="bottom|right"
         android:layout_margin="12dp"
-        android:src="@drawable/icn_plus"
+        android:src="@drawable/icon_edit_diary"
         fab:fabSize="mini"
         fab:fab_colorNormal="@color/colorPrimary"
         fab:fab_colorPressed="@color/colorPrimaryDark"

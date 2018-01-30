@@ -10,16 +10,15 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.example.liangmutian.randomtextviewlibrary.RandomTextView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.DiaryBean;
+import com.weapp.zlf.weapp.bean.ImageBean;
 import com.weapp.zlf.weapp.common.utils.ToastUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
-import com.weapp.zlf.weapp.ui.activity.DiaryEditActivity;
 import com.weapp.zlf.weapp.ui.adapter.PhotoAdapter;
 
 import org.xutils.DbManager;
@@ -37,7 +36,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import me.iwf.photopicker.PhotoPreview;
-import me.iwf.photopicker.adapter.PhotoGridAdapter;
 
 /**
  * Created by zhuliangfei on 2018/1/23.
@@ -51,8 +49,8 @@ public class MyInfoFragment extends BaseFragment implements BaseQuickAdapter.OnI
     private SmartRefreshLayout mRefreshLayout;
     private PhotoAdapter mAdapter;
     private int mOffset;
-    private RandomTextView mTvNumDiary;
-    private RandomTextView mTvNumPhoto;
+    private TextView mTvNumDiary;
+    private TextView mTvNumPhoto;
 
     public static Fragment newInstance() {
         return new MyInfoFragment();
@@ -100,13 +98,12 @@ public class MyInfoFragment extends BaseFragment implements BaseQuickAdapter.OnI
         mRvPhotos.setAdapter(mAdapter);
         View header = LayoutInflater.from(getContext()).inflate(R.layout.ui_my_info_header, null);
         mAdapter.addHeaderView(header);
-        mTvNumDiary = (RandomTextView) header.findViewById(R.id.tv_num_diary);
-        mTvNumPhoto = (RandomTextView) header.findViewById(R.id.tv_num_photo);
+        mTvNumDiary = (TextView) header.findViewById(R.id.tv_num_diary);
+        mTvNumPhoto = (TextView) header.findViewById(R.id.tv_num_photo);
         header.findViewById(R.id.iv_icon).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                YoYo.with(Techniques.Bounce)
-                        .playOn(v);
+                YoYo.with(Techniques.Bounce).playOn(v);
             }
         });
         mAdapter.setOnItemClickListener(this);
@@ -115,11 +112,7 @@ public class MyInfoFragment extends BaseFragment implements BaseQuickAdapter.OnI
             @Override
             public void subscribe(ObservableEmitter<List<String>> observableEmitter) throws Exception {
                 DbManager dbManager = Utils.getContext().getDbManager();
-                long photoNum = dbManager.selector(DiaryBean.class)
-                        .orderBy("id", false)
-                        .where("images", "!=", null)
-                        .and("images", "!=", "")
-                        .count();
+                long photoNum = dbManager.selector(ImageBean.class).count();
                 long diaryNum = dbManager.selector(DiaryBean.class).count();
 
                 List<String> list = new ArrayList<>();
@@ -140,10 +133,6 @@ public class MyInfoFragment extends BaseFragment implements BaseQuickAdapter.OnI
                     public void onNext(List<String> data) {
                         mTvNumDiary.setText(data.get(0));
                         mTvNumPhoto.setText(data.get(1));
-                        mTvNumDiary.setPianyilian(RandomTextView.ALL);
-                        mTvNumDiary.start();
-                        mTvNumPhoto.setPianyilian(RandomTextView.ALL);
-                        mTvNumPhoto.start();
                     }
 
                     @Override
@@ -159,38 +148,33 @@ public class MyInfoFragment extends BaseFragment implements BaseQuickAdapter.OnI
     }
 
     private void getPhotoData() {
-        Observable.create(new ObservableOnSubscribe<List<String>>() {
+        Observable.create(new ObservableOnSubscribe<List<ImageBean>>() {
             @Override
-            public void subscribe(ObservableEmitter<List<String>> observableEmitter) throws Exception {
+            public void subscribe(ObservableEmitter<List<ImageBean>> observableEmitter) throws Exception {
                 DbManager dbManager = Utils.getContext().getDbManager();
-                List<DiaryBean> data = dbManager.selector(DiaryBean.class)
+                List<ImageBean> data = dbManager.selector(ImageBean.class)
                         .orderBy("id", false)
-                        .where("images", "!=", null)
-                        .and("images", "!=", "")
                         .offset(mOffset)
                         .limit(20)
                         .findAll();
 
-                List<String> list = new ArrayList<>();
-                if (data != null) {
-                    for (DiaryBean bean : data) {
-                        list.addAll(bean.getImages());
-                    }
+                if (data == null) {
+                    data = new ArrayList<>();
                 }
-                observableEmitter.onNext(list);
-                    observableEmitter.onComplete();
+                observableEmitter.onNext(data);
+                observableEmitter.onComplete();
             }
         })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<List<String>>() {
+                .subscribe(new Observer<List<ImageBean>>() {
                     @Override
                     public void onSubscribe(Disposable disposable) {
 
                     }
 
                     @Override
-                    public void onNext(List<String> diaryBeans) {
+                    public void onNext(List<ImageBean> diaryBeans) {
                         if (mRefreshLayout.isRefreshing()) {
                             if (diaryBeans != null) {
                                 onRefreshSuccess(diaryBeans);
@@ -223,11 +207,11 @@ public class MyInfoFragment extends BaseFragment implements BaseQuickAdapter.OnI
                     }
                 });
     }
-    private void onLoadMoreSuccess(List<String> list) {
+    private void onLoadMoreSuccess(List<ImageBean> list) {
         mAdapter.addData(list);
     }
 
-    private void onRefreshSuccess(List<String> list) {
+    private void onRefreshSuccess(List<ImageBean> list) {
         if (mAdapter == null) {
             mAdapter.addData(list);
         } else {
@@ -237,8 +221,13 @@ public class MyInfoFragment extends BaseFragment implements BaseQuickAdapter.OnI
 
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+        ArrayList<ImageBean> data = (ArrayList<ImageBean>) mAdapter.getData();
+        ArrayList<String> list = new ArrayList<>();
+        for (ImageBean bean : data) {
+            list.add(bean.getImage());
+        }
         PhotoPreview.builder()
-                .setPhotos((ArrayList<String>) mAdapter.getData())
+                .setPhotos(list)
                 .setCurrentItem(position)
                 .setShowDeleteButton(false)
                 .start(getActivity());

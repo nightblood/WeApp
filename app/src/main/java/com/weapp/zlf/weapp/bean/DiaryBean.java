@@ -41,10 +41,15 @@ public class DiaryBean implements Serializable{
     @Column(name = "time_millis")
     private long timeMillis;
 
-    @Column(name = "id",isId = true,autoGen = true,property = "NOT NULL")
+    @Column(name = "id", isId = true, autoGen = true, property = "NOT NULL")
     private int id;
+    @Column(name = "year")
     private String year;
+    @Column(name = "month")
     private String month;
+
+    @Column(name = "image_ids")
+    private String imageIds;
 
     public DiaryBean() {
 
@@ -216,5 +221,11 @@ public class DiaryBean implements Serializable{
         this.month = month;
     }
 
+    public String getImageIds() {
+        return imageIds;
+    }
 
+    public void setImageIds(String imageIds) {
+        this.imageIds = imageIds;
+    }
 }

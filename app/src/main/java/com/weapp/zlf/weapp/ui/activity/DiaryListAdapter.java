@@ -47,7 +47,7 @@ public class DiaryListAdapter extends BaseQuickAdapter<DiaryBean, BaseViewHolder
         } else {
             helper.setVisible(R.id.iv_weather, false);
         }
-        if (Integer.MAX_VALUE != item.getMood()) {
+        if (Integer.MAX_VALUE != item.getTag()) {
             helper.setAlpha(R.id.iv_tag, 1);
             helper.setImageResource(R.id.iv_tag, tags.get(item.getTag()));
         } else {

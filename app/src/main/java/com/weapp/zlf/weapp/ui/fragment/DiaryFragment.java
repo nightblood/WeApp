@@ -20,6 +20,7 @@ import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.DiaryBean;
+import com.weapp.zlf.weapp.common.utils.TimeUtils;
 import com.weapp.zlf.weapp.ui.activity.DiaryDetailActivity;
 import com.weapp.zlf.weapp.ui.activity.DiaryEditActivity;
 import com.weapp.zlf.weapp.common.utils.AppUtils;
@@ -36,6 +37,7 @@ import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -210,9 +212,9 @@ public class DiaryFragment extends BaseFragment {
                     @Override
                     public void onComplete() {
                         if (mRefreshLayout.isRefreshing()) {
-                            mRefreshLayout.finishRefresh(1000);
+                            mRefreshLayout.finishRefresh(500);
                         } else if (mRefreshLayout.isLoading()) {
-                            mRefreshLayout.finishLoadmore(1000);
+                            mRefreshLayout.finishLoadmore(500);
                         }
                     }
                 });
@@ -241,9 +243,53 @@ public class DiaryFragment extends BaseFragment {
     }
 
     @Event(value = R.id.fab)
-    private void fab(View view) {
-        Intent intent = new Intent(getActivity(), DiaryEditActivity.class);
-        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity(), view, "mybtn").toBundle());
+    private void fab(final View view) {
+        Observable.create(new ObservableOnSubscribe<DiaryBean>() {
+            @Override
+            public void subscribe(ObservableEmitter<DiaryBean> observableEmitter) throws Exception {
+                String date = TimeUtils.date2String(new Date(System.currentTimeMillis()), "yyyy-MM-dd");
+                String[] split = date.split("-");
+                DbManager dbManager = Utils.getContext().getDbManager();
+                DiaryBean bean = dbManager.selector(DiaryBean.class)
+                        .where("year", "=", split[0])
+                        .and("month", "=", split[1])
+                        .and("date", "=", split[2])
+                        .findFirst();
+                if (bean != null)
+                    observableEmitter.onNext(bean);
+                else
+                    observableEmitter.onError(new Throwable("no data found!!!"));
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<DiaryBean>() {
+                    @Override
+                    public void onSubscribe(Disposable disposable) {
+
+                    }
+
+                    @Override
+                    public void onNext(DiaryBean diaryBean) {
+                        Intent intent = new Intent(getActivity(), DiaryEditActivity.class);
+                        intent.putExtra("data", diaryBean);
+                        startActivity(intent);
+//                        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity(), view, "mybtn").toBundle());
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        Intent intent = new Intent(getActivity(), DiaryEditActivity.class);
+                        startActivity(intent);
+//                        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity(), view, "mybtn").toBundle());
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
     }
 
 

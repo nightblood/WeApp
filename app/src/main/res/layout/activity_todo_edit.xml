@@ -33,7 +33,8 @@
             android:layout_marginRight="@dimen/dp_15"
             android:singleLine="true"
             android:maxLines="1"
-            android:ellipsize="end"/>
+            android:ellipsize="end"
+            android:hint="备忘录"/>
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"

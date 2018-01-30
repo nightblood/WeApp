@@ -95,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:text="日记" />
 
-            <com.example.liangmutian.randomtextviewlibrary.RandomTextView
+            <TextView
                 android:id="@+id/tv_num_diary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
                 android:layout_height="wrap_content"
                 android:text="照片" />
 
-            <com.example.liangmutian.randomtextviewlibrary.RandomTextView
+            <TextView
                 android:id="@+id/tv_num_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

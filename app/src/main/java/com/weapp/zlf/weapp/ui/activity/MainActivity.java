@@ -80,9 +80,9 @@ public class MainActivity extends BaseActivity {
     private String[] mTabStrArray = new String[] {"日记", "备忘", "我の"};
     private String[] mTitleName = new String[] {"1", "2", "3"};
     private ArrayList<Fragment> mFragments;
-    private ArrayList<Integer> moodlist;
-    private ArrayList<Integer> weatherlist;
-    private ArrayList<Integer> taglist;
+    public static ArrayList<Integer> moodlist;
+    public static ArrayList<Integer> weatherlist;
+    public static ArrayList<Integer> taglist;
     @ViewInject(R.id.iv_mood)
     private ImageView mIvMood;
     @ViewInject(R.id.iv_weather)
@@ -222,6 +222,7 @@ public class MainActivity extends BaseActivity {
         mFragments.add(CanlenderFragment.newInstance());
         mFragments.add(MyInfoFragment.newInstance());
         mViewPager.setAdapter(new MyViewPagerAdapter(getSupportFragmentManager()));
+        mViewPager.setOffscreenPageLimit(3);
     }
 
     private void initTabLayout() {
@@ -257,6 +258,11 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    @Event(R.id.ll_anniversary)
+    private void anniversaryClick(View view) {
+        AnniversaryListActivity.launch(this);
+        mDlContainer.closeDrawer(GravityCompat.START);
+    }
     @Event(value = R.id.iv_top_l)
     private void showDrawerLayout(View view) {
         mDlContainer.openDrawer(GravityCompat.START);

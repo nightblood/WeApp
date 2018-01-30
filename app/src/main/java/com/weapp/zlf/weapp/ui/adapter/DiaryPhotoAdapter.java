@@ -36,7 +36,6 @@ public class DiaryPhotoAdapter extends BaseQuickAdapter<String, BaseViewHolder> 
 //        ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
 //        layoutParams.height = SizeUtils.dp2px(100);
 //        layoutParams.width = SizeUtils.dp2px(100);
-        Glide.with(mContext).load(item).apply(RequestOptions.bitmapTransform(new FitCenter())).into(imageView);
         /* Glide.with(mContext).load(item).into(new SimpleTarget<Drawable>() {
             @Override
             public void onResourceReady(Drawable drawable, Transition<? super Drawable> transition) {
@@ -46,5 +45,10 @@ public class DiaryPhotoAdapter extends BaseQuickAdapter<String, BaseViewHolder> 
                 imageView.setImageDrawable(drawable);
             }
         });*/
+        if (item.equals("NONE")) {
+            Glide.with(mContext).load(R.drawable.icon_image).apply(RequestOptions.bitmapTransform(new FitCenter())).into(imageView);
+        } else {
+            Glide.with(mContext).load(item).apply(RequestOptions.bitmapTransform(new FitCenter())).into(imageView);
+        }
     }
 }
