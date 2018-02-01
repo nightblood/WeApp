@@ -17,8 +17,11 @@ import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.AnniversaryBean;
 import com.weapp.zlf.weapp.common.utils.ToastUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
+import com.weapp.zlf.weapp.event.AnniversaryEvent;
 import com.weapp.zlf.weapp.ui.adapter.AnniversaryAdapter;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.xutils.DbManager;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -142,12 +145,6 @@ public class AnniversaryListActivity extends BaseActivity{
         mRvList.setLayoutManager(new GridLayoutManager(this, 1));
         mAdapter = new AnniversaryAdapter(null);
         mRvList.setAdapter(mAdapter);
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                ToastUtils.showLongToast(((AnniversaryBean)adapter.getItem(position)).getContent());
-            }
-        });
     }
     @Event(R.id.iv_title_left)
     private void leftClick(View view) {
@@ -157,6 +154,11 @@ public class AnniversaryListActivity extends BaseActivity{
     @Event(R.id.iv_title_right)
     private void rightClick(View view) {
         TodoEditActivity.launch(this, TodoEditActivity.TYPE_ANNIVERSARY);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAnniversaryEvent(AnniversaryEvent event) {
+        mRefreshLayout.autoRefresh();
     }
 
     public static void launch(Context context) {

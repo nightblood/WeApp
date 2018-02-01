@@ -2,38 +2,84 @@
 <resources>
 
     <array name="mood_emoji">
-        <item>@drawable/in_love</item>
         <item>@drawable/angry</item>
-        <item>@drawable/sad</item>
-        <item>@drawable/sleeping</item>
-        <item>@drawable/celebrity</item>
-        <item>@drawable/cool</item>
-        <item>@drawable/kiss_1</item>
+        <item>@drawable/angry_1</item>
+        <item>@drawable/bored</item>
+        <item>@drawable/bored_1</item>
+        <item>@drawable/bored_2</item>
+        <item>@drawable/confused</item>
+        <item>@drawable/confused_1</item>
         <item>@drawable/crying</item>
+        <item>@drawable/crying_1</item>
+        <item>@drawable/embarrassed</item>
+        <item>@drawable/emoticons</item>
         <item>@drawable/happy</item>
+        <item>@drawable/happy_1</item>
+        <item>@drawable/happy_2</item>
+        <item>@drawable/happy_3</item>
+        <item>@drawable/in_love</item>
+        <item>@drawable/ill</item>
+        <item>@drawable/kissing</item>
+        <item>@drawable/mad</item>
+        <item>@drawable/nerd</item>
+        <item>@drawable/ninja</item>
+        <item>@drawable/quiet</item>
+        <item>@drawable/sad</item>
+        <item>@drawable/secret</item>
+        <item>@drawable/smart</item>
+        <item>@drawable/smiling</item>
+        <item>@drawable/surprised</item>
+        <item>@drawable/surprised_1</item>
+        <item>@drawable/suspicious</item>
+        <item>@drawable/suspicious_1</item>
+        <item>@drawable/tongue_out</item>
+        <item>@drawable/unhappy</item>
+        <item>@drawable/wink</item>
     </array>
     <array name="weather">
-        <item>@drawable/cloudy</item>
-        <item>@drawable/gale</item>
-        <item>@drawable/heavy_rain</item>
-        <item>@drawable/light_rain</item>
-        <item>@drawable/heavy_snow</item>
-        <item>@drawable/light_snow</item>
+        <item>@drawable/cloud</item>
+        <item>@drawable/cloud_1</item>
+        <item>@drawable/moon</item>
+        <item>@drawable/rain</item>
+        <item>@drawable/rain_1</item>
+        <item>@drawable/rain_2</item>
+        <item>@drawable/snow</item>
+        <item>@drawable/snow_1</item>
         <item>@drawable/storm</item>
-        <item>@drawable/overcast</item>
+        <item>@drawable/sun</item>
     </array>
     <array name="tag">
-        <item>@drawable/tag_2c2c2c</item>
-        <item>@drawable/tag_008573</item>
-        <item>@drawable/tag_c3bed4</item>
-        <item>@drawable/tag_ddf0ed</item>
-        <item>@drawable/tag_fd5b78</item>
+        <item>@drawable/tag_0</item>
+        <item>@drawable/tag_1</item>
+        <item>@drawable/tag_2</item>
+        <item>@drawable/tag_3</item>
+        <item>@drawable/tag_4</item>
+        <item>@drawable/tag_5</item>
+        <item>@drawable/tag_6</item>
+        <item>@drawable/tag_7</item>
+        <item>@drawable/tag_8</item>
+        <item>@drawable/tag_9</item>
+        <item>@drawable/tag_10</item>
+        <item>@drawable/tag_11</item>
+        <item>@drawable/tag_12</item>
+        <item>@drawable/tag_13</item>
+        <item>@drawable/tag_14</item>
     </array>
     <string-array name="tag_color">
-        <item>"#2c2c2c"</item>
-        <item>"#008573"</item>
-        <item>"#c3bed4"</item>
-        <item>"#ddf0ed"</item>
-        <item>"#fd5b78"</item>
+        <item>"#c72d6f"</item>
+        <item>"#df4155"</item>
+        <item>"#d58334"</item>
+        <item>"#e1a439"</item>
+        <item >#74ba41</item>
+        <item >#5eb54b</item>
+        <item >#58bd9d</item>
+        <item >#499fc0</item>
+        <item >#4693e1</item>
+        <item >#584cdd</item>
+        <item >#5d51e5</item>
+        <item >#9b23d7</item>
+        <item >#c33f9a</item>
+        <item >#5a647d</item>
+        <item>#113064</item>
     </string-array>
 </resources>

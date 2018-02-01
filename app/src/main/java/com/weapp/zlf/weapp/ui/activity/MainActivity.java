@@ -1,21 +1,18 @@
 package com.weapp.zlf.weapp.ui.activity;
 
-import android.content.res.TypedArray;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.MenuItem;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.flyco.tablayout.SegmentTabLayout;
@@ -23,6 +20,7 @@ import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.DiaryBean;
 import com.weapp.zlf.weapp.bean.TodoBean;
+import com.weapp.zlf.weapp.common.utils.AssertUtils;
 import com.weapp.zlf.weapp.common.utils.TimeUtils;
 import com.weapp.zlf.weapp.common.utils.ToastUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
@@ -53,6 +51,7 @@ import io.reactivex.schedulers.Schedulers;
 @ContentView(R.layout.activity_main)
 public class MainActivity extends BaseActivity {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     @ViewInject(R.id.drawer_layout)
     private DrawerLayout mDlContainer;
     @ViewInject(R.id.tab_layout)
@@ -80,9 +79,9 @@ public class MainActivity extends BaseActivity {
     private String[] mTabStrArray = new String[] {"日记", "备忘", "我の"};
     private String[] mTitleName = new String[] {"1", "2", "3"};
     private ArrayList<Fragment> mFragments;
-    public static ArrayList<Integer> moodlist;
-    public static ArrayList<Integer> weatherlist;
-    public static ArrayList<Integer> taglist;
+//    public static ArrayList<Integer> moodlist;
+//    public static ArrayList<Integer> weatherlist;
+//    public static ArrayList<Integer> taglist;
     @ViewInject(R.id.iv_mood)
     private ImageView mIvMood;
     @ViewInject(R.id.iv_weather)
@@ -94,13 +93,14 @@ public class MainActivity extends BaseActivity {
     private int mTag= Integer.MAX_VALUE;
     private long mStartTime;
     private long mEndTime;
+    private long mClickTime;
 
     protected void initView() {
         super.initView();
 
         initViewPager();
         initTabLayout();
-        initNavView();
+//        initNavView();
         initToDoDialog();
     }
 
@@ -153,45 +153,21 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initNavView() {
-        TypedArray moodArray = getResources().obtainTypedArray(R.array.mood_emoji);
-        TypedArray weatherArray = getResources().obtainTypedArray(R.array.weather);
-        TypedArray tagArray = getResources().obtainTypedArray(R.array.tag);
-        moodlist = new ArrayList<>();
-        weatherlist = new ArrayList<>();
-        taglist = new ArrayList<>();
-        for (int i = 0; i < moodArray.length(); i++) {
-            moodlist.add(moodArray.getResourceId(i, 0));
-        }
-        for (int i = 0; i < weatherArray.length(); i++) {
-            weatherlist.add(weatherArray.getResourceId(i, 0));
-        }
-        for (int i = 0; i < tagArray.length(); i++) {
-            taglist.add(tagArray.getResourceId(i, 0));
-        }
-        moodArray.recycle();
-        weatherArray.recycle();
-        tagArray.recycle();
 
 
-//        View headerView = mNavViewRight.getHeaderView(0);
-//        mRvMood = (RecyclerView) headerView.findViewById(R.id.rv_mood);
-//        mRvWeather = (RecyclerView) headerView.findViewById(R.id.rv_weather);
-//        mRvTag = (RecyclerView) headerView.findViewById(R.id.rv_tag);
-//        mIvMood = (ImageView) headerView.findViewById(R.id.iv_mood);
-//        mIvWeather = (ImageView) headerView.findViewById(R.id.iv_weather);
-//        mIvTag = (ImageView) headerView.findViewById(R.id.iv_tag);
-
-
-        mRvMood.setLayoutManager(new GridLayoutManager(this, 4));
-        mRvWeather.setLayoutManager(new GridLayoutManager(this, 4));
-        mRvTag.setLayoutManager(new GridLayoutManager(this, 4));
+        mRvMood.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        mRvWeather.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        mRvTag.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        /*mRvMood.setLayoutManager(new GridLayoutManager(this, 6));
+        mRvWeather.setLayoutManager(new GridLayoutManager(this, 6));
+        mRvTag.setLayoutManager(new GridLayoutManager(this, 6));*/
 
         PanelAdapter moodAdapter;
         PanelAdapter weatherAdapter;
         PanelAdapter tagAdapter;
-        mRvMood.setAdapter(moodAdapter = new PanelAdapter(moodlist));
-        mRvWeather.setAdapter(weatherAdapter = new PanelAdapter(weatherlist));
-        mRvTag.setAdapter(tagAdapter = new PanelAdapter(taglist));
+        mRvMood.setAdapter(moodAdapter = new PanelAdapter(AssertUtils.moodlist));
+        mRvWeather.setAdapter(weatherAdapter = new PanelAdapter(AssertUtils.weatherlist));
+        mRvTag.setAdapter(tagAdapter = new PanelAdapter(AssertUtils.taglist));
 
         moodAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
@@ -249,6 +225,11 @@ public class MainActivity extends BaseActivity {
             public void onPageSelected(int position) {
                 mTabLayout.setCurrentTab(position);
                 mTvTitle.setText(mTitleName[position]);
+                if (position == 0) {
+                    mIvTopRight.setVisibility(View.VISIBLE);
+                } else {
+                    mIvTopRight.setVisibility(View.INVISIBLE);
+                }
             }
 
             @Override
@@ -269,8 +250,9 @@ public class MainActivity extends BaseActivity {
     }
 
     @Event(value = R.id.iv_top_r)
-    private void showDrawerLayoutR(View view) {
-        mDlContainer.openDrawer(GravityCompat.END);
+    private void rightClick(View view) {
+//        mDlContainer.openDrawer(GravityCompat.END);
+        DiarySearchActivity.launch(this);
     }
     @Event(value = R.id.ll_search)
     private void searchClick(View view) {
@@ -281,7 +263,7 @@ public class MainActivity extends BaseActivity {
     @Event(value = {R.id.tv_reset, R.id.tv_submit})
     private void resetClick(View view) {
         if (view.getId() == R.id.tv_reset) {
-            mIvMood.setImageResource(R.drawable.icon_moood);
+            mIvMood.setImageResource(R.drawable.icon_mood);
             mIvTag.setImageResource(R.drawable.icon_tag);
             mIvWeather.setImageResource(R.drawable.icon_weather);
             mTvTimeEnd.setText("");
@@ -405,5 +387,20 @@ public class MainActivity extends BaseActivity {
         public int getCount() {
             return mFragments.size();
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && !mDlContainer.isDrawerOpen(GravityCompat.START)) {
+            long currTime = System.currentTimeMillis();
+            if (currTime - mClickTime > 1000) {
+                mClickTime = currTime;
+                ToastUtils.showLongToast(getString(R.string.hint_exit_app));
+                return true;
+            } else {
+                finish();
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

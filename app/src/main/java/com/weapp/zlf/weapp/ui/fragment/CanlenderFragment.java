@@ -9,22 +9,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.CalendarView;
 import com.weapp.zlf.weapp.R;
+import com.weapp.zlf.weapp.bean.AnniversaryBean;
 import com.weapp.zlf.weapp.bean.TodoBean;
+import com.weapp.zlf.weapp.common.utils.TimeUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
+import com.weapp.zlf.weapp.event.AnniversaryEvent;
 import com.weapp.zlf.weapp.ui.activity.TodoEditActivity;
 import com.weapp.zlf.weapp.ui.adapter.TodoAdapter;
-import com.weapp.zlf.weapp.ui.widge.TagDetailDialog;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.xutils.DbManager;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -79,8 +83,6 @@ public class CanlenderFragment extends BaseFragment implements CalendarView.OnDa
         mTextMonthDay.setText(mCalendarView.getCurMonth() + "月" + mCalendarView.getCurDay() + "日");
         mTextLunar.setText("今日");
         mTextCurrentDay.setText(String.valueOf(mCalendarView.getCurDay()));
-//        mMonthKey = getMonthKey(mCalendarView.getCurYear(), mCalendarView.getCurMonth());
-//        getCalenterTagData(mMonthKey);
     }
 
     private String getMonthKey(int year, int month) {
@@ -93,12 +95,13 @@ public class CanlenderFragment extends BaseFragment implements CalendarView.OnDa
         return keyBuilder.toString();
     }
 
-    private void getCalenterTagData(final String key) {
+    // 得到key月份的tag, key格式： yyyy-MM
+    private void getCalenterTagData(final String yearMonth) {
         Observable.create(new ObservableOnSubscribe<List<TodoBean>>() {
             @Override
             public void subscribe(ObservableEmitter<List<TodoBean>> observableEmitter) throws Exception {
                 DbManager dbManager = Utils.getContext().getDbManager();
-                Cursor cursor = dbManager.execQuery("select title, content, date, tag_name, tag_color, time_millis, gender, is_done, max(id) maxid from tb_todo where date like '%"+key+"%' group by date");
+                Cursor cursor = dbManager.execQuery("select title, content, date, tag_name, tag_color, time_millis, gender, is_done, max(id) maxid from tb_todo where date like '%"+yearMonth+"%' group by date");
                 ArrayList<TodoBean> list = new ArrayList<>();
                 while (cursor.moveToNext()) {
                     Log.d(TAG, "getCalenterTagData: " + cursor.getString(cursor.getColumnIndex("title"))
@@ -113,6 +116,19 @@ public class CanlenderFragment extends BaseFragment implements CalendarView.OnDa
                     bean.setGender(cursor.getInt(cursor.getColumnIndex("gender")));
                     list.add(bean);
                 }
+                cursor.close();
+
+                String[] split = yearMonth.split("-");
+                List<AnniversaryBean> anniversaryBeans = dbManager.selector(AnniversaryBean.class)
+                        .where("month", "=", split[1])
+                        .findAll();
+
+                if (anniversaryBeans != null) {
+                    for (AnniversaryBean item : anniversaryBeans) {
+                        list.add(item.toTodoBean());
+                    }
+                }
+
                 observableEmitter.onNext(list);
             }
         })
@@ -145,7 +161,9 @@ public class CanlenderFragment extends BaseFragment implements CalendarView.OnDa
         final List<Calendar> schemes = new ArrayList<>();
 
         for (TodoBean bean : list) {
-            String[] split = bean.getDate().split("-");
+            String[] split = TimeUtils.date2String(new Date(bean.getTimeMillis()), "yyyy-MM-dd").split("-");
+
+//            String[] split = bean.getDate().split("-");
 
             schemes.add(getSchemeCalendar
                     (Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), bean.getTagColor(), bean.getTagName()));
@@ -161,7 +179,7 @@ public class CanlenderFragment extends BaseFragment implements CalendarView.OnDa
         header.findViewById(R.id.iv_add_todo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TodoEditActivity.launch(getContext());
+                TodoEditActivity.launch(getContext(), TodoEditActivity.TYPE_TODO);
             }
         });
         mTodoAdapter.addHeaderView(header);
@@ -257,6 +275,11 @@ public class CanlenderFragment extends BaseFragment implements CalendarView.OnDa
             dbDate.append(calendar.getDay());
         }
         getTodoListData(dbDate.toString());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAnniversaryEvent(AnniversaryEvent event) {
+        // 刷新日历上的标记
     }
 
     @Override

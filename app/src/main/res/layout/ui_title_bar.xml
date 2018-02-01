@@ -20,8 +20,8 @@
 
         <ImageView
             android:id="@+id/iv_title_left"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:src ="@drawable/arrow_l"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="@dimen/dp_10"
@@ -47,12 +47,12 @@
 
         <ImageView
             android:id="@+id/iv_title_right"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dp_10"
-            android:src="@drawable/submit"/>
+            android:src="@drawable/icon_submit"/>
     </RelativeLayout>
 
 </RelativeLayout>

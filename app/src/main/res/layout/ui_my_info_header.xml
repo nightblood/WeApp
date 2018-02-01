@@ -2,20 +2,22 @@
 
 <LinearLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:orientation="horizontal">
-        <ImageView
+        <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/iv_icon"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_marginBottom="@dimen/dp_20"
-            android:src="@drawable/clover" />
+            android:src="@drawable/clover"
+            app:riv_oval="true"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -91,16 +93,18 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="日记" />
-
-            <TextView
                 android:id="@+id/tv_num_diary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_5"
+                android:textSize="@dimen/sp_18"
+                android:textStyle="bold"
                 android:text="00"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textSize="@dimen/sp_10"
+                android:text="日记" />
 
         </LinearLayout>
 
@@ -108,8 +112,8 @@
             android:layout_width="@dimen/div_line"
             android:layout_height="match_parent"
             android:background="@color/color_div"
-            android:layout_marginBottom="@dimen/dp_5"
-            android:layout_marginTop="@dimen/dp_5"/>
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"/>
 
         <LinearLayout
             android:id="@+id/ll_photo"
@@ -123,16 +127,83 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="照片" />
-
-            <TextView
                 android:id="@+id/tv_num_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_5"
+                android:textSize="@dimen/sp_18"
+                android:textStyle="bold"
                 android:text="00"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textSize="@dimen/sp_10"
+                android:text="照片" />
+
+        </LinearLayout>
+        <View
+            android:layout_width="@dimen/div_line"
+            android:layout_height="match_parent"
+            android:background="@color/color_div"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"/>
+        <LinearLayout
+            android:id="@+id/ll_todo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_weight="1"
+            android:paddingTop="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_num_todo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_18"
+                android:textStyle="bold"
+                android:text="00"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textSize="@dimen/sp_10"
+                android:text="备忘录" />
+
+        </LinearLayout>
+        <View
+            android:layout_width="@dimen/div_line"
+            android:layout_height="match_parent"
+            android:background="@color/color_div"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"/>
+        <LinearLayout
+            android:id="@+id/ll_anniversary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_weight="1"
+            android:paddingTop="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_num_anniversary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_18"
+                android:textStyle="bold"
+                android:text="00"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textSize="@dimen/sp_10"
+                android:text="纪念日" />
+
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

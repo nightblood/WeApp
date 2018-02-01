@@ -26,6 +26,7 @@ public class Utils {
     public static void init(MainApplication context) {
 //        Utils.context = context.getApplicationContext();
         Utils.context = context;
+        AssertUtils.init(context);
     }
 
     /**

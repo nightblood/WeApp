@@ -5,6 +5,7 @@ import com.weapp.zlf.weapp.common.utils.TimeUtils;
 import org.xutils.db.annotation.Column;
 import org.xutils.db.annotation.Table;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Date;
  */
 
 @Table(name = "tb_anniversary")
-public class AnniversaryBean {
+public class AnniversaryBean implements Serializable{
     public AnniversaryBean() {
 
     }
@@ -39,6 +40,8 @@ public class AnniversaryBean {
     private String tagName;
     @Column(name = "month_day")
     private int monthDay;
+    @Column(name = "month")
+    private String month; // 辅助字段，用于查询某月的所有纪念日. 格式: MM
 
     public int getId() {
         return id;
@@ -56,6 +59,7 @@ public class AnniversaryBean {
         this.timeMillis = timeMillis;
         String day = TimeUtils.date2String(new Date(timeMillis), "MMdd");
         setMonthDay(Integer.parseInt(day));
+        setMonth(TimeUtils.date2String(new Date(timeMillis), "MM"));
     }
 
     public long getCreateTimeMillis() {
@@ -74,9 +78,14 @@ public class AnniversaryBean {
         this.name = name;
     }
 
-    public DiaryBean toDiaryBean() {
-        DiaryBean bean = new DiaryBean();
-
+    public TodoBean toTodoBean() {
+        TodoBean bean = new TodoBean();
+        bean.setTitle(getName());
+        bean.setTagName(getTagName());
+        bean.setContent(getContent());
+        bean.setTimeMillis(getTimeMillis());
+        bean.setTagColor(getTagColor());
+        bean.setGender(getGender());
         return bean;
     }
 
@@ -134,5 +143,13 @@ public class AnniversaryBean {
 
     public void setMonthDay(int monthDay) {
         this.monthDay = monthDay;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
     }
 }

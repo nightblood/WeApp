@@ -7,13 +7,14 @@ import com.weapp.zlf.weapp.common.utils.TimeUtils;
 import org.xutils.db.annotation.Column;
 import org.xutils.db.annotation.Table;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by zhuliangfei on 2018/1/12.
  */
 @Table(name = "tb_todo")
-public class TodoBean {
+public class TodoBean implements Serializable{
     @Column(name = "id",isId = true,autoGen = true,property = "NOT NULL")
     private int id;
     @Column(name = "time_millis")

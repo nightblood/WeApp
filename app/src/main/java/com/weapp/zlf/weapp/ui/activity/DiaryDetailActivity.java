@@ -23,6 +23,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.DiaryBean;
+import com.weapp.zlf.weapp.common.utils.AssertUtils;
 import com.weapp.zlf.weapp.common.utils.TimeUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
 import com.weapp.zlf.weapp.ui.adapter.DiaryPhotoAdapter;
@@ -52,6 +53,8 @@ public class DiaryDetailActivity extends BaseActivity implements View.OnClickLis
 
     private DiaryBean mData;
     private DiaryPhotoAdapter mAdapter;
+    @ViewInject(R.id.iv_edit)
+    private ImageView mIvEdit;
 
     @Override
     protected void initView() {
@@ -66,7 +69,7 @@ public class DiaryDetailActivity extends BaseActivity implements View.OnClickLis
 
         initPhotos();
         if (!TimeUtils.isToday(mData.getTimeMillis())) {
-            mIvDelete.setVisibility(View.GONE);
+            mIvEdit.setVisibility(View.GONE);
         }
     }
 
@@ -102,15 +105,15 @@ public class DiaryDetailActivity extends BaseActivity implements View.OnClickLis
         ivMood.setOnClickListener(this);
         ivDismiss.setOnClickListener(this);
         if (mData.getWeather() != Integer.MAX_VALUE) {
-            ivWeather.setImageResource(MainActivity.weatherlist.get(mData.getWeather()));
+            ivWeather.setImageResource(AssertUtils.weatherlist.get(mData.getWeather()));
             ivWeather.setVisibility(View.VISIBLE);
         }
         if (mData.getTag() != Integer.MAX_VALUE) {
-            ivTag.setImageResource(MainActivity.taglist.get(mData.getTag()));
+            ivTag.setImageResource(AssertUtils.taglist.get(mData.getTag()));
             ivTag.setVisibility(View.VISIBLE);
         }
         if (mData.getMood() != Integer.MAX_VALUE) {
-            ivMood.setImageResource(MainActivity.moodlist.get(mData.getMood()));
+            ivMood.setImageResource(AssertUtils.moodlist.get(mData.getMood()));
             ivMood.setVisibility(View.VISIBLE);
         }
 

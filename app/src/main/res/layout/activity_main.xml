@@ -60,7 +60,7 @@
                    android:id="@+id/iv_top_r"
                    android:layout_width="25dp"
                    android:layout_height="25dp"
-                   android:src="@drawable/icon_more"/>
+                   android:src="@drawable/icon_search"/>
            </LinearLayout>
 
            <TextView
@@ -86,7 +86,7 @@
    </RelativeLayout>
 
     <include layout="@layout/ui_drawer_left"/>
-    <include layout="@layout/ui_drawer_right" />
+    <!--<include layout="@layout/ui_drawer_right" />-->
 
 
 </android.support.v4.widget.DrawerLayout>

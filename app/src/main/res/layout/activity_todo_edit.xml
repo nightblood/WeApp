@@ -34,7 +34,8 @@
             android:singleLine="true"
             android:maxLines="1"
             android:ellipsize="end"
-            android:hint="备忘录"/>
+            android:gravity="right"
+            />
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"

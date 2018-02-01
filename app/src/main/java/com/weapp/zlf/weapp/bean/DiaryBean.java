@@ -92,6 +92,8 @@ public class DiaryBean implements Serializable{
         this.images = images;
         StringBuilder builder = new StringBuilder("");
         for (int i = 0; i < images.size(); i++) {
+            if (images.get(i).equals("btn_add"))
+                continue;
             if (i == images.size() - 1) {
                 builder.append(images.get(i));
             } else {

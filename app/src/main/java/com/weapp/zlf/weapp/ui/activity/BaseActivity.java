@@ -9,7 +9,10 @@ import android.view.ViewGroup;
 
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.common.utils.BarUtils;
+import com.weapp.zlf.weapp.event.BaseEvent;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.xutils.x;
 
 /**
@@ -24,6 +27,8 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         x.view().inject(this);
+        EventBus.getDefault().register(this);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility( View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
@@ -37,5 +42,16 @@ public class BaseActivity extends AppCompatActivity {
             ViewGroup.LayoutParams layoutParams = titlebar.getLayoutParams();
             layoutParams.height = statusBarHeight;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onBaseEvent(BaseEvent event) {
+
     }
 }

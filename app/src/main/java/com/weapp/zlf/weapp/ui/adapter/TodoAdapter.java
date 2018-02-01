@@ -9,6 +9,7 @@ import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.TodoBean;
 import com.weapp.zlf.weapp.common.utils.ToastUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
+import com.weapp.zlf.weapp.ui.activity.TodoEditActivity;
 import com.weapp.zlf.weapp.ui.widge.TagDetailDialog;
 
 import org.xutils.DbManager;
@@ -54,7 +55,7 @@ public class TodoAdapter extends BaseQuickAdapter<TodoBean, BaseViewHolder>{
         helper.getView(R.id.star).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtils.showLongToast("正在筹划中。。。");
+                TodoEditActivity.launch(mContext, TodoEditActivity.TYPE_TODO, item);
                 root.close();
             }
         });

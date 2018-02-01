@@ -2,11 +2,20 @@ package com.weapp.zlf.weapp;
 
 import android.app.Application;
 
+import com.weapp.zlf.weapp.bean.UserInfo;
+import com.weapp.zlf.weapp.common.utils.FileUtils;
+import com.weapp.zlf.weapp.common.utils.SPUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
+import com.weapp.zlf.weapp.event.UserInfoChangeEvent;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.xutils.DbManager;
 import org.xutils.db.table.TableEntity;
 import org.xutils.x;
+
+import java.io.File;
 
 /**
  * Created by zhuliangfei on 2018/1/5.
@@ -14,6 +23,7 @@ import org.xutils.x;
 
 public class MainApplication extends Application {
 
+    public static UserInfo mUserInfo;
     private DbManager mDbManager;
 
     @Override
@@ -23,17 +33,23 @@ public class MainApplication extends Application {
         x.Ext.setDebug(BuildConfig.DEBUG); // 是否输出debug日志, 开启debug会影响性能.
         Utils.init(this);
         initDb();
+        mUserInfo = new UserInfo();
+        SPUtils spUtils = new SPUtils("user_info");
+        mUserInfo.setHonor(spUtils.getString("honor"));
+        mUserInfo.setPortrait(spUtils.getString("portrait"));
+        mUserInfo.setName(spUtils.getString("name"));
     }
 
     private void initDb() {
         /**
          * 初始化DaoConfig配置
          */
+        FileUtils.createOrExistsDir(getFilesDir());
         DbManager.DaoConfig daoConfig = new DbManager.DaoConfig()
                 //设置数据库名，默认xutils.db
                 .setDbName("weapp.db")
                 //设置数据库路径，默认存储在app的私有目录
-//                .setDbDir(new File("/mnt/sdcard/"))
+                .setDbDir(getFilesDir())
                 //设置数据库的版本号
                 .setDbVersion(1)
                 //设置数据库打开的监听
@@ -64,5 +80,10 @@ public class MainApplication extends Application {
     }
     public DbManager getDbManager() {
         return mDbManager;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUserInfoChange(UserInfoChangeEvent event) {
+        mUserInfo = event.mUserInfo;
     }
 }

@@ -44,6 +44,8 @@
 
         <activity android:name=".ui.activity.CommunicateBluetoothActivity"/>
         <activity android:name=".ui.activity.AnniversaryListActivity" />
+        <activity android:name=".ui.activity.DiarySearchActivity" />
+        <activity android:name=".ui.activity.MyInfoEditActivity" />
 
     </application>
 

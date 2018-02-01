@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Display;
 import android.view.Gravity;
@@ -36,6 +37,8 @@ public class KeyBoardDialog {
     private void init() {
         View view = LayoutInflater.from(mBuilder.mContext).inflate(R.layout.ui_dialog_keyboard, null);
         mEtContent = (EditText) view.findViewById(R.id.et_content);
+        TextView title = (TextView) view.findViewById(R.id.tv_title);
+        title.setText(mBuilder.mTitle);
         final TextView tvNumber = (TextView) view.findViewById(R.id.tv_number);
         mEtContent.addTextChangedListener(new TextWatcher() {
             @Override
@@ -53,6 +56,10 @@ public class KeyBoardDialog {
                 tvNumber.setText(s.toString().length() + "字");
             }
         });
+        if (!TextUtils.isEmpty(mBuilder.mContent)) {
+            mEtContent.setText(mBuilder.mContent);
+            mEtContent.setSelection(mBuilder.mContent.length());
+        }
         view.findViewById(R.id.tv_ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

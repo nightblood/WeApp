@@ -86,10 +86,10 @@
 
                     <ImageView
                         android:id="@+id/iv_mood"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:layout_marginLeft="@dimen/dp_10"
-                        android:src="@drawable/icon_moood" />
+                        android:src="@drawable/icon_mood" />
                 </LinearLayout>
 
                 <android.support.v7.widget.RecyclerView
@@ -129,8 +129,8 @@
 
                     <ImageView
                         android:id="@+id/iv_weather"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:layout_marginLeft="@dimen/dp_10"
                         android:src="@drawable/icon_weather" />
                 </LinearLayout>
@@ -172,8 +172,8 @@
 
                     <ImageView
                         android:id="@+id/iv_tag"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:layout_marginLeft="@dimen/dp_10"
                         android:src="@drawable/icon_tag" />
                 </LinearLayout>
@@ -211,8 +211,8 @@
                         android:textSize="@dimen/sp_14"
                         android:text="时间区间" />
                     <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:layout_marginLeft="@dimen/dp_10"
                         android:src="@drawable/clock" />
                 </LinearLayout>

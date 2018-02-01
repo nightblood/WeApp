@@ -3,10 +3,16 @@ package com.weapp.zlf.weapp.ui.fragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.FitCenter;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -14,13 +20,25 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.weapp.zlf.weapp.MainApplication;
 import com.weapp.zlf.weapp.R;
+import com.weapp.zlf.weapp.bean.AnniversaryBean;
 import com.weapp.zlf.weapp.bean.DiaryBean;
 import com.weapp.zlf.weapp.bean.ImageBean;
+import com.weapp.zlf.weapp.bean.TodoBean;
+import com.weapp.zlf.weapp.bean.UserInfo;
+import com.weapp.zlf.weapp.common.utils.SPUtils;
 import com.weapp.zlf.weapp.common.utils.ToastUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
+import com.weapp.zlf.weapp.event.AnniversaryEvent;
+import com.weapp.zlf.weapp.event.DiaryEvent;
+import com.weapp.zlf.weapp.event.TodoEvent;
+import com.weapp.zlf.weapp.event.UserInfoChangeEvent;
+import com.weapp.zlf.weapp.ui.activity.MyInfoEditActivity;
 import com.weapp.zlf.weapp.ui.adapter.PhotoAdapter;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.xutils.DbManager;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.ViewInject;
@@ -51,6 +69,11 @@ public class MyInfoFragment extends BaseFragment implements BaseQuickAdapter.OnI
     private int mOffset;
     private TextView mTvNumDiary;
     private TextView mTvNumPhoto;
+    private TextView mTvNumAnniversary;
+    private TextView mTvNumTodo;
+    private ImageView mIvIcon;
+    private TextView mTvName;
+    private TextView mTvHonor;
 
     public static Fragment newInstance() {
         return new MyInfoFragment();
@@ -60,8 +83,8 @@ public class MyInfoFragment extends BaseFragment implements BaseQuickAdapter.OnI
     @Override
     protected void initView() {
         super.initView();
+
         initRefreshLayout();
-//        getPhotoData();
     }
 
     private void initRefreshLayout() {
@@ -88,36 +111,25 @@ public class MyInfoFragment extends BaseFragment implements BaseQuickAdapter.OnI
 
     private void refresh() {
         mOffset = 0;
+        updateNum();
         getPhotoData();
     }
 
-    private void initRecyclerView() {
-        StaggeredGridLayoutManager mgr = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
-        mRvPhotos.setLayoutManager(mgr);
-        mAdapter = new PhotoAdapter(null);
-        mRvPhotos.setAdapter(mAdapter);
-        View header = LayoutInflater.from(getContext()).inflate(R.layout.ui_my_info_header, null);
-        mAdapter.addHeaderView(header);
-        mTvNumDiary = (TextView) header.findViewById(R.id.tv_num_diary);
-        mTvNumPhoto = (TextView) header.findViewById(R.id.tv_num_photo);
-        header.findViewById(R.id.iv_icon).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                YoYo.with(Techniques.Bounce).playOn(v);
-            }
-        });
-        mAdapter.setOnItemClickListener(this);
-
+    private void updateNum() {
         Observable.create(new ObservableOnSubscribe<List<String>>() {
             @Override
             public void subscribe(ObservableEmitter<List<String>> observableEmitter) throws Exception {
                 DbManager dbManager = Utils.getContext().getDbManager();
                 long photoNum = dbManager.selector(ImageBean.class).count();
                 long diaryNum = dbManager.selector(DiaryBean.class).count();
+                long todoNum = dbManager.selector(TodoBean.class).count();
+                long anniversaryNum = dbManager.selector(AnniversaryBean.class).count();
 
                 List<String> list = new ArrayList<>();
                 list.add(String.valueOf(diaryNum));
                 list.add(String.valueOf(photoNum));
+                list.add(String.valueOf(todoNum));
+                list.add(String.valueOf(anniversaryNum));
                 observableEmitter.onNext(list);
             }
         })
@@ -133,6 +145,8 @@ public class MyInfoFragment extends BaseFragment implements BaseQuickAdapter.OnI
                     public void onNext(List<String> data) {
                         mTvNumDiary.setText(data.get(0));
                         mTvNumPhoto.setText(data.get(1));
+                        mTvNumTodo.setText(data.get(2));
+                        mTvNumAnniversary.setText(data.get(3));
                     }
 
                     @Override
@@ -145,6 +159,44 @@ public class MyInfoFragment extends BaseFragment implements BaseQuickAdapter.OnI
 
                     }
                 });
+    }
+
+    private void initRecyclerView() {
+        StaggeredGridLayoutManager mgr = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        mRvPhotos.setLayoutManager(mgr);
+        mAdapter = new PhotoAdapter(null);
+        mRvPhotos.setAdapter(mAdapter);
+        View header = LayoutInflater.from(getContext()).inflate(R.layout.ui_my_info_header, null);
+        mAdapter.addHeaderView(header);
+        mTvNumDiary = (TextView) header.findViewById(R.id.tv_num_diary);
+        mTvNumPhoto = (TextView) header.findViewById(R.id.tv_num_photo);
+        mTvNumTodo = (TextView) header.findViewById(R.id.tv_num_todo);
+        mTvNumAnniversary = (TextView) header.findViewById(R.id.tv_num_anniversary);
+        SPUtils spUtils = new SPUtils("user_info");
+        String portrait = spUtils.getString("portrait");
+        String name = spUtils.getString("name");
+        String honor = spUtils.getString("honor");
+
+        mIvIcon = (ImageView) header.findViewById(R.id.iv_icon);
+        mTvName = (TextView) header.findViewById(R.id.tv_name);
+        mTvHonor = (TextView) header.findViewById(R.id.tv_honor);
+       updateUserInfo(MainApplication.mUserInfo);
+
+        mIvIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                YoYo.with(Techniques.Bounce).playOn(v);
+            }
+        });
+        header.findViewById(R.id.ll_edit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyInfoEditActivity.launch(getContext());
+            }
+        });
+        mAdapter.setOnItemClickListener(this);
+
+       updateNum();
     }
 
     private void getPhotoData() {
@@ -231,5 +283,42 @@ public class MyInfoFragment extends BaseFragment implements BaseQuickAdapter.OnI
                 .setCurrentItem(position)
                 .setShowDeleteButton(false)
                 .start(getActivity());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDiaryEvent(DiaryEvent event) {
+        mRefreshLayout.autoRefresh();
+        updateNum();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTodoEvent(TodoEvent event) {
+        updateNum();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAnniversaryEvent(AnniversaryEvent event) {
+        updateNum();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUserInfoChange(UserInfoChangeEvent event) {
+        updateUserInfo(event.mUserInfo);
+    }
+
+    private void updateUserInfo(UserInfo userInfo) {
+        if (!TextUtils.isEmpty(userInfo.getPortrait()))
+            Glide.with(getContext()).load(userInfo.getPortrait()).apply(RequestOptions.bitmapTransform(new CenterCrop())).into(mIvIcon);
+        else
+            Glide.with(getContext()).load(R.drawable.plant_1).apply(RequestOptions.bitmapTransform(new CenterCrop())).into(mIvIcon);
+
+        if (!TextUtils.isEmpty(userInfo.getName()))
+            mTvName.setText(userInfo.getName());
+        else
+            mTvName.setText(getString(R.string.app_name));
+        if (!TextUtils.isEmpty(userInfo.getHonor()))
+            mTvHonor.setText(userInfo.getHonor());
+        else
+            mTvHonor.setText("座右铭");
     }
 }

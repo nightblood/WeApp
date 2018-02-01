@@ -2,12 +2,11 @@ package com.weapp.zlf.weapp.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.TypedArray;
-import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,17 +18,14 @@ import com.flyco.dialog.widget.MaterialDialog;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.DiaryBean;
 import com.weapp.zlf.weapp.bean.ImageBean;
-import com.weapp.zlf.weapp.common.BannerImageLoader;
+import com.weapp.zlf.weapp.common.utils.AssertUtils;
 import com.weapp.zlf.weapp.common.utils.TimeUtils;
-import com.weapp.zlf.weapp.common.utils.ToastUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
+import com.weapp.zlf.weapp.event.DiaryEvent;
+import com.weapp.zlf.weapp.ui.adapter.DiaryEditPhotoAdapter;
 import com.weapp.zlf.weapp.ui.adapter.PanelAdapter;
-import com.youth.banner.Banner;
-import com.youth.banner.BannerConfig;
-import com.youth.banner.Transformer;
-import com.youth.banner.listener.OnBannerListener;
-import com.youth.banner.transformer.DepthPageTransformer;
 
+import org.greenrobot.eventbus.EventBus;
 import org.xutils.DbManager;
 import org.xutils.ex.DbException;
 import org.xutils.view.annotation.ContentView;
@@ -45,7 +41,6 @@ import java.util.List;
 import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
-import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -61,9 +56,11 @@ import me.iwf.photopicker.PhotoPreview;
  */
 
 @ContentView(R.layout.activity_diary_edit)
-public class DiaryEditActivity extends BaseActivity implements OnBannerListener {
-    @ViewInject(R.id.banner)
-    private Banner mBanner;
+public class DiaryEditActivity extends BaseActivity {
+//    @ViewInject(R.id.banner)
+//    private Banner mBanner;
+    @ViewInject(R.id.rv_photos)
+    private RecyclerView mRvPhotos;
     @ViewInject(R.id.et_content)
     private EditText mEtContent;
     @ViewInject(R.id.tv_time)
@@ -80,8 +77,8 @@ public class DiaryEditActivity extends BaseActivity implements OnBannerListener 
     private ImageView mIvWeather;
     @ViewInject(R.id.rv_tag)
     private RecyclerView mRvTag;
-    @ViewInject(R.id.iv_image)
-    private ImageView mIvImage;
+//    @ViewInject(R.id.iv_image)
+//    private ImageView mIvImage;
     @ViewInject(R.id.iv_tag)
     private ImageView mIvTag;
     @ViewInject(R.id.iv_title_right)
@@ -94,23 +91,14 @@ public class DiaryEditActivity extends BaseActivity implements OnBannerListener 
     private int mWeather = Integer.MAX_VALUE;
     private String mTitle;
     private int mTag = Integer.MAX_VALUE;
-    private ArrayList<Integer> taglist;
-    private ArrayList<Integer> moodlist;
-    private ArrayList<Integer> weatherlist;
     private boolean isEditMode;
     private DiaryBean mData;
+    private DiaryEditPhotoAdapter mPhotoAdapter;
 
     @Override
     protected void initView() {
         super.initView();
 
-        Integer[] images = {R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher};
-        List<Integer> asList = Arrays.asList(images);
-        mBanner.setImages(new ArrayList<Object>(asList))
-                .setImageLoader(new BannerImageLoader())
-                .setBannerStyle(BannerConfig.CIRCLE_INDICATOR)
-                .setPageTransformer(false, new DepthPageTransformer())
-                .setOnBannerListener(this);
         String time = TimeUtils.date2String(new Date(System.currentTimeMillis()), "yyyy/MM/dd hh:mm:ss");
         mTvTime.setText(time);
         KeyboardUtil.attach(this, mPanelRoot);
@@ -129,8 +117,10 @@ public class DiaryEditActivity extends BaseActivity implements OnBannerListener 
         KPSwitchConflictUtil.attach(mPanelRoot, mIvTag, mEtContent, null);
         initPanel();
 
+        initPhotosList();
         Intent intent = getIntent();
         Serializable data = intent.getSerializableExtra("data");
+
         if (data != null) {
             isEditMode = true;
 
@@ -138,53 +128,76 @@ public class DiaryEditActivity extends BaseActivity implements OnBannerListener 
             StringBuilder builder = new StringBuilder();
             builder.append(mData.getYear()).append("-").append(mData.getMonth()).append("-").append(mData.getDate());
             mTvTitle.setText(builder.toString());
-            if (TextUtils.isEmpty(mData.getImageStr())) {
-                mBanner.setVisibility(View.GONE);
-            } else {
-                mBanner.setVisibility(View.VISIBLE);
-                mBanner.setImages(mImages = new ArrayList<>(mData.getImages()));
-                mBanner.start();
-            }
+
+                mImages = getImageData(mData.getImages());
+                mPhotoAdapter.setNewData(mImages);
+
             if (Integer.MAX_VALUE != mData.getWeather()) {
                 mWeather = mData.getWeather();
-                mIvWeather.setImageResource(weatherlist.get(mData.getWeather()));
+                mIvWeather.setImageResource(AssertUtils.weatherlist.get(mData.getWeather()));
             }
             if (Integer.MAX_VALUE != mData.getMood()) {
                 mMood = mData.getMood();
-                mIvMood.setImageResource(moodlist.get(mData.getMood()));
+                mIvMood.setImageResource(AssertUtils.moodlist.get(mData.getMood()));
             }
             if (Integer.MAX_VALUE != mData.getTag()) {
                 mTag = mData.getTag();
-                mIvTag.setImageResource(taglist.get(mData.getTag()));
+                mIvTag.setImageResource(AssertUtils.taglist.get(mData.getTag()));
             }
             mEtContent.setText(mData.getContent());
             mEtContent.setSelection(mData.getContent().length());
             mTvTime.setText(TimeUtils.date2String(new Date(mData.getTimeMillis()), "yyyy/MM/dd hh:mm:ss"));
         } else {
             isEditMode = true;
+            mPhotoAdapter.setNewData(getImageData(null));
         }
     }
 
-    private void initPanel() {
-        TypedArray moodArray = getResources().obtainTypedArray(R.array.mood_emoji);
-        TypedArray weatherArray = getResources().obtainTypedArray(R.array.weather);
-        TypedArray tagArray = getResources().obtainTypedArray(R.array.tag);
-        moodlist = new ArrayList<>();
-        weatherlist = new ArrayList<>();
-        taglist = new ArrayList<>();
-        for (int i = 0; i < moodArray.length(); i++) {
-            moodlist.add(moodArray.getResourceId(i, 0));
+    private ArrayList<String> getImageData(List<String> images) {
+        ArrayList<String> list = new ArrayList<>();
+        if (images == null || images.isEmpty()) {
+        } else {
+            for (String image : images) {
+                list.add(image);
+            }
         }
-        for (int i = 0; i < weatherArray.length(); i++) {
-            weatherlist.add(weatherArray.getResourceId(i, 0));
-        }
-        for (int i = 0; i < tagArray.length(); i++) {
-            taglist.add(tagArray.getResourceId(i, 0));
-        }
-        moodArray.recycle();
-        weatherArray.recycle();
-        tagArray.recycle();
+        list.add("btn_add");
+        return list;
+    }
 
+    private void initPhotosList() {
+
+        mPhotoAdapter = new DiaryEditPhotoAdapter(null);
+        mRvPhotos.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        mRvPhotos.setAdapter(mPhotoAdapter);
+
+//        final View header = LayoutInflater.from(this).inflate(R.layout.item_diary_edit_photo, null);
+//        ImageView imageView = (ImageView) header.findViewById(R.id.iv_item);
+//        imageView.setImageResource(R.drawable.icon_add);
+//        mPhotoAdapter.addFooterView(header);
+        mPhotoAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                if ((adapter.getItem(position)).equals("btn_add")) {
+                    photoPick();
+                } else {
+                    photoPreview(getPreviewImageData(mImages), position);
+                }
+            }
+        });
+    }
+
+    private ArrayList<String> getPreviewImageData(ArrayList<String> images) {
+        ArrayList<String> res = new ArrayList<>();
+        for (String item : images) {
+            if (item.equals("btn_add"))
+                continue;
+            res.add(item);
+        }
+        return res;
+    }
+
+    private void initPanel() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(this);
@@ -194,9 +207,9 @@ public class DiaryEditActivity extends BaseActivity implements OnBannerListener 
         mRvMood.setLayoutManager(linearLayoutManager);
         mRvWeather.setLayoutManager(linearLayoutManager1);
         mRvTag.setLayoutManager(linearLayoutManager2);
-        PanelAdapter moodAdapter = new PanelAdapter(moodlist);
-        PanelAdapter weatherAdapter = new PanelAdapter(weatherlist);
-        PanelAdapter tagAdapter = new PanelAdapter(taglist);
+        PanelAdapter moodAdapter = new PanelAdapter(AssertUtils.moodlist);
+        PanelAdapter weatherAdapter = new PanelAdapter(AssertUtils.weatherlist);
+        PanelAdapter tagAdapter = new PanelAdapter(AssertUtils.taglist);
         mRvMood.setAdapter(moodAdapter);
         mRvWeather.setAdapter(weatherAdapter);
         mRvTag.setAdapter(tagAdapter);
@@ -247,7 +260,7 @@ public class DiaryEditActivity extends BaseActivity implements OnBannerListener 
 
     private void photoPick() {
         PhotoPicker.builder()
-                .setPhotoCount(9)
+                .setPhotoCount(10 - mImages.size())
                 .setShowCamera(true)
                 .setShowGif(true)
                 .setPreviewEnabled(false)
@@ -312,8 +325,8 @@ public class DiaryEditActivity extends BaseActivity implements OnBannerListener 
                     }
 
                     @Override
-                    public void onNext(String diaryBean) {
-
+                    public void onNext(String string) {
+                        EventBus.getDefault().post(new DiaryEvent());
                     }
 
                     @Override
@@ -344,12 +357,14 @@ public class DiaryEditActivity extends BaseActivity implements OnBannerListener 
                     }
                 }
             } else {
-                if (!(list == null || list.isEmpty())) { // 插入图片
+                if (!(list == null || list.isEmpty())) { //删除所有原有图片， 再插入图片
                     for (ImageBean bean : list) {
                         dbManager.delete(bean);
                     }
                 }
                 for (String image : images) {
+                    if (image.equals("btn_add"))
+                        continue;
                     ImageBean imageBean = new ImageBean();
                     imageBean.setDiaryId(diaryId);
                     imageBean.setImage(image);
@@ -370,42 +385,38 @@ public class DiaryEditActivity extends BaseActivity implements OnBannerListener 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK && (requestCode == PhotoPicker.REQUEST_CODE || requestCode == PhotoPreview.REQUEST_CODE)) {
+        if (resultCode == RESULT_OK && requestCode == PhotoPicker.REQUEST_CODE) {
             if (data != null) {
-                mImages = data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
-                mBanner.setImages(mImages);
-                mBanner.setVisibility(View.VISIBLE);
-                mBanner.start();
-                mIvImage.setImageResource(R.drawable.icon_pic_select);
+                mImages = addPhoto(mImages, data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS));
+                mPhotoAdapter.setNewData(mImages);
             }
+        } else if (resultCode == RESULT_OK && requestCode == PhotoPreview.REQUEST_CODE) {
+            mImages.clear();
+            mImages = addPhoto(mImages, data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS));
+            mPhotoAdapter.setNewData(mImages);
         }
+
+    }
+
+    private ArrayList<String> addPhoto(ArrayList<String> oriList, ArrayList<String> addList) {
+        ArrayList<String> res = new ArrayList<>();
+        for (String item : oriList) {
+            if (!item.equals("btn_add"))
+                res.add(item);
+        }
+        res.addAll(addList);
+        res.add("btn_add");
+        return res;
     }
 
     private void photoPreview(ArrayList<String> photoPaths, int pos) {
+        if (photoPaths == null || photoPaths.isEmpty())
+            return;
         PhotoPreview.builder()
                 .setPhotos(photoPaths)
                 .setCurrentItem(pos)
                 .setShowDeleteButton(isEditMode)
                 .start(DiaryEditActivity.this);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //开始轮播
-        mBanner.startAutoPlay();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        //结束轮播
-        mBanner.stopAutoPlay();
-    }
-
-    @Override
-    public void OnBannerClick(int i) {
-        photoPreview(mImages, i);
     }
 
     @Override

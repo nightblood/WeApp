@@ -7,4 +7,6 @@
     <string name="toast_input_something">没有内容呦</string>
     <string name="title_todo">备忘录</string>
     <string name="title_anniversary">纪念日</string>
+    <string name="hint_exit_app">再次点击返回键退出</string>
+    <string name="info_edit">资料编辑</string>
 </resources>

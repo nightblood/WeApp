@@ -14,4 +14,19 @@
     <color name="transparent">#00000000</color>
     <color name="semi_tranparent">#66ffffff</color>
 
+    <color name="tag_color0">#c72d6f</color>
+    <color name="tag_color1">#df4155</color>
+    <color name="tag_color2">#d58334</color>
+    <color name="tag_color3">#e1a439</color>
+    <color name="tag_color4">#74ba41</color>
+    <color name="tag_color5">#5eb54b</color>
+    <color name="tag_color6">#58bd9d</color>
+    <color name="tag_color7">#499fc0</color>
+    <color name="tag_color8">#4693e1</color>
+    <color name="tag_color9">#584cdd</color>
+    <color name="tag_color10">#5d51e5</color>
+    <color name="tag_color11">#9b23d7</color>
+    <color name="tag_color12">#c33f9a</color>
+    <color name="tag_color13">#5a647d</color>
+    <color name="tag_color14">#113064</color>
 </resources>

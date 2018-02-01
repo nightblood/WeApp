@@ -50,4 +50,7 @@ dependencies {
     compile 'com.github.AndroidMsky:RandomTextView:v1.4'
     compile 'com.github.ybq:parallaxviewpager:2.0.0'
     compile 'jp.wasabeef:glide-transformations:3.0.1'
+    compile 'org.greenrobot:eventbus:3.1.1'
+    compile 'com.github.lygttpod:SuperTextView:2.1.6'
+    compile 'com.makeramen:roundedimageview:2.3.0'
 }

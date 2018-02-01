@@ -101,7 +101,7 @@
                     android:id="@+id/iv_image"
                     android:layout_width="20dp"
                     android:layout_height="20dp" 
-                    android:src="@drawable/pic"/>
+                    android:src="@drawable/icon_pic_select"/>
             </LinearLayout>
            
         </LinearLayout>

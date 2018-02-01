@@ -21,6 +21,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.DiaryBean;
 import com.weapp.zlf.weapp.common.utils.TimeUtils;
+import com.weapp.zlf.weapp.event.DiaryEvent;
 import com.weapp.zlf.weapp.ui.activity.DiaryDetailActivity;
 import com.weapp.zlf.weapp.ui.activity.DiaryEditActivity;
 import com.weapp.zlf.weapp.common.utils.AppUtils;
@@ -29,6 +30,8 @@ import com.weapp.zlf.weapp.common.utils.Utils;
 import com.weapp.zlf.weapp.ui.activity.DiaryListAdapter;
 import com.weapp.zlf.weapp.ui.widge.DiaryDetailDilog;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.xutils.DbManager;
 import org.xutils.db.Selector;
 import org.xutils.db.sqlite.WhereBuilder;
@@ -292,6 +295,10 @@ public class DiaryFragment extends BaseFragment {
 
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDiaryEvent(DiaryEvent event) {
+        mRefreshLayout.autoRefresh();
+    }
 
     public void setArguments(final int mood, final int tag, final int weather, final long startTime, final long endTime) {
         if (startTime > endTime) {

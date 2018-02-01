@@ -7,6 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.weapp.zlf.weapp.event.BaseEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.xutils.x;
 
 /**
@@ -23,6 +27,7 @@ public class BaseFragment extends Fragment{
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        EventBus.getDefault().register(this);
         initView();
     }
 
@@ -31,6 +36,17 @@ public class BaseFragment extends Fragment{
     }
 
     public void onTabReselect() {
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onBaseEvent(BaseEvent event) {
 
     }
 }
