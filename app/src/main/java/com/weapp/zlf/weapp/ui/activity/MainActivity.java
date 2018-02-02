@@ -245,7 +245,7 @@ public class MainActivity extends BaseActivity {
         mDlContainer.closeDrawer(GravityCompat.START);
     }
     @Event(value = R.id.iv_top_l)
-    private void showDrawerLayout(View view) {
+    private void showDrawerLayoutClick(View view) {
         mDlContainer.openDrawer(GravityCompat.START);
     }
 

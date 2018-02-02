@@ -131,7 +131,7 @@ public class DiaryDetailActivity extends BaseActivity implements View.OnClickLis
     }
 
     @Event(R.id.iv_delete)
-    private void delete(View view) {
+    private void deleteClick(View view) {
         DbManager dbManager = Utils.getContext().getDbManager();
         try {
             dbManager.delete(mData);
@@ -141,7 +141,7 @@ public class DiaryDetailActivity extends BaseActivity implements View.OnClickLis
         finish();
     }
     @Event(R.id.iv_edit)
-    private void edit(View view) {
+    private void editClick(View view) {
         DiaryEditActivity.launch(this, mData);
         finish();
     }

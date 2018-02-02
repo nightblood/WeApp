@@ -9,4 +9,6 @@
     <string name="title_anniversary">纪念日</string>
     <string name="hint_exit_app">再次点击返回键退出</string>
     <string name="info_edit">资料编辑</string>
+    <string name="empty_annversary_list">快去记录纪念日吧！</string>
+    <string name="empty_diary_list">没有日记，快去记录吧！</string>
 </resources>

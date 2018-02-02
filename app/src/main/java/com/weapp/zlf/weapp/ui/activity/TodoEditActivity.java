@@ -137,7 +137,7 @@ public class TodoEditActivity extends BaseActivity{
     }
 
     @Event(R.id.ll_name)
-    private void editName(View view) {
+    private void editNameClick(View view) {
         KeyBoardDialog.Builder builder = new KeyBoardDialog.Builder(this);
         builder.setOnClickListener(new KeyBoardDialog.ClickListener() {
             @Override
@@ -153,7 +153,7 @@ public class TodoEditActivity extends BaseActivity{
                 .show();
     }
     @Event(R.id.ll_tag)
-    private void editTag(View view) {
+    private void editTagClick(View view) {
         String string = mTvTodo.getText().toString();
         if (TextUtils.isEmpty(string))
             return;
@@ -183,7 +183,7 @@ public class TodoEditActivity extends BaseActivity{
         picker.show();
     }
     @Event(R.id.iv_title_left)
-    private void finishClick(View view) {
+    private void finishClickClick(View view) {
         finish();
     }
     @Event(R.id.iv_title_right)
@@ -363,7 +363,7 @@ public class TodoEditActivity extends BaseActivity{
         picker.show();
     }
         @Event(value = R.id.ll_time)
-    private void pickTime(View view) {
+    private void pickTimeClick(View view) {
         if (mType == TYPE_TODO) {
             onYearMonthDayPicker();
         } else {

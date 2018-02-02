@@ -55,7 +55,7 @@ public class MyInfoEditActivity extends BaseActivity{
     }
 
     @Event(R.id.stv_honor)
-    private void editHonor(View view) {
+    private void editHonorClick(View view) {
         new KeyBoardDialog.Builder(this)
                 .setOnClickListener(new KeyBoardDialog.ClickListener() {
                     @Override
@@ -72,14 +72,14 @@ public class MyInfoEditActivity extends BaseActivity{
                 .show();
     }
     @Event(R.id.stv_icon)
-    private void editIcon(View view) {
+    private void editIconClick(View view) {
         PhotoPicker.builder()
                 .setPhotoCount(1)
                 .setPreviewEnabled(true)
                 .start(this);
     }
     @Event(R.id.stv_name)
-    private void editName(View view) {
+    private void editNameClick(View view) {
         new KeyBoardDialog.Builder(this)
                 .setOnClickListener(new KeyBoardDialog.ClickListener() {
                     @Override

@@ -85,16 +85,16 @@ public class CommunicateBluetoothActivity extends BaseActivity {
 
 
     @Event(R.id.btn_server)
-    private void server(View view) {
+    private void serverClick(View view) {
         initServer();
     }
 
     @Event(R.id.btn_client)
-    private void client(View view) {
+    private void clientClick(View view) {
         initClient();
     }
     @Event(R.id.btn_image_pick)
-    private void imagePick(View view) {
+    private void imagePickClick(View view) {
         PhotoPicker.builder()
                 .setPhotoCount(1)
                 .setShowCamera(true)

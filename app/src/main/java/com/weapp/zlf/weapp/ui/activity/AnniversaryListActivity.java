@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -52,6 +53,7 @@ public class AnniversaryListActivity extends BaseActivity{
     private ImageView mIvRight;
     private int mOffset = 0;
     private AnniversaryAdapter mAdapter;
+    private View mEmptyView;
 
     @Override
     protected void initView() {
@@ -100,6 +102,7 @@ public class AnniversaryListActivity extends BaseActivity{
                     if (mRefreshLayout.isLoading()) {
                         ToastUtils.showLongToast("没有了哦");
                     } else {
+                        mAdapter.setEmptyView(mEmptyView);
                         ToastUtils.showLongToast("还没有添加纪念日哦。。");
                     }
                 } else {
@@ -142,6 +145,9 @@ public class AnniversaryListActivity extends BaseActivity{
             }
         });
 
+        mEmptyView = LayoutInflater.from(this).inflate(R.layout.ui_list_empty, null);
+        TextView tvContent = (TextView) mEmptyView.findViewById(R.id.tv_content);
+        tvContent.setText(getString(R.string.empty_annversary_list));
         mRvList.setLayoutManager(new GridLayoutManager(this, 1));
         mAdapter = new AnniversaryAdapter(null);
         mRvList.setAdapter(mAdapter);

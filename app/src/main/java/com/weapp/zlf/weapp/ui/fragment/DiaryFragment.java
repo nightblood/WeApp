@@ -8,8 +8,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -71,6 +73,7 @@ public class DiaryFragment extends BaseFragment {
     private int mWeather= Integer.MAX_VALUE;
     private int mMood= Integer.MAX_VALUE;
     private int mTag = Integer.MAX_VALUE;
+    private View mEmptyView;
 
     public static Fragment newInstance() {
         DiaryFragment diaryFragment = new DiaryFragment();
@@ -150,6 +153,10 @@ public class DiaryFragment extends BaseFragment {
                 }
             }
         });
+
+        mEmptyView = LayoutInflater.from(getContext()).inflate(R.layout.ui_list_empty, null);
+        TextView tvContent = (TextView) mEmptyView.findViewById(R.id.tv_content);
+        tvContent.setText(getString(R.string.empty_diary_list));
     }
 
     @Override
@@ -196,7 +203,8 @@ public class DiaryFragment extends BaseFragment {
                             if (!diaryBeans.isEmpty()) {
                                 onRefreshSuccess(diaryBeans);
                             } else {
-                                ToastUtils.showLongToast(getString(R.string.toast_no_data));
+                                ToastUtils.showLongToast(getString(R.string.empty_diary_list));
+                                mAdapter.setEmptyView(mEmptyView);
                             }
                         } else if (mRefreshLayout.isLoading()) {
                             if (!diaryBeans.isEmpty()) {
@@ -246,7 +254,7 @@ public class DiaryFragment extends BaseFragment {
     }
 
     @Event(value = R.id.fab)
-    private void fab(final View view) {
+    private void fabClick(final View view) {
         Observable.create(new ObservableOnSubscribe<DiaryBean>() {
             @Override
             public void subscribe(ObservableEmitter<DiaryBean> observableEmitter) throws Exception {

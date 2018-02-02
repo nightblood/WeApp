@@ -289,7 +289,7 @@ public class CanlenderFragment extends BaseFragment implements CalendarView.OnDa
     }
 
     @Event(value = R.id.fl_current)
-    private void toToday(View view) {
+    private void toTodayClick(View view) {
         mCalendarView.scrollToCurrent();
     }
 

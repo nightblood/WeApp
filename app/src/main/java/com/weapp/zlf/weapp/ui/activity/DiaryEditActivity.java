@@ -238,7 +238,7 @@ public class DiaryEditActivity extends BaseActivity {
     }
 
     @Event(value = {R.id.iv_title_left, R.id.iv_title_right, R.id.iv_image, R.id.iv_mood, R.id.iv_weather})
-    private void click(View view) {
+    private void viewClick(View view) {
         switch (view.getId()) {
             case R.id.iv_title_left:
                 showDialog();
