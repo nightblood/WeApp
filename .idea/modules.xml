@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/WeApp.iml" filepath="$PROJECT_DIR$/WeApp.iml" />
+      <module fileurl="file://E:\android_workspace\WeApp\Common\WeApp-Common.iml" filepath="E:\android_workspace\WeApp\Common\WeApp-Common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/base_recyclerview_adapter_helper/base_recyclerview_adapter_helper.iml" filepath="$PROJECT_DIR$/base_recyclerview_adapter_helper/base_recyclerview_adapter_helper.iml" />
+    </modules>
+  </component>
+</project>
