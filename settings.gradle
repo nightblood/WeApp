@@ -1,0 +1,1 @@
+include ':app', ':base_recyclerview_adapter_helper'
