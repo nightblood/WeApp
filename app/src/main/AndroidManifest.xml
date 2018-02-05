@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.weapp.zlf.weapp">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -41,10 +45,12 @@
         <activity android:name=".ui.activity.TodoEditActivity"/>
         <activity android:name=".ui.activity.SearchActivity"/>
 
-        <activity android:name=".ui.activity.CommunicateBluetoothActivity"/>
         <activity android:name=".ui.activity.AnniversaryListActivity" />
         <activity android:name=".ui.activity.DiarySearchActivity" />
         <activity android:name=".ui.activity.MyInfoEditActivity" />
+        <activity android:name=".ui.activity.DiaryShareActivity" />
+        <activity android:name=".ui.activity.RadarScanActivity" />
+        <activity android:name=".ui.activity.ReceiveActivity" />
 
     </application>
 

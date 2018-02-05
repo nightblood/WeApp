@@ -9,8 +9,14 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/RadarScanView" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/base_recyclerview_adapter_helper" />
+            <option value="$PROJECT_DIR$/httpServer" />
+            <option value="$PROJECT_DIR$/p2pmanager" />
+            <option value="$PROJECT_DIR$/randomtextview" />
+            <option value="$PROJECT_DIR$/rippleoutlayout" />
+            <option value="$PROJECT_DIR$/rippleview" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

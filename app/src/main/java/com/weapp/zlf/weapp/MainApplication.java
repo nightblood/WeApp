@@ -3,6 +3,7 @@ package com.weapp.zlf.weapp;
 import android.app.Application;
 
 import com.weapp.zlf.weapp.bean.UserInfo;
+import com.weapp.zlf.weapp.common.utils.Constant;
 import com.weapp.zlf.weapp.common.utils.FileUtils;
 import com.weapp.zlf.weapp.common.utils.SPUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
@@ -47,7 +48,7 @@ public class MainApplication extends Application {
         FileUtils.createOrExistsDir(getFilesDir());
         DbManager.DaoConfig daoConfig = new DbManager.DaoConfig()
                 //设置数据库名，默认xutils.db
-                .setDbName("weapp.db")
+                .setDbName(Constant.DB_NAME)
                 //设置数据库路径，默认存储在app的私有目录
                 .setDbDir(getFilesDir())
                 //设置数据库的版本号

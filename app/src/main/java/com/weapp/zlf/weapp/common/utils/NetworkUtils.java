@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
 
@@ -41,6 +42,53 @@ public class NetworkUtils {
         NETWORK_UNKNOWN,
         NETWORK_NO
     }
+    public static String getCurrentSSID(Context context)
+    {
+        WifiManager wifiMan = (WifiManager) (context
+                .getSystemService(Context.WIFI_SERVICE));
+        WifiInfo wifiInfo = wifiMan.getConnectionInfo();
+
+        if (wifiInfo != null)
+            return wifiInfo.getSSID();
+        else
+            return null;
+    }
+
+    public static String getLocalIp(Context context)
+    {
+        //获取wifi服务
+        WifiManager wifiManager = (WifiManager) context
+                .getSystemService(Context.WIFI_SERVICE);
+        //判断wifi是否开启
+        if (!wifiManager.isWifiEnabled())
+        {
+            wifiManager.setWifiEnabled(true);
+        }
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        int ipAddress = wifiInfo.getIpAddress();
+        String ip = intToIp(ipAddress);
+
+        return ip;
+    }
+    private static String intToIp(int i)
+    {
+        return (i & 0xFF) + "." + ((i >> 8) & 0xFF) + "." + ((i >> 16) & 0xFF) + "."
+                + (i >> 24 & 0xFF);
+    }
+    public static boolean isWifiConnected(Context context)
+    {
+        ConnectivityManager manager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        //获取状态
+        NetworkInfo.State wifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
+                .getState();
+        //判断wifi已连接的条件
+        if (wifi == NetworkInfo.State.CONNECTED)
+            return true;
+        else
+            return false;
+    }
+
 
     /**
      * 打开网络设置界面
@@ -149,7 +197,7 @@ public class NetworkUtils {
      * @return {@code true}: 是<br>{@code false}: 否
      */
     public static boolean getWifiEnabled() {
-        WifiManager wifiManager = (WifiManager) Utils.getContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) Utils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         return wifiManager.isWifiEnabled();
     }
 
@@ -160,7 +208,7 @@ public class NetworkUtils {
      * @param enabled {@code true}: 打开<br>{@code false}: 关闭
      */
     public static void setWifiEnabled( boolean enabled) {
-        WifiManager wifiManager = (WifiManager)Utils.getContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager)Utils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (enabled) {
             if (!wifiManager.isWifiEnabled()) {
                 wifiManager.setWifiEnabled(true);

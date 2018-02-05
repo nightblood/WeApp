@@ -11,4 +11,28 @@
     <string name="info_edit">资料编辑</string>
     <string name="empty_annversary_list">快去记录纪念日吧！</string>
     <string name="empty_diary_list">没有日记，快去记录吧！</string>
+    <string name="hint_input_honor">木有座右铭，跟咸鱼有什么区别...</string>
+    <string name="hint_input_nickname">木有昵称，还怎么搞网恋...</string>
+    <string name="developer_desc">powered by 诸亮飞&#038;孙洁</string>
+    <string name="developer_desc_1">本项目由诸亮飞开发</string>
+
+    <string name="send_abort_self">对端 %s 退出</string>
+    <string name="file_send_complete">发送完成</string>
+    <string name="file_has_completed">已完成</string>
+    <string name="file_wait">等待</string>
+    <string name="file_sending">正在发送</string>
+    <string name="file_receiving">正在接收</string>
+    <string name="file_receive_completed">接收完成</string>
+    <string name="please_select_file">请选择文件</string>
+    <string name="title_activity_file_transfering">正在传输</string>
+    <string name="file_transfering_exit">你确定要退出吗？</string>
+    <string name="ok">确定</string>
+    <string name="send_connect_to">发送端连接到： %s </string>
+    <string name="title_radar_scan">扫描好友</string>
+
+    <string name="wifi_hotspot_fail">创建WiFi热点失败</string>
+    <string name="wifi_hotspot_creating">正在创建WiFi热点</string>
+    <string name="share_diary">分享日记</string>
+
+
 </resources>

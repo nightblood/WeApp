@@ -315,10 +315,10 @@ public class MyInfoFragment extends BaseFragment implements BaseQuickAdapter.OnI
         if (!TextUtils.isEmpty(userInfo.getName()))
             mTvName.setText(userInfo.getName());
         else
-            mTvName.setText(getString(R.string.app_name));
+            mTvName.setText(getString(R.string.hint_input_nickname));
         if (!TextUtils.isEmpty(userInfo.getHonor()))
             mTvHonor.setText(userInfo.getHonor());
         else
-            mTvHonor.setText("座右铭");
+            mTvHonor.setText(getString(R.string.hint_input_honor));
     }
 }

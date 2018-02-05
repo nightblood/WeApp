@@ -251,13 +251,12 @@ public class MainActivity extends BaseActivity {
 
     @Event(value = R.id.iv_top_r)
     private void rightClick(View view) {
-//        mDlContainer.openDrawer(GravityCompat.END);
-        DiarySearchActivity.launch(this);
+        ToastUtils.showLongToast("正在紧张施工中。。。");
+//        DiarySearchActivity.launch(this);
     }
     @Event(value = R.id.ll_search)
     private void searchClick(View view) {
-//        SearchActivity.launch(this);
-        CommunicateBluetoothActivity.launch(this);
+        DiaryShareActivity.launch(this);
     }
 
     @Event(value = {R.id.tv_reset, R.id.tv_submit})

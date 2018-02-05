@@ -2,12 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:transitionName="mybtn"
->
+    android:transitionName="mybtn">
 
     <include layout="@layout/ui_title_bar"/>
 
+    <com.weapp.zlf.weapp.ui.widge.slidinglayout.SlidingLayout
+        android:id="@+id/slidingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:sliding_mode="both"
+        app:background_view="@layout/header_my_info">
     <!--<ScrollView-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="0dp"-->
@@ -15,34 +22,31 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@color/color_background">
 
             <EditText
                 android:id="@+id/et_content"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:padding="@dimen/dp_10"
-                android:minHeight="200dp"
-                android:hint="@string/hint_record_diary"
-                android:gravity="top"
-                android:inputType="textMultiLine"
-                android:background="@null"
-                android:textSize="@dimen/sp_18"
-                android:textColorHint="@color/color8"
-                android:textColor="@color/color4"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_10"
+                style="@style/InputEditText"
                 />
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_photos"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="@dimen/dp_5"
                 />
         </LinearLayout>
     <!--</ScrollView>-->
 
+    </com.weapp.zlf.weapp.ui.widge.slidinglayout.SlidingLayout>
     <include layout="@layout/ui_bottom_bar"/>
 
     <cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout

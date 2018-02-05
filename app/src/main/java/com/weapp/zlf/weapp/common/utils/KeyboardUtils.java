@@ -95,8 +95,7 @@ public class KeyboardUtils {
      * 切换键盘显示与否状态
      */
     public static void toggleSoftInput() {
-        InputMethodManager imm = (InputMethodManager) Utils.getContext()
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) Utils.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 }

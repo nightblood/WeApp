@@ -9,48 +9,64 @@
 
     <include layout="@layout/ui_title_bar"/>
 
-    <com.allen.library.SuperTextView
-        android:id="@+id/stv_icon"
+    <com.weapp.zlf.weapp.ui.widge.slidinglayout.SlidingLayout
+        android:id="@+id/slidingLayout"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_marginTop="@dimen/dp_10"
-        app:sCenterTopTextString=" "
-        app:sCenterViewGravity="left_center"
-        app:sLeftBottomTextString="这是一个看脸的世界..."
-        app:sLeftBottomTextColor="@color/color8"
-        app:sLeftTopTextString="头像"
-        app:sLeftViewGravity="left_center"
-        app:sRightIconRes="@drawable/plant"
-        app:sRightIconShowCircle="true"
-        app:sRightIconWidth="40dp"
-        app:sRightIconHeight="40dp"
-        app:sUseRipple="true"
-        />
-    <com.allen.library.SuperTextView
-        android:id="@+id/stv_name"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_marginTop="@dimen/dp_10"
-        app:sCenterTopTextString=" "
-        app:sCenterViewGravity="left_center"
-        app:sLeftBottomTextString="木有昵称，还怎么搞网恋..."
-        app:sLeftBottomTextColor="@color/color8"
-        app:sLeftTopTextString="昵称"
-        app:sLeftViewGravity="left_center"
-        app:sUseRipple="true"
-        />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:sliding_mode="both"
+        app:background_view="@layout/header_my_info">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@color/color_background">
 
-    <com.allen.library.SuperTextView
-        android:id="@+id/stv_honor"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_marginTop="@dimen/dp_10"
-        app:sCenterTopTextString=" "
-        app:sCenterViewGravity="left_center"
-        app:sLeftBottomTextString="木有座右铭，跟咸鱼有什么区别..."
-        app:sLeftBottomTextColor="@color/color8"
-        app:sLeftTopTextString="座右铭"
-        app:sLeftViewGravity="left_center"
-        app:sUseRipple="true"
-        />
+            <com.allen.library.SuperTextView
+                android:id="@+id/stv_icon"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                app:sCenterTopTextString=" "
+                app:sCenterViewGravity="left_center"
+                app:sLeftBottomTextString="这是一个看脸的世界..."
+                app:sLeftBottomTextColor="@color/color8"
+                app:sLeftTopTextString="头像"
+                app:sLeftViewGravity="left_center"
+                app:sRightIconRes="@drawable/plant"
+                app:sRightIconShowCircle="true"
+                app:sRightIconWidth="40dp"
+                app:sRightIconHeight="40dp"
+                app:sUseRipple="true"
+                />
+            <com.allen.library.SuperTextView
+                android:id="@+id/stv_name"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="@dimen/dp_10"
+                app:sCenterTopTextString=" "
+                app:sCenterViewGravity="left_center"
+                app:sLeftBottomTextString="@string/hint_input_nickname"
+                app:sLeftBottomTextColor="@color/color8"
+                app:sLeftTopTextString="昵称"
+                app:sLeftViewGravity="left_center"
+                app:sUseRipple="true"
+                />
+
+            <com.allen.library.SuperTextView
+                android:id="@+id/stv_honor"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="@dimen/dp_10"
+                app:sCenterTopTextString=" "
+                app:sCenterViewGravity="left_center"
+                app:sLeftBottomTextString="@string/hint_input_honor"
+                app:sLeftBottomTextColor="@color/color8"
+                app:sLeftTopTextString="座右铭"
+                app:sLeftViewGravity="left_center"
+                app:sUseRipple="true"
+                />
+
+        </LinearLayout>
+    </com.weapp.zlf.weapp.ui.widge.slidinglayout.SlidingLayout>
 </LinearLayout>

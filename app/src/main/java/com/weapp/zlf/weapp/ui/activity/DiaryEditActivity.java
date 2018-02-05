@@ -148,6 +148,7 @@ public class DiaryEditActivity extends BaseActivity {
             mEtContent.setSelection(mData.getContent().length());
             mTvTime.setText(TimeUtils.date2String(new Date(mData.getTimeMillis()), "yyyy/MM/dd hh:mm:ss"));
         } else {
+            mTvTitle.setText(getString(R.string.diary));
             isEditMode = true;
             mPhotoAdapter.setNewData(getImageData(null));
         }

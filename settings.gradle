@@ -1,1 +1,1 @@
-include ':app', ':base_recyclerview_adapter_helper'
+include ':app', ':base_recyclerview_adapter_helper', ':httpServer', ':p2pmanager', ':RadarScanView', ':randomtextview', ':rippleview', ':rippleoutlayout'

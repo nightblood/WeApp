@@ -3,6 +3,7 @@ package com.weapp.zlf.weapp.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -50,8 +51,16 @@ public class MyInfoEditActivity extends BaseActivity{
         mUserInfo = MainApplication.mUserInfo;
         Drawable drawable = Drawable.createFromPath(mUserInfo.getPortrait());
         mStvIcon.setRightIcon(drawable);
-        mStvHonor.setLeftBottomString(mUserInfo.getHonor());
-        mStvName.setLeftBottomString(mUserInfo.getName());
+        if (!TextUtils.isEmpty(mUserInfo.getHonor())) {
+            mStvHonor.setLeftBottomString(mUserInfo.getHonor());
+        } else {
+            mStvHonor.setLeftBottomString(getString(R.string.hint_input_honor));
+        }
+        if (!TextUtils.isEmpty(mUserInfo.getName())) {
+            mStvName.setLeftBottomString(mUserInfo.getName());
+        } else {
+            mStvName.setLeftBottomString(getString(R.string.hint_input_nickname));
+        }
     }
 
     @Event(R.id.stv_honor)
@@ -60,7 +69,11 @@ public class MyInfoEditActivity extends BaseActivity{
                 .setOnClickListener(new KeyBoardDialog.ClickListener() {
                     @Override
                     public void onClick(String s) {
-                        mStvHonor.setLeftBottomString(s);
+                        if (!TextUtils.isEmpty(s)) {
+                            mStvHonor.setLeftBottomString(s);
+                        } else {
+                            mStvHonor.setLeftBottomString(getString(R.string.hint_input_honor));
+                        }
                         SPUtils spUtils = new SPUtils("user_info");
                         spUtils.putString("honor", s);
                         mUserInfo.setHonor(s);
