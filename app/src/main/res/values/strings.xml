@@ -33,6 +33,6 @@
     <string name="wifi_hotspot_fail">创建WiFi热点失败</string>
     <string name="wifi_hotspot_creating">正在创建WiFi热点</string>
     <string name="share_diary">分享日记</string>
-
+    <string name="picture_compressing">照片压缩中(%1$d/%2$d)</string>
 
 </resources>

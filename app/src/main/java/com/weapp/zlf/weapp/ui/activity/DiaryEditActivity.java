@@ -19,7 +19,9 @@ import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.DiaryBean;
 import com.weapp.zlf.weapp.bean.ImageBean;
 import com.weapp.zlf.weapp.common.utils.AssertUtils;
+import com.weapp.zlf.weapp.common.utils.Constant;
 import com.weapp.zlf.weapp.common.utils.TimeUtils;
+import com.weapp.zlf.weapp.common.utils.ToastUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
 import com.weapp.zlf.weapp.event.DiaryEvent;
 import com.weapp.zlf.weapp.ui.adapter.DiaryEditPhotoAdapter;
@@ -32,6 +34,7 @@ import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +44,7 @@ import java.util.List;
 import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -50,6 +54,10 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import me.iwf.photopicker.PhotoPicker;
 import me.iwf.photopicker.PhotoPreview;
+import top.zibin.luban.Luban;
+import top.zibin.luban.OnCompressListener;
+
+import static cn.pedant.SweetAlert.SweetAlertDialog.PROGRESS_TYPE;
 
 /**
  * Created by zhuliangfei on 2018/1/9.
@@ -94,6 +102,7 @@ public class DiaryEditActivity extends BaseActivity {
     private boolean isEditMode;
     private DiaryBean mData;
     private DiaryEditPhotoAdapter mPhotoAdapter;
+    private SweetAlertDialog mLubanDialog;
 
     @Override
     protected void initView() {
@@ -388,8 +397,39 @@ public class DiaryEditActivity extends BaseActivity {
 
         if (resultCode == RESULT_OK && requestCode == PhotoPicker.REQUEST_CODE) {
             if (data != null) {
-                mImages = addPhoto(mImages, data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS));
-                mPhotoAdapter.setNewData(mImages);
+                final List<String> images = data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
+                mLubanDialog = new SweetAlertDialog(DiaryEditActivity.this, PROGRESS_TYPE);
+                mLubanDialog.setTitleText(String.format(getString(R.string.picture_compressing), 0, images.size()));
+                mLubanDialog.show();
+                Luban.with(this)
+                        .load(images)                                   // 传人要压缩的图片列表
+                        .ignoreBy(100)                                  // 忽略不压缩图片的大小
+                        .setTargetDir(Constant.DIR_DIARY_PHOTO)                        // 设置压缩后文件存储位置
+                        .setCompressListener(new OnCompressListener() { //设置回调
+                            private ArrayList<String> files = new ArrayList<>();
+                            @Override
+                            public void onStart() {
+                                // TODO 压缩开始前调用，可以在方法内启动 loading UI
+                            }
+
+                            @Override
+                            public void onSuccess(File file) {
+                                // TODO 压缩成功后调用，返回压缩后的图片文件
+                                files.add(file.getAbsolutePath());
+                                mLubanDialog.setTitleText(String.format(getString(R.string.picture_compressing), files.size(), images.size()));
+                                if (files.size() == images.size()) {
+                                    mLubanDialog.dismiss();
+                                    mImages = addPhoto(mImages, files);
+                                    mPhotoAdapter.setNewData(mImages);
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                ToastUtils.showShortToast(e.toString());
+                                mLubanDialog.dismiss();
+                            }
+                        }).launch();    //启动压缩
             }
         } else if (resultCode == RESULT_OK && requestCode == PhotoPreview.REQUEST_CODE) {
             mImages.clear();

@@ -1,5 +1,6 @@
 package com.weapp.zlf.weapp.ui.activity;
 
+import android.Manifest;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -8,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -17,10 +19,14 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.weapp.zlf.weapp.MainApplication;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.DiaryBean;
 import com.weapp.zlf.weapp.bean.TodoBean;
 import com.weapp.zlf.weapp.common.utils.AssertUtils;
+import com.weapp.zlf.weapp.common.utils.DeviceUuidFactory;
+import com.weapp.zlf.weapp.common.utils.SPUtils;
 import com.weapp.zlf.weapp.common.utils.TimeUtils;
 import com.weapp.zlf.weapp.common.utils.ToastUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
@@ -65,16 +71,16 @@ public class MainActivity extends BaseActivity {
     @ViewInject(R.id.iv_top_r)
     private ImageView mIvTopRight;
 
-    @ViewInject(R.id.rv_mood)
+    /*@ViewInject(R.id.rv_mood)
     private RecyclerView mRvMood;
     @ViewInject(R.id.rv_weather)
     private RecyclerView mRvWeather;
     @ViewInject(R.id.rv_tag)
-    private RecyclerView mRvTag;
-    @ViewInject(R.id.tv_time_start)
-    private TextView mTvTimeStart;
-    @ViewInject(R.id.tv_time_end)
-    private TextView mTvTimeEnd;
+    private RecyclerView mRvTag;*/
+//    @ViewInject(R.id.tv_time_start)
+//    private TextView mTvTimeStart;
+//    @ViewInject(R.id.tv_time_end)
+//    private TextView mTvTimeEnd;
 
     private String[] mTabStrArray = new String[] {"日记", "备忘", "我の"};
     private String[] mTitleName = new String[] {"1", "2", "3"};
@@ -82,17 +88,17 @@ public class MainActivity extends BaseActivity {
 //    public static ArrayList<Integer> moodlist;
 //    public static ArrayList<Integer> weatherlist;
 //    public static ArrayList<Integer> taglist;
-    @ViewInject(R.id.iv_mood)
-    private ImageView mIvMood;
-    @ViewInject(R.id.iv_weather)
-    private ImageView mIvWeather;
-    @ViewInject(R.id.iv_tag)
-    private ImageView mIvTag;
-    private int mMood= Integer.MAX_VALUE;
-    private int mWeather = Integer.MAX_VALUE;
-    private int mTag= Integer.MAX_VALUE;
-    private long mStartTime;
-    private long mEndTime;
+//    @ViewInject(R.id.iv_mood)
+//    private ImageView mIvMood;
+//    @ViewInject(R.id.iv_weather)
+//    private ImageView mIvWeather;
+//    @ViewInject(R.id.iv_tag)
+//    private ImageView mIvTag;
+//    private int mMood= Integer.MAX_VALUE;
+//    private int mWeather = Integer.MAX_VALUE;
+//    private int mTag= Integer.MAX_VALUE;
+//    private long mStartTime;
+//    private long mEndTime;
     private long mClickTime;
 
     protected void initView() {
@@ -102,6 +108,47 @@ public class MainActivity extends BaseActivity {
         initTabLayout();
 //        initNavView();
         initToDoDialog();
+        checkPermissions();
+
+    }
+
+    private void checkPermissions() {
+            RxPermissions rxPermissions = new RxPermissions(this);
+            rxPermissions
+                    .request(Manifest.permission.READ_PHONE_STATE)
+                    .subscribe(new Observer<Boolean>() {
+                        @Override
+                        public void onSubscribe(Disposable disposable) {
+                            Log.d(TAG, "onSubscribe: ");
+                        }
+
+                        @Override
+                        public void onNext(Boolean aBoolean) {
+                            Log.d(TAG, "onNext: ");
+                            if (!aBoolean) {
+                                ToastUtils.showShortToast("您已拒绝授权WeApp获取手机状态权限");
+                            } else {
+                                if (TextUtils.isEmpty(MainApplication.mUserInfo.getId())) {
+
+                                    DeviceUuidFactory factory = new DeviceUuidFactory(MainActivity.this);
+                                    MainApplication.mUserInfo.setId(factory.getDeviceUuid().toString());
+                                    SPUtils spUtils = new SPUtils("user_info");
+                                    spUtils.putString("id", MainApplication.mUserInfo.getId());
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            Log.d(TAG, "onError: ");
+                            ToastUtils.showShortToast(throwable.toString());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            Log.d(TAG, "onComplete: ");
+                        }
+                    });
     }
 
     private void initToDoDialog() {
@@ -152,15 +199,13 @@ public class MainActivity extends BaseActivity {
                 });
     }
 
-    private void initNavView() {
-
-
+   /* private void initNavView() {
         mRvMood.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         mRvWeather.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         mRvTag.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        /*mRvMood.setLayoutManager(new GridLayoutManager(this, 6));
+        *//*mRvMood.setLayoutManager(new GridLayoutManager(this, 6));
         mRvWeather.setLayoutManager(new GridLayoutManager(this, 6));
-        mRvTag.setLayoutManager(new GridLayoutManager(this, 6));*/
+        mRvTag.setLayoutManager(new GridLayoutManager(this, 6));*//*
 
         PanelAdapter moodAdapter;
         PanelAdapter weatherAdapter;
@@ -191,7 +236,7 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
-
+*/
     private void initViewPager() {
         mFragments = new ArrayList<>();
         mFragments.add(DiaryFragment.newInstance());
@@ -258,7 +303,7 @@ public class MainActivity extends BaseActivity {
     private void searchClick(View view) {
         DiaryShareActivity.launch(this);
     }
-
+/*
     @Event(value = {R.id.tv_reset, R.id.tv_submit})
     private void resetClick(View view) {
         if (view.getId() == R.id.tv_reset) {
@@ -276,9 +321,9 @@ public class MainActivity extends BaseActivity {
             mDlContainer.closeDrawer(GravityCompat.END);
             ((DiaryFragment) mFragments.get(0)).setArguments(mMood, mTag, mWeather, mStartTime, mEndTime);
         }
-    }
+    }*/
 
-    @Event(value = {R.id.tv_time_end, R.id.tv_time_start})
+    /*@Event(value = {R.id.tv_time_end, R.id.tv_time_start})
     private void timePick(View view) {
         final int viewId = view.getId();
         Observable.create(new ObservableOnSubscribe<List<DiaryBean>>() {
@@ -340,8 +385,6 @@ public class MainActivity extends BaseActivity {
         DateTimePicker picker = new DateTimePicker(this, DateTimePicker.HOUR_24);
         picker.setDateRangeStart(Integer.parseInt(start[0]), Integer.parseInt(start[1]), Integer.parseInt(start[2]));
         picker.setDateRangeEnd(Integer.parseInt(end[0]), Integer.parseInt(end[1]), Integer.parseInt(end[2]));
-//        picker.setTimeRangeStart(9, 0);
-//        picker.setTimeRangeEnd(20, 30);
         picker.setTopLineColor(0x99FF0000);
         picker.setLabelTextColor(0xFFFF0000);
         picker.setDividerColor(0xFFFF0000);
@@ -360,7 +403,7 @@ public class MainActivity extends BaseActivity {
             }
         });
         picker.show();
-    }
+    }*/
 
     @Override
     public void onBackPressed() {

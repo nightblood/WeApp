@@ -4,11 +4,8 @@ package com.weapp.zlf.weapp.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -45,7 +42,7 @@ import java.util.List;
  */
 @ContentView(R.layout.activity_radarscan)
 public class RadarScanActivity extends BaseActivity {
-    private static final String tag = RadarScanActivity.class.getSimpleName();
+    private static final String TAG = RadarScanActivity.class.getSimpleName();
 
     private RandomTextView randomTextView;
 
@@ -124,6 +121,7 @@ public class RadarScanActivity extends BaseActivity {
         P2PFileInfo[] fileArray = new P2PFileInfo[Cache.selectedList.size()];
         for (int i = 0; i < Cache.selectedList.size(); i++) {
             fileArray[i] = Cache.selectedList.get(i);
+            Log.d(TAG, "sendFile: " + fileArray[i]);
         }
 
         p2PManager.sendFile(neighbors, fileArray, new SendFile_Callback() {
@@ -156,7 +154,7 @@ public class RadarScanActivity extends BaseActivity {
 
             @Override
             public void OnSending(P2PFileInfo file, P2PNeighbor dest) {
-                Log.d(tag, "onSending file percent = " + file.percent);
+                Log.d(TAG, "onSending file percent = " + file.percent);
 
                 int index = -1;
                 if (Cache.selectedList.contains(file)) {
@@ -167,7 +165,7 @@ public class RadarScanActivity extends BaseActivity {
                     fileInfo.percent = file.percent;
                     transferAdapter.notifyDataSetChanged();
                 } else {
-                    Log.d(tag, "onSending index error");
+                    Log.d(TAG, "onSending index error");
                 }
             }
 
@@ -249,5 +247,8 @@ public class RadarScanActivity extends BaseActivity {
 
     public static void launch(Context context, String userName) {
         context.startActivity(new Intent(context, RadarScanActivity.class).putExtra("name", userName));
+    }
+    public static void launch(Context context) {
+        context.startActivity(new Intent(context, RadarScanActivity.class));
     }
 }

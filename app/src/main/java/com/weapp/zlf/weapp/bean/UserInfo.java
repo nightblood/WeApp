@@ -8,6 +8,7 @@ public class UserInfo {
     private String portrait;
     private String honor;
     private String name;
+    private String id;
 
     public String getPortrait() {
         return portrait;
@@ -31,5 +32,13 @@ public class UserInfo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

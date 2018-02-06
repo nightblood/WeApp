@@ -1,6 +1,8 @@
 package com.guo.duoduo.p2pmanager.p2pcore.receive;
 
 
+import android.util.Log;
+
 import com.guo.duoduo.p2pmanager.p2pconstant.P2PConstant;
 import com.guo.duoduo.p2pmanager.p2pcore.MelonHandler;
 import com.guo.duoduo.p2pmanager.p2pentity.P2PFileInfo;
@@ -11,46 +13,38 @@ import com.guo.duoduo.p2pmanager.p2pentity.param.ParamReceiveFiles;
 /**
  * Created by 郭攀峰 on 2015/9/20.
  */
-public class ReceiveManager
-{
+public class ReceiveManager {
 
+    private static final String TAG= ReceiveManager.class.getSimpleName();
     protected MelonHandler p2PHandler;
     private Receiver receiver;
 
-    public ReceiveManager(MelonHandler handler)
-    {
+    public ReceiveManager(MelonHandler handler) {
         p2PHandler = handler;
     }
 
-    public void init()
-    {
+    public void init() {
         if (receiver != null)
             receiver = null;
     }
 
-    public void disPatchMsg(int cmd, Object obj, int src)
-    {
-        switch (src)
-        {
-            case P2PConstant.Src.COMMUNICATE :
-            {
+    public void disPatchMsg(int cmd, Object obj, int src) {
+        switch (src) {
+            case P2PConstant.Src.COMMUNICATE: {
                 ParamIPMsg paramIPMsg = (ParamIPMsg) obj;
-                if (cmd == P2PConstant.CommandNum.SEND_FILE_REQ)
-                {
+                if (cmd == P2PConstant.CommandNum.SEND_FILE_REQ) {
                     invoke(paramIPMsg);
-                }
-                else
-                {
+                } else {
                     if (receiver != null)
                         receiver.dispatchCommMSG(cmd, paramIPMsg);
                 }
                 break;
             }
-            case P2PConstant.Src.MANAGER :
+            case P2PConstant.Src.MANAGER:
                 if (receiver != null)
                     receiver.dispatchUIMSG(cmd, obj);
                 break;
-            case P2PConstant.Src.RECEIVE_TCP_THREAD :
+            case P2PConstant.Src.RECEIVE_TCP_THREAD:
                 if (cmd == P2PConstant.CommandNum.RECEIVE_PERCENT)
                     if (receiver != null)
                         receiver.flagPercent = false;
@@ -60,20 +54,19 @@ public class ReceiveManager
         }
     }
 
-    public void quit()
-    {
+    public void quit() {
         init();
     }
 
-    private void invoke(ParamIPMsg paramIPMsg)
-    {
+    private void invoke(ParamIPMsg paramIPMsg) {
         String peerIP = paramIPMsg.peerIAddr.getHostAddress();
 
+        Log.d(TAG, "invoke: msg==> " + paramIPMsg.peerMSG.addition);
         String[] strArray = paramIPMsg.peerMSG.addition.split(P2PConstant.MSG_SEPARATOR);
         P2PFileInfo[] files = new P2PFileInfo[strArray.length];
-        for (int i = 0; i < strArray.length; i++)
-        {
+        for (int i = 0; i < strArray.length; i++) {
             files[i] = new P2PFileInfo(strArray[i]);
+            Log.d(TAG, "invoke: " + files[i]);
         }
 
         P2PNeighbor neighbor = p2PHandler.getNeighborManager().getNeighbors().get(peerIP);

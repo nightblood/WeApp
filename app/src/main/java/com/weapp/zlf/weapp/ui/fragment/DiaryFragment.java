@@ -210,7 +210,7 @@ public class DiaryFragment extends BaseFragment {
                             if (!diaryBeans.isEmpty()) {
                                 onLoadMoreSuccess(diaryBeans);
                             } else {
-                                ToastUtils.showLongToast(getString(R.string.toast_no_more_data));
+                                onLoadMoreEnd();
                             }
                         }
                     }
@@ -231,6 +231,11 @@ public class DiaryFragment extends BaseFragment {
                 });
     }
 
+    private void onLoadMoreEnd() {
+        ToastUtils.showLongToast(getString(R.string.toast_no_more_data));
+        mAdapter.loadMoreEnd();
+    }
+
     private void refresh() {
         if (mMood == Integer.MAX_VALUE && mTag == Integer.MAX_VALUE && mWeather == Integer.MAX_VALUE && mStartTime == 0 && mEndTime == 0) {
             mOffset = 0;
@@ -243,6 +248,8 @@ public class DiaryFragment extends BaseFragment {
 
     private void onLoadMoreSuccess(List<DiaryBean> list) {
         mAdapter.addData(list);
+        mAdapter.loadMoreComplete();
+
     }
 
     private void onRefreshSuccess(List<DiaryBean> list) {

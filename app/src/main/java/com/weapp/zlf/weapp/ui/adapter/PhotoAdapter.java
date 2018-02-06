@@ -1,12 +1,15 @@
 package com.weapp.zlf.weapp.ui.adapter;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.google.android.flexbox.FlexboxLayoutManager;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.DiaryBean;
 import com.weapp.zlf.weapp.bean.ImageBean;
@@ -36,7 +39,14 @@ public class PhotoAdapter extends BaseQuickAdapter<ImageBean, BaseViewHolder> {
     @Override
     protected void convert(BaseViewHolder helper, ImageBean item) {
         ImageView view = helper.getView(R.id.iv_item);
-        view.getLayoutParams().height = mItemHeight;
+//        view.getLayoutParams().height = mItemHeight;
+//        CardView cardView = helper.getView(R.id.cv_item);
+        ViewGroup.LayoutParams lp = view.getLayoutParams();
+        if (lp instanceof FlexboxLayoutManager.LayoutParams) {
+            FlexboxLayoutManager.LayoutParams flexboxLp = (FlexboxLayoutManager.LayoutParams) lp;
+            flexboxLp.setFlexGrow(1.0f);
+        }
+
         Glide.with(mContext).load(item.getImage()).into(view);
     }
 }

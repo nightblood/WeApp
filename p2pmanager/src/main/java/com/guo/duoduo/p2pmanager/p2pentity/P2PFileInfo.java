@@ -10,8 +10,7 @@ import java.io.File;
  * Created by 郭攀峰 on 2015/9/16.
  * android设备中的文件
  */
-public class P2PFileInfo
-{
+public class P2PFileInfo {
     public String path;
     public String name;
     public long size;
@@ -20,35 +19,29 @@ public class P2PFileInfo
     public boolean success;
     public long LengthNeeded = 0;
 
-    public P2PFileInfo()
-    {
+    public P2PFileInfo() {
 
     }
 
-    public int getPercent()
-    {
+    public int getPercent() {
         return percent;
     }
 
-    public void setPercent(int percent)
-    {
+    public void setPercent(int percent) {
         this.percent = percent;
-        if (percent == 100)
-        {
+        if (percent == 100) {
             success = true;
         }
     }
 
     @Override
-    public boolean equals(Object o)
-    {
+    public boolean equals(Object o) {
         return (((P2PFileInfo) (o)).name.equals(name))
-            && (((P2PFileInfo) (o)).size == size) && (((P2PFileInfo) (o)).type == type)
-            && (((P2PFileInfo) (o)).path.equals(path));
+                && (((P2PFileInfo) (o)).size == size) && (((P2PFileInfo) (o)).type == type)
+                && (((P2PFileInfo) (o)).path.equals(path));
     }
 
-    public P2PFileInfo(String string)
-    {
+    public P2PFileInfo(String string) {
         String str[] = string.split(":");
         name = str[0];
         size = Long.parseLong(str[1]);
@@ -58,13 +51,11 @@ public class P2PFileInfo
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return name + ":" + size + ":" + type + "\0";
     }
 
-    public P2PFileInfo duplicate()
-    {
+    public P2PFileInfo duplicate() {
         P2PFileInfo file = new P2PFileInfo();
 
         file.name = this.name;

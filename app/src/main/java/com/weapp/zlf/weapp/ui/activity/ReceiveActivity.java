@@ -191,7 +191,6 @@ public class ReceiveActivity extends BaseActivity
             @Override
             public void AfterReceiving() {
                 ToastUtils.showLongToast(getString(R.string.file_receive_completed) + " " + Cache.selectedList.get(0));
-
 //                finish();
             }
 

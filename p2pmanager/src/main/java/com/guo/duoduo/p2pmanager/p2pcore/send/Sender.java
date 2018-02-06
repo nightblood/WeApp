@@ -51,8 +51,7 @@ public class Sender
                     p2PHandler.send2UI(P2PConstant.CommandNum.SEND_FILE_START, null);
                 //通知接收端 开始发送文件
                 if (p2PHandler != null)
-                    p2PHandler.send2Receiver(ipmsg.peerIAddr,
-                        P2PConstant.CommandNum.SEND_FILE_START, null);
+                    p2PHandler.send2Receiver(ipmsg.peerIAddr, P2PConstant.CommandNum.SEND_FILE_START, null);
                 break;
             case P2PConstant.CommandNum.RECEIVE_ABORT_SELF : //接收者退出
                 clearSelf();
