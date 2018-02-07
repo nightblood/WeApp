@@ -11,16 +11,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.google.android.flexbox.AlignItems;
-import com.google.android.flexbox.FlexDirection;
-import com.google.android.flexbox.FlexWrap;
-import com.google.android.flexbox.FlexboxLayoutManager;
-import com.google.android.flexbox.JustifyContent;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
@@ -167,19 +161,9 @@ public class MyInfoFragment extends BaseFragment implements BaseQuickAdapter.OnI
     }
 
     private void initRecyclerView() {
-//        StaggeredGridLayoutManager mgr = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
-//        mRvPhotos.setLayoutManager(mgr);
+        StaggeredGridLayoutManager mgr = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        mRvPhotos.setLayoutManager(mgr);
 
-
-        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getContext());
-//        layoutManager.setFlexDirection(FlexDirection.COLUMN);
-//        layoutManager.setJustifyContent(JustifyContent.FLEX_END);
-        layoutManager.setFlexWrap(FlexWrap.WRAP);
-        layoutManager.setFlexDirection(FlexDirection.ROW);
-        layoutManager.setAlignItems(AlignItems.STRETCH);
-        layoutManager.setJustifyContent(JustifyContent.FLEX_START);
-
-        mRvPhotos.setLayoutManager(layoutManager);
         mAdapter = new PhotoAdapter(null);
         mRvPhotos.setAdapter(mAdapter);
 

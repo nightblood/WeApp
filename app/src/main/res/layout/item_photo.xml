@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fl_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
-    app:flexWrap="wrap"
-    app:alignItems="center"
-    app:alignContent="flex_start"
-    app:flexDirection="row"
-    app:justifyContent="flex_start"
-    app:showDivider="beginning|middle"
     >
-
     <ImageView
         android:id="@+id/iv_item"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:scaleType="centerCrop"
         android:background="@drawable/bg_round_white"/>
-</com.google.android.flexbox.FlexboxLayout>
+</android.support.v7.widget.CardView>
+

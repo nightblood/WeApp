@@ -126,7 +126,7 @@ public class MyInfoEditActivity extends BaseActivity{
                 mStvIcon.setRightIcon(drawable);
                 SPUtils spUtils = new SPUtils("user_info");
                 spUtils.putString("portrait", listExtra.get(0));
-                EventBus.getDefault().post(mUserInfo);
+                EventBus.getDefault().post(new UserInfoChangeEvent(mUserInfo));
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

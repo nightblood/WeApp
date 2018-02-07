@@ -53,7 +53,7 @@ public class AnniversaryAdapter extends BaseQuickAdapter<AnniversaryBean, BaseVi
         tag.setColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
 
 
-        helper.setText(R.id.tv_times, "历经 " + getTimes(item.getTimeMillis()) + " 次");
+        helper.setText(R.id.tv_times, "历经 " + getTimes(item.getCreateTimeMillis()) + " 次");
         if (bExperienced) {
             helper.setVisible(R.id.iv_mask, true);
         } else {

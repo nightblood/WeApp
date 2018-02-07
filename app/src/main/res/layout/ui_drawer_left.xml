@@ -14,7 +14,6 @@
         android:layout_margin="@dimen/dp_40"
         android:src="@drawable/clover" />
 
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -58,7 +57,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginLeft="@dimen/dp_20"
-                    android:src="@drawable/icon_bluetooth" />
+                    android:src="@drawable/sharing" />
 
                 <TextView
                     android:layout_width="wrap_content"

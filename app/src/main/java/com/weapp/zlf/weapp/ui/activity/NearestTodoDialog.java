@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.example.liangmutian.randomtextviewlibrary.RandomTextView;
 import com.weapp.zlf.weapp.R;
+import com.weapp.zlf.weapp.bean.AnniversaryBean;
 import com.weapp.zlf.weapp.bean.TodoBean;
 import com.weapp.zlf.weapp.common.utils.TimeUtils;
 
@@ -38,13 +39,24 @@ public class NearestTodoDialog {
         TextView title = (TextView) view.findViewById(R.id.tv_title);
         TextView content = (TextView) view.findViewById(R.id.tv_content);
 //        TextView desc = (TextView) view.findViewById(R.id.tv_desc);
-        time.setText(TimeUtils.date2String(new Date(mBuilder.mData.getTimeMillis()), "MM-dd HH:mm:ss"));
-        title.setText(mBuilder.mData.getTitle());
-        if (TextUtils.isEmpty(mBuilder.mData.getContent())) {
-            content.setText("您没有填写任何描述哦...");
+        if (mBuilder.mData != null) {
+            time.setText(TimeUtils.date2String(new Date(mBuilder.mData.getTimeMillis()), "MM-dd HH:mm:ss"));
+            title.setText(mBuilder.mData.getTitle());
+            if (TextUtils.isEmpty(mBuilder.mData.getContent())) {
+                content.setText("您没有填写任何描述哦...");
+            } else {
+                content.setText(mBuilder.mData.getContent());
+            }
         } else {
-            content.setText(mBuilder.mData.getContent());
+            time.setText(TimeUtils.date2String(new Date(mBuilder.mAnniversaryData.getTimeMillis()), "MM-dd HH:mm:ss"));
+            title.setText(mBuilder.mAnniversaryData.getName());
+            if (TextUtils.isEmpty(mBuilder.mAnniversaryData.getContent())) {
+                content.setText("您没有填写任何描述哦...");
+            } else {
+                content.setText(mBuilder.mAnniversaryData.getContent());
+            }
         }
+
 //        desc.setText(mBuilder.mDesc);
 
         RandomTextView day = (RandomTextView) view.findViewById(R.id.rtv_day);
@@ -65,12 +77,33 @@ public class NearestTodoDialog {
         private final Context mContext;
         private TodoBean mData;
         private Long[] mDesc;
+        private AnniversaryBean mAnniversaryData;
 
         public Builder(Context context) {
             mContext = context;
         }
+
         public Builder setData(TodoBean bean) {
             mData = bean;
+
+            long interval = bean.getTimeMillis() -  System.currentTimeMillis();
+            long day = interval / 1000/60/60/24;
+            long hour = (interval - day * 1000 * 60 *60 *24) / 1000 / 60 / 60;
+            long minute = (interval - day * 1000 * 60 *60 *24 - hour * 1000 * 60 * 60) / 1000 / 60;
+            setDesc(new Long[]{day, hour, minute});
+
+            return this;
+        }
+
+        public Builder setData(AnniversaryBean bean) {
+            mAnniversaryData = bean;
+
+            long interval = bean.getTimeMillis() -  System.currentTimeMillis();
+            long day = interval / 1000/60/60/24;
+            long hour = (interval - day * 1000 * 60 *60 *24) / 1000 / 60 / 60;
+            long minute = (interval - day * 1000 * 60 *60 *24 - hour * 1000 * 60 * 60) / 1000 / 60;
+            setDesc(new Long[]{day, hour, minute});
+
             return this;
         }
         public void show() {

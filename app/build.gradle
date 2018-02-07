@@ -97,7 +97,7 @@ dependencies {
     compile 'com.makeramen:roundedimageview:2.3.0'
     compile 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.5@aar'
     compile 'top.zibin:Luban:1.1.3'
-    compile 'com.google.android:flexbox:0.3.2'
+    compile 'com.github.clans:fab:1.6.4'
     compile project(path: ':p2pmanager')
     compile project(path: ':randomtextview')
     compile project(path: ':rippleoutlayout')

@@ -16,6 +16,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,9 +80,15 @@ public class TodoEditActivity extends BaseActivity{
     private long mTimeMills;
     @ViewInject(R.id.tv_time)
     private TextView mTvTime;
+    @ViewInject(R.id.tv_create_time)
+    private TextView mTvCreateTime;
+    @ViewInject(R.id.ll_create_time)
+    private LinearLayout mLlCreateTime;
+
     private int mType;
     private AnniversaryBean mAnnivsaryData;
     private TodoBean mTodoBean;
+    private long mCreateTimeMills;
 
     @Override
     protected void initView() {
@@ -111,12 +118,15 @@ public class TodoEditActivity extends BaseActivity{
                     mEtContent.setSelection(mAnnivsaryData.getContent().length());
                 }
                 mTimeMills = mAnnivsaryData.getTimeMillis();
+                mCreateTimeMills = mAnnivsaryData.getCreateTimeMillis();
                 mTvTodo.setText(mAnnivsaryData.getName());
                 mRtvTag.setText(mAnnivsaryData.getTagName());
                 mTvTime.setText(TimeUtils.date2String(new Date(mTimeMills), "MM-dd"));
+                mTvCreateTime.setText(TimeUtils.date2String(new Date(mAnnivsaryData.getCreateTimeMillis())));
             }
         } else {
             mTimeMills = System.currentTimeMillis();
+            mCreateTimeMills = mTimeMills;
             if (mType == TYPE_TODO) {
                 mTvTime.setText(TimeUtils.date2String(new Date(mTimeMills), TimeUtils.DEFAULT_PATTERN));
                 mTvTodo.setHint(getString(R.string.title_todo));
@@ -125,13 +135,16 @@ public class TodoEditActivity extends BaseActivity{
                 mTvTodo.setHint(getString(R.string.title_anniversary));
                 mRtvTag.setText("纪");
                 mTvTime.setText(TimeUtils.date2String(new Date(mTimeMills), "MM-dd"));
+                mTvCreateTime.setText(TimeUtils.date2String(new Date(mCreateTimeMills)));
             }
         }
 
         if (mType == TYPE_TODO) {
             mTvTitle.setText(getString(R.string.title_todo));
+            mLlCreateTime.setVisibility(View.GONE);
         } else {
             mTvTitle.setText(getString(R.string.title_anniversary));
+            mLlCreateTime.setVisibility(View.VISIBLE);
         }
         mRtvTag.setColor(Color.parseColor(mTagColor));
     }
@@ -226,7 +239,7 @@ public class TodoEditActivity extends BaseActivity{
                 bean.setContent(mEtContent.getText().toString());
                 bean.setGender(0);
                 bean.setTagColor(Color.parseColor(mTagColor));
-                bean.setCreateTimeMillis(System.currentTimeMillis());
+                bean.setCreateTimeMillis(mCreateTimeMills);
                 if (TextUtils.isEmpty(mTag)) {
                     bean.setTagName(anniversaryName.substring(0, 1));
                 } else {
@@ -341,28 +354,34 @@ public class TodoEditActivity extends BaseActivity{
         picker.show();
     }
     private void onYearMonthDayPicker() {
-        String string = TimeUtils.date2String(new Date(System.currentTimeMillis()), TimeUtils.DEFAULT_PATTERN);
-        String substring = string.substring(0, string.indexOf(" "));
-        String[] split = substring.split("-");
+        String string = TimeUtils.date2String(new Date(System.currentTimeMillis()), "yyyy-MM-dd-HH-mm");
+        String[] split = string.split("-");
         DateTimePicker picker = new DateTimePicker(this, DateTimePicker.HOUR_24);
-        picker.setDateRangeStart(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
-        picker.setDateRangeEnd(2025, 11, 11);
-        picker.setTimeRangeStart(9, 0);
-        picker.setTimeRangeEnd(20, 30);
+        picker.setDateRangeStart(1989, 10, 1);
+        picker.setDateRangeEnd(Integer.parseInt(split[0]) + 3, Integer.parseInt(split[1]), Integer.parseInt(split[2]));
+        picker.setTimeRangeStart(0, 0);
+        picker.setTimeRangeEnd(23, 59);
         picker.setTopLineColor(0x99FF0000);
         picker.setLabelTextColor(0xFFFF0000);
         picker.setDividerColor(0xFFFF0000);
+        picker.setSelectedItem(Integer.parseInt(split[0]),Integer.parseInt(split[1]),Integer.parseInt(split[2])
+                ,Integer.parseInt(split[3]), Integer.parseInt(split[4]));
         picker.setOnDateTimePickListener(new DateTimePicker.OnYearMonthDayTimePickListener() {
             @Override
             public void onDateTimePicked(String year, String month, String day, String hour, String minute) {
                 String string = (year + "-" + month + "-" + day + " " + hour + ":" + minute);
-                mTvTime.setText(string);
-                mTimeMills = TimeUtils.string2Millis(string, "yy-MM-dd HH:mm");
+                if (mType == TYPE_TODO) {
+                    mTvTime.setText(string);
+                    mTimeMills = TimeUtils.string2Millis(string, "yy-MM-dd HH:mm");
+                } else {
+                    mTvCreateTime.setText(string);
+                    mCreateTimeMills = TimeUtils.string2Millis(string, "yy-MM-dd HH:mm");
+                }
             }
         });
         picker.show();
     }
-        @Event(value = R.id.ll_time)
+    @Event(value = R.id.ll_time)
     private void pickTimeClick(View view) {
         if (mType == TYPE_TODO) {
             onYearMonthDayPicker();
@@ -370,6 +389,11 @@ public class TodoEditActivity extends BaseActivity{
             onMonthDayPicker();
         }
     }
+    @Event(value = R.id.ll_create_time)
+    private void pickCreateTimeClick(View view) {
+        onYearMonthDayPicker();
+    }
+
 
     public static void launch(Context context, int type, AnniversaryBean bean) {
         Intent intent = new Intent(context, TodoEditActivity.class);

@@ -1,12 +1,10 @@
 package com.weapp.zlf.weapp.ui.fragment;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +12,7 @@ import android.widget.AbsListView;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
+import com.github.clans.fab.FloatingActionMenu;
 import com.melnykov.fab.FloatingActionButton;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -23,14 +21,13 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.DiaryBean;
 import com.weapp.zlf.weapp.common.utils.TimeUtils;
+import com.weapp.zlf.weapp.common.utils.ToastUtils;
+import com.weapp.zlf.weapp.common.utils.Utils;
 import com.weapp.zlf.weapp.event.DiaryEvent;
 import com.weapp.zlf.weapp.ui.activity.DiaryDetailActivity;
 import com.weapp.zlf.weapp.ui.activity.DiaryEditActivity;
-import com.weapp.zlf.weapp.common.utils.AppUtils;
-import com.weapp.zlf.weapp.common.utils.ToastUtils;
-import com.weapp.zlf.weapp.common.utils.Utils;
 import com.weapp.zlf.weapp.ui.activity.DiaryListAdapter;
-import com.weapp.zlf.weapp.ui.widge.DiaryDetailDilog;
+import com.weapp.zlf.weapp.ui.activity.TodoEditActivity;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -60,10 +57,11 @@ import io.reactivex.schedulers.Schedulers;
 @ContentView(R.layout.frag_diary)
 public class DiaryFragment extends BaseFragment {
     private static final String TAG = DiaryFragment.class.getSimpleName();
+    @ViewInject(R.id.fam)
+    private FloatingActionMenu mFam;
     @ViewInject(R.id.recycler_view)
     private RecyclerView mRvList;
-    @ViewInject(R.id.fab)
-    private FloatingActionButton mFab;
+
     @ViewInject(R.id.refresh_layout)
     private SmartRefreshLayout mRefreshLayout;
     private int mOffset = 0;
@@ -74,6 +72,7 @@ public class DiaryFragment extends BaseFragment {
     private int mMood= Integer.MAX_VALUE;
     private int mTag = Integer.MAX_VALUE;
     private View mEmptyView;
+
 
     public static Fragment newInstance() {
         DiaryFragment diaryFragment = new DiaryFragment();
@@ -147,9 +146,9 @@ public class DiaryFragment extends BaseFragment {
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    mFab.show();
+//                    mFab.show();
                 } else {
-                    mFab.hide();
+//                    mFab.hide();
                 }
             }
         });
@@ -249,7 +248,7 @@ public class DiaryFragment extends BaseFragment {
     private void onLoadMoreSuccess(List<DiaryBean> list) {
         mAdapter.addData(list);
         mAdapter.loadMoreComplete();
-
+        mRefreshLayout.finishLoadmore(100);
     }
 
     private void onRefreshSuccess(List<DiaryBean> list) {
@@ -260,8 +259,20 @@ public class DiaryFragment extends BaseFragment {
         }
     }
 
-    @Event(value = R.id.fab)
+    @Event(R.id.fab_todo)
+    private void fabTodoClick(View view) {
+        mFam.close(true);
+        TodoEditActivity.launch(getContext(), TodoEditActivity.TYPE_TODO);
+    }
+    @Event(R.id.fab_anniversary)
+    private void fabAnniversaryClick(View view) {
+        mFam.close(true);
+        TodoEditActivity.launch(getContext(), TodoEditActivity.TYPE_TODO);
+    }
+
+    @Event(value = R.id.fab_diary)
     private void fabClick(final View view) {
+        mFam.close(true);
         Observable.create(new ObservableOnSubscribe<DiaryBean>() {
             @Override
             public void subscribe(ObservableEmitter<DiaryBean> observableEmitter) throws Exception {
@@ -407,15 +418,13 @@ public class DiaryFragment extends BaseFragment {
                     public void onNext(List<DiaryBean> diaryBeans) {
                         Log.d(TAG, "onNext: " + mRefreshLayout.isRefreshing());
                         if (mRefreshLayout.isRefreshing()) {
-                            if (!diaryBeans.isEmpty()) {
                                 onRefreshSuccess(diaryBeans);
-                            } else {
-                                ToastUtils.showLongToast(getString(R.string.toast_no_data));
-                            }
                         } else if (mRefreshLayout.isLoading()) {
                             if (!diaryBeans.isEmpty()) {
                                 onLoadMoreSuccess(diaryBeans);
                             } else {
+                                mRefreshLayout.finishLoadmoreWithNoMoreData();
+//                                mRefreshLayout.setEnableLoadmore(false);
                                 ToastUtils.showLongToast(getString(R.string.toast_no_more_data));
                             }
                         }
@@ -428,11 +437,11 @@ public class DiaryFragment extends BaseFragment {
 
                     @Override
                     public void onComplete() {
-                        if (mRefreshLayout.isRefreshing()) {
-                            mRefreshLayout.finishRefresh(1000);
-                        } else if (mRefreshLayout.isLoading()) {
-                            mRefreshLayout.finishLoadmore(1000);
-                        }
+//                        if (mRefreshLayout.isRefreshing()) {
+//                            mRefreshLayout.finishRefresh(1000);
+//                        } else if (mRefreshLayout.isLoading()) {
+//                            mRefreshLayout.finishLoadmore(1000);
+//                        }
                     }
                 });
     }

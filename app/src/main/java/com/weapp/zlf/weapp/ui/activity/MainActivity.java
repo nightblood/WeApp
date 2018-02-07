@@ -22,6 +22,7 @@ import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.weapp.zlf.weapp.MainApplication;
 import com.weapp.zlf.weapp.R;
+import com.weapp.zlf.weapp.bean.AnniversaryBean;
 import com.weapp.zlf.weapp.bean.DiaryBean;
 import com.weapp.zlf.weapp.bean.TodoBean;
 import com.weapp.zlf.weapp.common.utils.AssertUtils;
@@ -177,14 +178,45 @@ public class MainActivity extends BaseActivity {
 
                     @Override
                     public void onNext(TodoBean bean) {
-                        long interval = bean.getTimeMillis() -  System.currentTimeMillis();
-                        long day = interval / 1000/60/60/24;
-                        long hour = (interval - day * 1000 * 60 *60 *24) / 1000 / 60 / 60;
-                        long minute = (interval - day * 1000 * 60 *60 *24 - hour * 1000 * 60 * 60) / 1000 / 60;
-//                        StringBuilder builder = new StringBuilder();
-//                        builder.append("距离最近的任务还剩余 ").append(day).append("天").append(hour).append("时").append(minute).append("分");
-//                        ;
-                        new NearestTodoDialog.Builder(MainActivity.this).setDesc(new Long[]{day, hour, minute}).setData(bean).show();
+                        new NearestTodoDialog.Builder(MainActivity.this).setData(bean).show();
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+        Observable.create(new ObservableOnSubscribe<AnniversaryBean>() {
+            @Override
+            public void subscribe(ObservableEmitter<AnniversaryBean> observableEmitter) throws Exception {
+                AnniversaryBean bean = Utils.getContext().getDbManager()
+                        .selector(AnniversaryBean.class)
+                        .where("time_millis", ">", System.currentTimeMillis())
+//                        .and("is_done", "=", 0)
+                        .orderBy("time_millis", false)
+                        .findFirst();
+                if (bean == null) {
+                    observableEmitter.onComplete();
+                } else {
+                    observableEmitter.onNext(bean);
+                }
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<AnniversaryBean>() {
+                    @Override
+                    public void onSubscribe(Disposable disposable) {
+
+                    }
+
+                    @Override
+                    public void onNext(AnniversaryBean bean) {
+                        new NearestTodoDialog.Builder(MainActivity.this).setData(bean).show();
                     }
 
                     @Override
