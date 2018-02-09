@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.weapp.zlf.weapp">
-
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -52,7 +55,23 @@
         <activity android:name=".ui.activity.DiaryShareActivity" />
         <activity android:name=".ui.activity.RadarScanActivity" />
         <activity android:name=".ui.activity.ReceiveActivity" />
+        <activity android:name=".ui.activity.LockScreenActivity"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Wallpaper.NoTitleBar" >
+        </activity>
 
+        <receiver android:name=".ui.widge.alarmclock.LoongggAlarmReceiver">
+            <intent-filter>
+                <action android:name="com.weapp.zlf"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.weapp.zlf.weapp.ui.activity.AlarmReceiver">
+            <intent-filter>
+                <action android:name="NOTIFICATION"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

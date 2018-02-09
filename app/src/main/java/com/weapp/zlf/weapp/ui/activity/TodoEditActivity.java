@@ -30,6 +30,7 @@ import com.weapp.zlf.weapp.common.utils.AssertUtils;
 import com.weapp.zlf.weapp.common.utils.TimeUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
 import com.weapp.zlf.weapp.event.AnniversaryEvent;
+import com.weapp.zlf.weapp.event.TodoEvent;
 import com.weapp.zlf.weapp.ui.widge.KeyBoardDialog;
 import com.weapp.zlf.weapp.ui.widge.RoundTextView;
 
@@ -260,8 +261,8 @@ public class TodoEditActivity extends BaseActivity{
                     public void onNext(AnniversaryBean bean) {
                         DbManager dbManager = Utils.getContext().getDbManager();
                         try {
-                            EventBus.getDefault().post(new AnniversaryEvent());
                             dbManager.saveOrUpdate(bean);
+                            EventBus.getDefault().post(new AnniversaryEvent(bean));
                             finish();
                         } catch (DbException e) {
                             e.printStackTrace();
@@ -315,6 +316,7 @@ public class TodoEditActivity extends BaseActivity{
                         DbManager dbManager = Utils.getContext().getDbManager();
                         try {
                             dbManager.saveOrUpdate(todoBean);
+                            EventBus.getDefault().post(new TodoEvent(todoBean));
                             finish();
                         } catch (DbException e) {
                             e.printStackTrace();

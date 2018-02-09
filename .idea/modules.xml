@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/RadarScanView/RadarScanView.iml" filepath="$PROJECT_DIR$/RadarScanView/RadarScanView.iml" />
       <module fileurl="file://$PROJECT_DIR$/WeApp.iml" filepath="$PROJECT_DIR$/WeApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/alarmmanagerclock/alarmmanagerclock.iml" filepath="$PROJECT_DIR$/alarmmanagerclock/alarmmanagerclock.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/base_recyclerview_adapter_helper/base_recyclerview_adapter_helper.iml" filepath="$PROJECT_DIR$/base_recyclerview_adapter_helper/base_recyclerview_adapter_helper.iml" />
       <module fileurl="file://$PROJECT_DIR$/httpServer/httpServer.iml" filepath="$PROJECT_DIR$/httpServer/httpServer.iml" />

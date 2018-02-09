@@ -1,9 +1,17 @@
 package com.weapp.zlf.weapp.ui.activity;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -19,6 +27,7 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
+import com.loonggg.lib.alarmmanager.clock.AlarmManagerUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.weapp.zlf.weapp.MainApplication;
 import com.weapp.zlf.weapp.R;
@@ -31,12 +40,16 @@ import com.weapp.zlf.weapp.common.utils.SPUtils;
 import com.weapp.zlf.weapp.common.utils.TimeUtils;
 import com.weapp.zlf.weapp.common.utils.ToastUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
+import com.weapp.zlf.weapp.event.AnniversaryEvent;
+import com.weapp.zlf.weapp.event.TodoEvent;
 import com.weapp.zlf.weapp.ui.adapter.PanelAdapter;
 import com.weapp.zlf.weapp.ui.fragment.BaseFragment;
 import com.weapp.zlf.weapp.ui.fragment.CanlenderFragment;
 import com.weapp.zlf.weapp.ui.fragment.DiaryFragment;
 import com.weapp.zlf.weapp.ui.fragment.MyInfoFragment;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.xutils.DbManager;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -83,10 +96,10 @@ public class MainActivity extends BaseActivity {
 //    @ViewInject(R.id.tv_time_end)
 //    private TextView mTvTimeEnd;
 
-    private String[] mTabStrArray = new String[] {"日记", "备忘", "我の"};
-    private String[] mTitleName = new String[] {"1", "2", "3"};
+    private String[] mTabStrArray = new String[]{"日记", "备忘", "我の"};
+    private String[] mTitleName = new String[]{"1", "2", "3"};
     private ArrayList<Fragment> mFragments;
-//    public static ArrayList<Integer> moodlist;
+    //    public static ArrayList<Integer> moodlist;
 //    public static ArrayList<Integer> weatherlist;
 //    public static ArrayList<Integer> taglist;
 //    @ViewInject(R.id.iv_mood)
@@ -111,45 +124,59 @@ public class MainActivity extends BaseActivity {
         initToDoDialog();
         checkPermissions();
 
+//        initService("hello", "world");
+    }
+
+    private void initService(String title, String content, long timeMillis) {
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        intent.setAction("NOTIFICATION");
+        intent.putExtra("title", title);
+        intent.putExtra("content", content);
+
+        PendingIntent pi = PendingIntent.getBroadcast(this, 0, intent, 0);
+        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        int type = AlarmManager.RTC_WAKEUP;
+        //new Date()：表示当前日期，可以根据项目需求替换成所求日期//getTime()：日期的该方法同样可以表示从1970年1月1日0点至今所经历的毫秒数
+        manager.set(type, timeMillis, pi);
     }
 
     private void checkPermissions() {
-            RxPermissions rxPermissions = new RxPermissions(this);
-            rxPermissions
-                    .request(Manifest.permission.READ_PHONE_STATE)
-                    .subscribe(new Observer<Boolean>() {
-                        @Override
-                        public void onSubscribe(Disposable disposable) {
-                            Log.d(TAG, "onSubscribe: ");
-                        }
+        RxPermissions rxPermissions = new RxPermissions(this);
+        rxPermissions
+                .request(Manifest.permission.READ_PHONE_STATE)
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable disposable) {
+                        Log.d(TAG, "onSubscribe: ");
+                    }
 
-                        @Override
-                        public void onNext(Boolean aBoolean) {
-                            Log.d(TAG, "onNext: ");
-                            if (!aBoolean) {
-                                ToastUtils.showShortToast("您已拒绝授权WeApp获取手机状态权限");
-                            } else {
-                                if (TextUtils.isEmpty(MainApplication.mUserInfo.getId())) {
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        Log.d(TAG, "onNext: ");
+                        if (!aBoolean) {
+                            ToastUtils.showShortToast("您已拒绝授权WeApp获取手机状态权限");
+                        } else {
+                            if (TextUtils.isEmpty(MainApplication.mUserInfo.getId())) {
 
-                                    DeviceUuidFactory factory = new DeviceUuidFactory(MainActivity.this);
-                                    MainApplication.mUserInfo.setId(factory.getDeviceUuid().toString());
-                                    SPUtils spUtils = new SPUtils("user_info");
-                                    spUtils.putString("id", MainApplication.mUserInfo.getId());
-                                }
+                                DeviceUuidFactory factory = new DeviceUuidFactory(MainActivity.this);
+                                MainApplication.mUserInfo.setId(factory.getDeviceUuid().toString());
+                                SPUtils spUtils = new SPUtils("user_info");
+                                spUtils.putString("id", MainApplication.mUserInfo.getId());
                             }
                         }
+                    }
 
-                        @Override
-                        public void onError(Throwable throwable) {
-                            Log.d(TAG, "onError: ");
-                            ToastUtils.showShortToast(throwable.toString());
-                        }
+                    @Override
+                    public void onError(Throwable throwable) {
+                        Log.d(TAG, "onError: ");
+                        ToastUtils.showShortToast(throwable.toString());
+                    }
 
-                        @Override
-                        public void onComplete() {
-                            Log.d(TAG, "onComplete: ");
-                        }
-                    });
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete: ");
+                    }
+                });
     }
 
     private void initToDoDialog() {
@@ -178,6 +205,15 @@ public class MainActivity extends BaseActivity {
 
                     @Override
                     public void onNext(TodoBean bean) {
+                        if (TimeUtils.isToday(bean.getTimeMillis()) && bean.getIsDone() == 0) {
+                            /*String timeStr = TimeUtils.date2String(new Date(bean.getTimeMillis()), "yyyy-MM-dd-HH-mm");
+                            String[] split = timeStr.split("-");
+
+                            AlarmManagerUtil.setAlarm(MainActivity.this, 0, Integer.parseInt(split[3]), Integer.parseInt(split[4])
+                                    , bean.getId(), 0, bean.getTitle() + ", " + bean.getContent(), 2);*/
+//                            notifyTodo(bean.getTimeMillis(), bean.getTitle(), bean.getContent());
+                            initService(bean.getTitle(), bean.getContent(), bean.getTimeMillis());
+                        }
                         new NearestTodoDialog.Builder(MainActivity.this).setData(bean).show();
                     }
 
@@ -216,6 +252,16 @@ public class MainActivity extends BaseActivity {
 
                     @Override
                     public void onNext(AnniversaryBean bean) {
+                        if (TimeUtils.isToday(bean.getTimeMillis())) {
+                            /*String timeStr = TimeUtils.date2String(new Date(bean.getTimeMillis()), "yyyy-MM-dd-HH-mm");
+                            String[] split = timeStr.split("-");
+
+                            AlarmManagerUtil.setAlarm(MainActivity.this, 0, Integer.parseInt(split[3]), Integer.parseInt(split[4])
+                                    , bean.getId(), 0, bean.getName() + ", " + bean.getContent(), 2);*/
+//                            notifyTodo(bean.getCurrYearAnniversaryTimeMillis(), bean.getName(), bean.getContent());
+                            initService(bean.getName(), bean.getContent(), bean.getTimeMillis());
+                        }
+
                         new NearestTodoDialog.Builder(MainActivity.this).setData(bean).show();
                     }
 
@@ -231,11 +277,41 @@ public class MainActivity extends BaseActivity {
                 });
     }
 
-   /* private void initNavView() {
-        mRvMood.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        mRvWeather.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        mRvTag.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        *//*mRvMood.setLayoutManager(new GridLayoutManager(this, 6));
+    private void notifyTodo(long timeMillis, String title, String content) {
+        NotificationCompat.Builder notifyBuilder =
+                new NotificationCompat.Builder(this).setContentTitle(title)
+                        .setContentText((TextUtils.isEmpty(content) ? " " : content) + ", " + TimeUtils.date2String(new Date(timeMillis)))
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        // 点击消失
+                        .setAutoCancel(true)
+                        // 设置该通知优先级
+                        .setPriority(Notification.PRIORITY_MAX)
+                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                        .setTicker("测试通知来啦")
+                        // 通知首次出现在通知栏，带上升动画效果的
+                        .setWhen(timeMillis)
+                        // 通知产生的时间，会在通知信息里显示
+                        // 向通知添加声音、闪灯和振动效果的最简单、最一致的方式是使用当前的用户默认设置，使用defaults属性，可以组合：
+                        .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_ALL | Notification.DEFAULT_SOUND);
+//        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, mResultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        notifyBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotifyMgr.notify(1, notifyBuilder.build());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void todoEvent(TodoEvent event) {
+        notifyTodo(event.bean.getTimeMillis(), event.bean.getTitle(), event.bean.getContent());
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void anniversaryEvent(AnniversaryEvent event) {
+        notifyTodo(event.bean.getTimeMillis(), event.bean.getName(), event.bean.getContent());
+    }
+    /* private void initNavView() {
+         mRvMood.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+         mRvWeather.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+         mRvTag.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+         *//*mRvMood.setLayoutManager(new GridLayoutManager(this, 6));
         mRvWeather.setLayoutManager(new GridLayoutManager(this, 6));
         mRvTag.setLayoutManager(new GridLayoutManager(this, 6));*//*
 
@@ -289,7 +365,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onTabReselect(int position) {
-                ((BaseFragment)mFragments.get(position)).onTabReselect();
+                ((BaseFragment) mFragments.get(position)).onTabReselect();
             }
         });
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -321,6 +397,7 @@ public class MainActivity extends BaseActivity {
         AnniversaryListActivity.launch(this);
         mDlContainer.closeDrawer(GravityCompat.START);
     }
+
     @Event(value = R.id.iv_top_l)
     private void showDrawerLayoutClick(View view) {
         mDlContainer.openDrawer(GravityCompat.START);
@@ -331,6 +408,7 @@ public class MainActivity extends BaseActivity {
         ToastUtils.showLongToast("正在紧张施工中。。。");
 //        DiarySearchActivity.launch(this);
     }
+
     @Event(value = R.id.ll_search)
     private void searchClick(View view) {
         DiaryShareActivity.launch(this);

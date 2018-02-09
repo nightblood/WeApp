@@ -5,6 +5,8 @@
     android:layout_height="300dp"
     android:orientation="horizontal"
     android:padding="@dimen/dp_10"
+    android:paddingTop="@dimen/dp_5"
+    android:paddingBottom="@dimen/dp_5"
     android:background="@color/white">
 
     <ImageView

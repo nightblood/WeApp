@@ -55,6 +55,11 @@ public class AnniversaryBean implements Serializable{
         return timeMillis;
     }
 
+    public long getCurrYearAnniversaryTimeMillis() {
+        String date = TimeUtils.date2String(new Date(timeMillis), "MM-dd-HH");
+        String year = TimeUtils.date2String(new Date(System.currentTimeMillis()), "yyyy-");
+        return TimeUtils.string2Millis(year + date, "yyyy-MM-dd-HH");
+    }
     public void setTimeMillis(long timeMillis) {
         this.timeMillis = timeMillis;
         String day = TimeUtils.date2String(new Date(timeMillis), "MMdd");
