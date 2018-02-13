@@ -64,7 +64,7 @@ public class FileTransferAdapter extends BaseAdapter {
 
         P2PFileInfo file = Cache.selectedList.get(position);
         if (file != null) {
-            if (file.type == P2PConstant.TYPE.APP) {
+            if (file.type == P2PConstant.TYPE.DATABASE) {
                 holder.file_image.setImageResource(R.mipmap.ic_launcher);
             } else if (file.type == P2PConstant.TYPE.PIC) {
                 holder.file_image.setImageResource(R.drawable.icon_photo);

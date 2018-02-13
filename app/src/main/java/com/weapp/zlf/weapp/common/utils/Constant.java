@@ -15,6 +15,7 @@ public class Constant {
     public interface MSG {
         public static final int PICTURE_OK = 0;
         public static final int APP_OK = 1;
+        public static final int DATABASE_OK = 2;
     }
 
     public static final String DB_NAME = "weapp.db";

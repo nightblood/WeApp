@@ -41,6 +41,7 @@ import org.xutils.ex.DbException;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
+import org.xutils.x;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -60,15 +61,15 @@ import me.iwf.photopicker.PhotoPreview;
  */
 
 @ContentView(R.layout.activity_diary_detail)
-public class DiaryDetailActivity extends BaseActivity implements BaseQuickAdapter.OnItemChildClickListener {
+public class DiaryDetailActivity extends BaseActivity implements BaseQuickAdapter.OnItemChildClickListener, BaseQuickAdapter.RequestLoadMoreListener {
 
     private static final String TAG = DiaryDetailActivity.class.getSimpleName();
-    private DiaryBean mData;
+    private List<DiaryBean> mData;
     private MyAdapter mAdapter;
     @ViewInject(R.id.rvp)
     protected RecyclerViewPager mRecyclerView;
     private int mOffset;
-
+    private int mIndex;
 
     @Override
     protected void initView() {
@@ -79,10 +80,10 @@ public class DiaryDetailActivity extends BaseActivity implements BaseQuickAdapte
         Serializable data = bundle.getSerializable("data");
         if (null == data)
             finish();
-        mData = (DiaryBean) data;
+        mData = (List<DiaryBean>) data;
 
+        mIndex = bundle.getInt("index");
         initViewPager();
-
         loadData();
     }
 
@@ -91,16 +92,11 @@ public class DiaryDetailActivity extends BaseActivity implements BaseQuickAdapte
         mRecyclerView.setLayoutManager(layout);
         mAdapter = new MyAdapter(null);
         mRecyclerView.setAdapter(mAdapter);
-        mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
-            @Override
-            public void onLoadMoreRequested() {
-                loadData();
-            }
-        });
 
         mAdapter.setOnItemChildClickListener(this);
         mAdapter.setLoadMoreView(new DiaryDetailLoadMoreView());
         mAdapter.setEnableLoadMore(true);
+//        mAdapter.setOnLoadMoreListener(this, mRecyclerView);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLongClickable(true);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -121,7 +117,7 @@ public class DiaryDetailActivity extends BaseActivity implements BaseQuickAdapte
                     View v = recyclerView.getChildAt(j);
                     //往左 从 padding 到 -(v.getWidth()-padding) 的过程中，由大到小
                     float rate = 0;
-                    ;
+
                     if (v.getLeft() <= padding) {
                         if (v.getLeft() >= padding - v.getWidth()) {
                             rate = (padding - v.getLeft()) * 1f / v.getWidth();
@@ -130,7 +126,8 @@ public class DiaryDetailActivity extends BaseActivity implements BaseQuickAdapte
                         }
                         v.setScaleY(1 - rate * 0.1f);
                         v.setScaleX(1 - rate * 0.1f);
-
+                        v.setScaleY(1);
+                        v.setScaleX(1);
                     } else {
                         //往右 从 padding 到 recyclerView.getWidth()-padding 的过程中，由大到小
                         if (v.getLeft() <= recyclerView.getWidth() - padding) {
@@ -138,6 +135,8 @@ public class DiaryDetailActivity extends BaseActivity implements BaseQuickAdapte
                         }
                         v.setScaleY(0.9f + rate * 0.1f);
                         v.setScaleX(0.9f + rate * 0.1f);
+                        v.setScaleY(1);
+                        v.setScaleX(1);
                     }
                 }
             }
@@ -146,6 +145,18 @@ public class DiaryDetailActivity extends BaseActivity implements BaseQuickAdapte
             @Override
             public void OnPageChanged(int oldPosition, int newPosition) {
                 Log.d("test", "oldPosition:" + oldPosition + " newPosition:" + newPosition);
+                if (mAdapter.getData().size() < 2) {
+                    return;
+                }
+                if (mAdapter.getData().size() - 1 == newPosition && oldPosition == mAdapter.getData().size() - 2) {
+                    Log.d(TAG, "OnPageChanged: loading!");
+//                    mAdapter.addData(mAdapter.getData().get(0));
+                    mAdapter.setEmptyView(R.layout.ui_list_empty);
+                } else if (0 == newPosition && 1 == oldPosition) {
+                    Log.d(TAG, "OnPageChanged: updating!");
+//                    mAdapter.addData(0, mAdapter.getData().get(0));
+                    mAdapter.setEmptyView(R.layout.ui_list_empty);
+                }
             }
         });
 
@@ -158,10 +169,14 @@ public class DiaryDetailActivity extends BaseActivity implements BaseQuickAdapte
                             View v1 = mRecyclerView.getChildAt(1);
                             v1.setScaleY(0.9f);
                             v1.setScaleX(0.9f);
+                            v1.setScaleY(1f);
+                            v1.setScaleX(1f);
                         } else {
                             View v1 = mRecyclerView.getChildAt(0);
                             v1.setScaleY(0.9f);
                             v1.setScaleX(0.9f);
+                            v1.setScaleY(1f);
+                            v1.setScaleX(1f);
                         }
                     }
                 } else {
@@ -169,11 +184,15 @@ public class DiaryDetailActivity extends BaseActivity implements BaseQuickAdapte
                         View v0 = mRecyclerView.getChildAt(0);
                         v0.setScaleY(0.9f);
                         v0.setScaleX(0.9f);
+                        v0.setScaleY(1f);
+                        v0.setScaleX(1f);
                     }
                     if (mRecyclerView.getChildAt(2) != null) {
                         View v2 = mRecyclerView.getChildAt(2);
                         v2.setScaleY(0.9f);
                         v2.setScaleX(0.9f);
+                        v2.setScaleY(1f);
+                        v2.setScaleX(1f);
                     }
                 }
 
@@ -182,16 +201,17 @@ public class DiaryDetailActivity extends BaseActivity implements BaseQuickAdapte
     }
 
     private void loadData() {
+        /*Log.d(TAG, "loadData: offset: " + mOffset);
         Observable.create(new ObservableOnSubscribe<List<DiaryBean>>() {
             @Override
             public void subscribe(ObservableEmitter<List<DiaryBean>> observableEmitter) throws Exception {
                 DbManager dbManager = Utils.getContext().getDbManager();
                 List<DiaryBean> list = dbManager.selector(DiaryBean.class)
-                        .orderBy("id", true)
+                        .orderBy("id", false)
                         .where("id", "<", mData.getId())
                         .or("id", "=", mData.getId())
                         .offset(mOffset)
-                        .limit(15)
+                        .limit(10)
                         .findAll();
                 if (list == null) {
                     observableEmitter.onNext(new ArrayList<DiaryBean>());
@@ -215,10 +235,21 @@ public class DiaryDetailActivity extends BaseActivity implements BaseQuickAdapte
                             if (mAdapter.isLoading()) {
                                 mAdapter.addData(diaryBeans);
                                 mAdapter.loadMoreComplete();
+                                Log.d(TAG, "onNext: load more complete");
                             } else {
                                 mAdapter.setNewData(diaryBeans);
                             }
+                            int index = 0;
+                            for (int i = 0; i < diaryBeans.size(); i++) {
+                                if (diaryBeans.get(i).getId() == mData.getId()) {
+                                    index = i;
+                                    break;
+                                }
+                            }
+                            mRecyclerView.scrollToPosition(index);
                         } else {
+                            Log.d(TAG, "onNext: load more end");
+                            ToastUtils.showShortToast("已加载全部日记");
                             mAdapter.loadMoreEnd();
                             mAdapter.setEnableLoadMore(false);
                         }
@@ -234,9 +265,15 @@ public class DiaryDetailActivity extends BaseActivity implements BaseQuickAdapte
                     public void onComplete() {
 
                     }
-                });
+                });*/
+        mAdapter.setNewData(mData);
+        x.task().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.scrollToPosition(mIndex);
+            }
+        }, 300);
     }
-
 
     private void deleteClick(DiaryBean bean, int position) {
         DbManager dbManager = Utils.getContext().getDbManager();
@@ -254,11 +291,13 @@ public class DiaryDetailActivity extends BaseActivity implements BaseQuickAdapte
         finish();
     }
 
-    public static void launch(Activity activity, DiaryBean item) {
+    public static void launch(Activity activity, ArrayList<DiaryBean> item , int pos) {
         Intent intent = new Intent(activity, DiaryDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("data", item);
+        bundle.putInt("index", pos);
         intent.putExtras(bundle);
+
         activity.startActivity(intent);
     }
 
@@ -274,6 +313,11 @@ public class DiaryDetailActivity extends BaseActivity implements BaseQuickAdapte
                 break;
         }
         return true;
+    }
+
+    @Override
+    public void onLoadMoreRequested() {
+        loadData();
     }
 
     private class MyAdapter extends BaseQuickAdapter<DiaryBean, BaseViewHolder> {

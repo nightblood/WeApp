@@ -38,7 +38,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.DiaryDetailActivity" android:theme="@style/TranparentTheme" />
-        <activity android:name=".ui.activity.DiaryEditActivity" android:windowSoftInputMode="stateHidden"/>
         <activity android:name="me.iwf.photopicker.PhotoPickerActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             />
@@ -61,6 +60,8 @@
             android:taskAffinity=""
             android:theme="@android:style/Theme.Wallpaper.NoTitleBar" >
         </activity>
+        <activity android:name=".ui.activity.TestActivity" android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+        <activity android:name=".ui.activity.DiaryEditActivity" />
 
         <receiver android:name=".ui.widge.alarmclock.LoongggAlarmReceiver">
             <intent-filter>

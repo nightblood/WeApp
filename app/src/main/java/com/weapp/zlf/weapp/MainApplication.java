@@ -1,9 +1,11 @@
 package com.weapp.zlf.weapp;
 
 import android.app.Application;
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import com.didi.virtualapk.PluginManager;
 import com.weapp.zlf.weapp.bean.UserInfo;
 import com.weapp.zlf.weapp.common.utils.Constant;
 import com.weapp.zlf.weapp.common.utils.FileUtils;
@@ -39,6 +41,12 @@ public class MainApplication extends Application {
         initConstants();
         initDb();
         initUserInfo();
+    }
+
+    @Override
+    protected void attachBaseContext(Context context)  {
+        super.attachBaseContext(context);
+        PluginManager.getInstance(context).init();
     }
 
     private void initConstants() {

@@ -15,6 +15,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.mcxtzhang.layoutmanager.flow.FlowLayoutManager;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
@@ -163,7 +164,7 @@ public class MyInfoFragment extends BaseFragment implements BaseQuickAdapter.OnI
     private void initRecyclerView() {
         StaggeredGridLayoutManager mgr = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         mRvPhotos.setLayoutManager(mgr);
-
+//        mRvPhotos.setLayoutManager(new FlowLayoutManager());
         mAdapter = new PhotoAdapter(null);
         mRvPhotos.setAdapter(mAdapter);
 

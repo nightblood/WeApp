@@ -45,7 +45,6 @@ public class RadarScanActivity extends BaseActivity {
     private static final String TAG = RadarScanActivity.class.getSimpleName();
 
     private RandomTextView randomTextView;
-
     private P2PManager p2PManager;
     private String alias;
     private RelativeLayout scanRelative;
@@ -111,10 +110,8 @@ public class RadarScanActivity extends BaseActivity {
                         }
                     }
                 });
-
         initP2P();
     }
-
 
     private void sendFile(P2PNeighbor neighbor) {
         P2PNeighbor[] neighbors = new P2PNeighbor[]{neighbor};

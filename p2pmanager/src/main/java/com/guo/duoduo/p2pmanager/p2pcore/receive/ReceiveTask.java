@@ -52,8 +52,7 @@ public class ReceiveTask extends Thread {
 
                 P2PFileInfo fileInfo = receiver.files[i];
 
-                Log.d(TAG, "prepare to receive file:" + fileInfo.name + "; files size = "
-                        + receiver.files[0].size);
+                Log.d(TAG, "prepare to receive file:" + fileInfo.name + "; files size = " + receiver.files[0].size);
 
                 String path = P2PManager.getSavePath(fileInfo.type);
                 File fileDir = new File(path);

@@ -117,7 +117,7 @@ public class P2PManager {
     }
 
     public static String getSavePath(int type) {
-        String[] typeStr = {"APP", "Picture"};
+        String[] typeStr = {"Database", "Picture"};
         return SAVE_DIR + File.separator + typeStr[type];
     }
 
@@ -128,9 +128,8 @@ public class P2PManager {
      * @return
      * @throws UnknownHostException
      */
-    public static InetAddress getBroadcastAddress(Context context)
-            throws UnknownHostException {
-        WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+    public static InetAddress getBroadcastAddress(Context context) throws UnknownHostException {
+        WifiManager wifi = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         DhcpInfo dhcp = wifi.getDhcpInfo();
         if (dhcp == null) {
             return InetAddress.getByName("255.255.255.255");

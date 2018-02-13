@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.DiaryBean;
 import com.weapp.zlf.weapp.common.BannerImageLoader;
-import com.weapp.zlf.weapp.ui.activity.DiaryEditActivity;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;

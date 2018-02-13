@@ -6,7 +6,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,7 +36,6 @@ import org.xutils.view.annotation.ViewInject;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -65,8 +63,6 @@ import static cn.pedant.SweetAlert.SweetAlertDialog.PROGRESS_TYPE;
 
 @ContentView(R.layout.activity_diary_edit)
 public class DiaryEditActivity extends BaseActivity {
-//    @ViewInject(R.id.banner)
-//    private Banner mBanner;
     @ViewInject(R.id.rv_photos)
     private RecyclerView mRvPhotos;
     @ViewInject(R.id.et_content)

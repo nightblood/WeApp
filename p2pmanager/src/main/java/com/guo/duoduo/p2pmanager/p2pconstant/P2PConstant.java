@@ -4,8 +4,7 @@ package com.guo.duoduo.p2pmanager.p2pconstant;
 /**
  * Created by 郭攀峰 on 2015/9/19.
  */
-public class P2PConstant
-{
+public class P2PConstant {
 
     public static final int BUFFER_LENGTH = 8192;
     public static final int PORT = 10000;
@@ -16,24 +15,21 @@ public class P2PConstant
 
     public static final String MULTI_ADDRESS = "255.255.255.255";
 
-    public static final String FILE_SHARE_SAVE_PATH = "西瓜快传";
+    public static final String FILE_SHARE_SAVE_PATH = "WeApp";
 
     public static final int MAXIMUM_POOL_SIZE = 4;
 
-    public interface TYPE
-    {
-        public static final int APP = 0;
+    public interface TYPE {
+        public static final int DATABASE = 0;
         public static final int PIC = 1;
     }
 
-    public interface UI_MSG
-    {
+    public interface UI_MSG {
         public static final int ADD_NEIGHBOR = 1000;
         public static final int REMOVE_NEIGHBOR = 10001;
     }
 
-    public interface CommandNum
-    {
+    public interface CommandNum {
         public static final int ON_LINE = 0;
         public static final int OFF_LINE = 1;
         public static final int ON_LINE_ANS = 2;
@@ -56,16 +52,14 @@ public class P2PConstant
 
     }
 
-    public interface Src
-    {
+    public interface Src {
         public static final int MANAGER = 90;
         public static final int COMMUNICATE = 91;
         public static final int SEND_TCP_THREAD = 92;
         public static final int RECEIVE_TCP_THREAD = 92;
     }
 
-    public interface Recipient
-    {
+    public interface Recipient {
         public static final int NEIGHBOR = 100;
         public static final int FILE_SEND = 101;
         public static final int FILE_RECEIVE = 102;

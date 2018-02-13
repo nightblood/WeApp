@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.github.clans.fab.FloatingActionMenu;
-import com.melnykov.fab.FloatingActionButton;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
@@ -55,7 +54,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 @ContentView(R.layout.frag_diary)
-public class DiaryFragment extends BaseFragment {
+public class DiaryFragment extends BaseFragment implements BaseQuickAdapter.OnItemClickListener {
     private static final String TAG = DiaryFragment.class.getSimpleName();
     @ViewInject(R.id.fam)
     private FloatingActionMenu mFam;
@@ -128,14 +127,10 @@ public class DiaryFragment extends BaseFragment {
         mRvList.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mAdapter = new DiaryListAdapter(null, moodlist, weatherlist, taglist);
+        mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
         mRvList.setAdapter(mAdapter);
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                DiaryDetailActivity.launch(getActivity(), (DiaryBean) adapter.getItem(position));
-//                new DiaryDetailDilog.Builder(getContext()).setData((DiaryBean) adapter.getItem(position)).show();
-            }
-        });
+        mAdapter.setOnItemClickListener(this);
+
         mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -300,17 +295,12 @@ public class DiaryFragment extends BaseFragment {
 
                     @Override
                     public void onNext(DiaryBean diaryBean) {
-                        Intent intent = new Intent(getActivity(), DiaryEditActivity.class);
-                        intent.putExtra("data", diaryBean);
-                        startActivity(intent);
-//                        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity(), view, "mybtn").toBundle());
+                        DiaryEditActivity.launch(getActivity(), diaryBean);
                     }
 
                     @Override
                     public void onError(Throwable throwable) {
-                        Intent intent = new Intent(getActivity(), DiaryEditActivity.class);
-                        startActivity(intent);
-//                        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity(), view, "mybtn").toBundle());
+                        DiaryEditActivity.launch(getActivity(), null);
                     }
 
                     @Override
@@ -444,5 +434,10 @@ public class DiaryFragment extends BaseFragment {
 //                        }
                     }
                 });
+    }
+
+    @Override
+    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+        DiaryDetailActivity.launch(getActivity(), (ArrayList<DiaryBean>) adapter.getData(), position);
     }
 }

@@ -1,22 +1,23 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'com.didi.virtualapk.host'
+def configinfo = rootProject.ext.android
 android {
     signingConfigs {
         release {
             keyAlias 'weapp_key'
             keyPassword '123456'
-            storeFile file('E:/android_workspace/WeApp/app/weapp_key.jks')
+            storeFile file('../app/weapp_key.jks')
             storePassword '123456'
         }
         debug {
             keyAlias 'weapp_key'
             keyPassword '123456'
-            storeFile file('E:/android_workspace/WeApp/app/weapp_key.jks')
+            storeFile file('../app/weapp_key.jks')
             storePassword '123456'
         }
     }
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion configinfo.compileSdkVersion
+    buildToolsVersion configinfo.buildToolsVersion
     defaultConfig {
         applicationId "com.weapp.zlf.weapp"
         minSdkVersion 21
@@ -100,9 +101,11 @@ dependencies {
     compile 'com.github.clans:fab:1.6.4'
     compile 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.2@aar'
     compile 'com.github.ybq:Android-SpinKit:1.1.0'
+    compile 'com.github.mcxtzhang:ZLayoutManager:V1.1.0'
+    compile 'com.didi.virtualapk:core:0.9.1'
     compile project(path: ':p2pmanager')
     compile project(path: ':randomtextview')
     compile project(path: ':rippleoutlayout')
     compile project(path: ':RadarScanView')
-    compile project(path: ':alarmmanagerclock')
+//    compile project(path: ':alarmmanagerclock')
 }

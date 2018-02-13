@@ -2,21 +2,15 @@ package com.weapp.zlf.weapp.ui.activity;
 
 import android.Manifest;
 import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -24,17 +18,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
-import com.loonggg.lib.alarmmanager.clock.AlarmManagerUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.weapp.zlf.weapp.MainApplication;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.AnniversaryBean;
-import com.weapp.zlf.weapp.bean.DiaryBean;
 import com.weapp.zlf.weapp.bean.TodoBean;
-import com.weapp.zlf.weapp.common.utils.AssertUtils;
 import com.weapp.zlf.weapp.common.utils.DeviceUuidFactory;
 import com.weapp.zlf.weapp.common.utils.SPUtils;
 import com.weapp.zlf.weapp.common.utils.TimeUtils;
@@ -42,7 +32,6 @@ import com.weapp.zlf.weapp.common.utils.ToastUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
 import com.weapp.zlf.weapp.event.AnniversaryEvent;
 import com.weapp.zlf.weapp.event.TodoEvent;
-import com.weapp.zlf.weapp.ui.adapter.PanelAdapter;
 import com.weapp.zlf.weapp.ui.fragment.BaseFragment;
 import com.weapp.zlf.weapp.ui.fragment.CanlenderFragment;
 import com.weapp.zlf.weapp.ui.fragment.DiaryFragment;
@@ -50,16 +39,12 @@ import com.weapp.zlf.weapp.ui.fragment.MyInfoFragment;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.xutils.DbManager;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
-import cn.qqtheme.framework.picker.DateTimePicker;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -277,35 +262,20 @@ public class MainActivity extends BaseActivity {
                 });
     }
 
-    private void notifyTodo(long timeMillis, String title, String content) {
-        NotificationCompat.Builder notifyBuilder =
-                new NotificationCompat.Builder(this).setContentTitle(title)
-                        .setContentText((TextUtils.isEmpty(content) ? " " : content) + ", " + TimeUtils.date2String(new Date(timeMillis)))
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        // 点击消失
-                        .setAutoCancel(true)
-                        // 设置该通知优先级
-                        .setPriority(Notification.PRIORITY_MAX)
-                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                        .setTicker("测试通知来啦")
-                        // 通知首次出现在通知栏，带上升动画效果的
-                        .setWhen(timeMillis)
-                        // 通知产生的时间，会在通知信息里显示
-                        // 向通知添加声音、闪灯和振动效果的最简单、最一致的方式是使用当前的用户默认设置，使用defaults属性，可以组合：
-                        .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_ALL | Notification.DEFAULT_SOUND);
-//        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, mResultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        notifyBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotifyMgr.notify(1, notifyBuilder.build());
+    @Event(R.id.ll_test)
+    private void testClick(View view) {
+        TestActivity.launch(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void todoEvent(TodoEvent event) {
-        notifyTodo(event.bean.getTimeMillis(), event.bean.getTitle(), event.bean.getContent());
+        initService(event.bean.getTitle(), event.bean.getContent(), event.bean.getTimeMillis());
+//        notifyTodo(event.bean.getTimeMillis(), event.bean.getTitle(), event.bean.getContent());
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void anniversaryEvent(AnniversaryEvent event) {
-        notifyTodo(event.bean.getTimeMillis(), event.bean.getName(), event.bean.getContent());
+//        notifyTodo(event.bean.getTimeMillis(), event.bean.getName(), event.bean.getContent());
+        initService(event.bean.getName(), event.bean.getContent(), event.bean.getTimeMillis());
     }
     /* private void initNavView() {
          mRvMood.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));

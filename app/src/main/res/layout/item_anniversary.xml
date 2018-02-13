@@ -7,7 +7,7 @@
     android:layout_marginTop="5dp"
     android:layout_marginLeft="@dimen/dp_10"
     android:layout_marginRight="@dimen/dp_10"
-    android:elevation="@dimen/dp_10"
+    android:elevation="2dp"
     android:background="@drawable/bg_clickable_item"
     android:id="@+id/item_root"
     app:clickToClose="true">

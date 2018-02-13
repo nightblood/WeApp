@@ -150,6 +150,8 @@ public class AnniversaryListActivity extends BaseActivity{
         tvContent.setText(getString(R.string.empty_annversary_list));
         mRvList.setLayoutManager(new GridLayoutManager(this, 1));
         mAdapter = new AnniversaryAdapter(null);
+        mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
+
         mRvList.setAdapter(mAdapter);
     }
     @Event(R.id.iv_title_left)
