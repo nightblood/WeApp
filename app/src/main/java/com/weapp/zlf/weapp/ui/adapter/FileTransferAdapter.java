@@ -10,11 +10,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.guo.duoduo.p2pmanager.p2pconstant.P2PConstant;
-import com.guo.duoduo.p2pmanager.p2pentity.P2PFileInfo;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.common.Cache;
 import com.weapp.zlf.weapp.common.utils.DeviceUtils;
+import com.weapp.zlf.weapp.p2pmanager.p2pconstant.P2PConstant;
+import com.weapp.zlf.weapp.p2pmanager.p2pentity.P2PFileInfo;
 
 
 /**

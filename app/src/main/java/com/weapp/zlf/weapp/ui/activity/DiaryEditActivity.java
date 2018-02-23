@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.flyco.dialog.listener.OnBtnClickL;
 import com.flyco.dialog.widget.MaterialDialog;
@@ -19,6 +21,7 @@ import com.weapp.zlf.weapp.bean.DiaryBean;
 import com.weapp.zlf.weapp.bean.ImageBean;
 import com.weapp.zlf.weapp.common.utils.AssertUtils;
 import com.weapp.zlf.weapp.common.utils.Constant;
+import com.weapp.zlf.weapp.common.utils.FileUtils;
 import com.weapp.zlf.weapp.common.utils.TimeUtils;
 import com.weapp.zlf.weapp.common.utils.ToastUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
@@ -63,6 +66,7 @@ import static cn.pedant.SweetAlert.SweetAlertDialog.PROGRESS_TYPE;
 
 @ContentView(R.layout.activity_diary_edit)
 public class DiaryEditActivity extends BaseActivity {
+    private static final String TAG = DiaryEditActivity.class.getSimpleName();
     @ViewInject(R.id.rv_photos)
     private RecyclerView mRvPhotos;
     @ViewInject(R.id.et_content)
@@ -368,6 +372,7 @@ public class DiaryEditActivity extends BaseActivity {
                         dbManager.delete(bean);
                     }
                 }
+
                 for (String image : images) {
                     if (image.equals("btn_add"))
                         continue;
@@ -397,9 +402,10 @@ public class DiaryEditActivity extends BaseActivity {
                 mLubanDialog = new SweetAlertDialog(DiaryEditActivity.this, PROGRESS_TYPE);
                 mLubanDialog.setTitleText(String.format(getString(R.string.picture_compressing), 0, images.size()));
                 mLubanDialog.show();
+                Log.d(TAG, "onActivityResult: db_dir: " + Constant.DIR_DB + ", pic_dir: " + Constant.DIR_DIARY_PHOTO);
                 Luban.with(this)
                         .load(images)                                   // 传人要压缩的图片列表
-                        .ignoreBy(100)                                  // 忽略不压缩图片的大小
+                        .ignoreBy(10)                                  // 忽略不压缩图片的大小
                         .setTargetDir(Constant.DIR_DIARY_PHOTO)                        // 设置压缩后文件存储位置
                         .setCompressListener(new OnCompressListener() { //设置回调
                             private ArrayList<String> files = new ArrayList<>();
@@ -412,6 +418,12 @@ public class DiaryEditActivity extends BaseActivity {
                             public void onSuccess(File file) {
                                 // TODO 压缩成功后调用，返回压缩后的图片文件
                                 files.add(file.getAbsolutePath());
+                                if (FileUtils.isFileExists(file)) {
+                                    Log.d(TAG, "convert: exists, " + file.getAbsolutePath());
+                                } else {
+                                    Log.d(TAG, "convert: not exists ,"+ file.getAbsolutePath());
+
+                                }
                                 mLubanDialog.setTitleText(String.format(getString(R.string.picture_compressing), files.size(), images.size()));
                                 if (files.size() == images.size()) {
                                     mLubanDialog.dismiss();

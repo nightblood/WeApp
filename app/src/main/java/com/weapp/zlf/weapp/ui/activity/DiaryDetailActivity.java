@@ -109,6 +109,10 @@ public class DiaryDetailActivity extends BaseActivity implements BaseQuickAdapte
             public void onScrolled(RecyclerView recyclerView, int i, int i2) {
 //                mPositionText.setText("First: " + mRecyclerViewPager.getFirstVisiblePosition());
                 int childCount = mRecyclerView.getChildCount();
+                if (childCount == 0) {
+                    finish();
+                    return;
+                }
                 int width = mRecyclerView.getChildAt(0).getWidth();
                 int padding = (mRecyclerView.getWidth() - width) / 2;
 //                mCountText.setText("Count: " + childCount);
@@ -151,11 +155,11 @@ public class DiaryDetailActivity extends BaseActivity implements BaseQuickAdapte
                 if (mAdapter.getData().size() - 1 == newPosition && oldPosition == mAdapter.getData().size() - 2) {
                     Log.d(TAG, "OnPageChanged: loading!");
 //                    mAdapter.addData(mAdapter.getData().get(0));
-                    mAdapter.setEmptyView(R.layout.ui_list_empty);
+//                    mAdapter.setEmptyView(R.layout.ui_list_empty);
                 } else if (0 == newPosition && 1 == oldPosition) {
                     Log.d(TAG, "OnPageChanged: updating!");
 //                    mAdapter.addData(0, mAdapter.getData().get(0));
-                    mAdapter.setEmptyView(R.layout.ui_list_empty);
+//                    mAdapter.setEmptyView(R.layout.ui_list_empty);
                 }
             }
         });

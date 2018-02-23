@@ -9,8 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.guo.duoduo.p2pmanager.p2pconstant.P2PConstant;
-import com.guo.duoduo.p2pmanager.p2pentity.P2PFileInfo;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.ImageBean;
 import com.weapp.zlf.weapp.common.Cache;
@@ -18,6 +16,8 @@ import com.weapp.zlf.weapp.common.utils.Constant;
 import com.weapp.zlf.weapp.common.utils.SPUtils;
 import com.weapp.zlf.weapp.common.utils.ToastUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
+import com.weapp.zlf.weapp.p2pmanager.p2pconstant.P2PConstant;
+import com.weapp.zlf.weapp.p2pmanager.p2pentity.P2PFileInfo;
 
 import org.xutils.DbManager;
 import org.xutils.view.annotation.ContentView;
@@ -37,6 +37,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import me.iwf.photopicker.PhotoPicker;
 import me.iwf.photopicker.PhotoPreview;
+
+import static com.weapp.zlf.weapp.common.utils.Constant.DB_DIRS;
 
 /**
  * Created by zhuliangfei on 2018/2/5.
@@ -78,8 +80,6 @@ public class DiaryShareActivity extends BaseActivity{
             Glide.with(this).load(R.drawable.plant_2).into(mIvIcon);
         }
         mTvName.setText(name);
-
-
     }
 
     @Event(R.id.iv_title_left)
@@ -89,7 +89,6 @@ public class DiaryShareActivity extends BaseActivity{
 
     @Event(R.id.btn_send)
     private void sendClick(View view) {
-
 
         Observable.create(new ObservableOnSubscribe<List<P2PFileInfo>>() {
             @Override
@@ -109,15 +108,15 @@ public class DiaryShareActivity extends BaseActivity{
                 }
 
                 P2PFileInfo fileInfo = new P2PFileInfo();
-                fileInfo.path = getFilesDir().getPath() + File.separator + Constant.DB_NAME;
+                fileInfo.path = DB_DIRS[0] + File.separator + Constant.DB_NAME;
                 fileInfo.name = Constant.DB_NAME;
                 fileInfo.type = P2PConstant.TYPE.DATABASE;
                 fileInfo.size = new File(fileInfo.path).length();
 
+                Log.d(TAG, "subscribe: " + fileInfo.path);
                 if (!Cache.selectedList.contains(fileInfo)) {
                     Cache.selectedList.add(fileInfo);
                 }
-
                 observableEmitter.onNext(list);
             }
         })
@@ -133,6 +132,7 @@ public class DiaryShareActivity extends BaseActivity{
                     public void onNext(List<P2PFileInfo> p2PFileInfos) {
                         Cache.selectedList.addAll(p2PFileInfos);
                         RadarScanActivity.launch(DiaryShareActivity.this, name);
+                        finish();
                     }
 
                     @Override
@@ -145,11 +145,11 @@ public class DiaryShareActivity extends BaseActivity{
 
                     }
                 });
-
     }
     @Event(R.id.btn_receive)
     private void receiveClick(View view) {
         ReceiveActivity.launch(this);
+        finish();
     }
 
     public static void launch(Context context) {

@@ -1,7 +1,14 @@
 package com.weapp.zlf.weapp.bean;
 
+import android.text.TextUtils;
+
+import com.weapp.zlf.weapp.MainApplication;
+import com.weapp.zlf.weapp.common.utils.Constant;
+
 import org.xutils.db.annotation.Column;
 import org.xutils.db.annotation.Table;
+
+import java.io.File;
 
 /**
  * Created by zhuliangfei on 2018/1/30.
@@ -21,11 +28,13 @@ public class ImageBean {
     private String image;
 
     public String getImage() {
-        return image;
+        return Constant.PHOTO_DIRS[MainApplication.mDirIndex] + File.separator + image;
     }
 
     public void setImage(String image) {
-        this.image = image;
+        if (TextUtils.isEmpty(image))
+            return;
+        this.image = image.substring(image.lastIndexOf(File.separator) + 1);
     }
 
     public int getId() {

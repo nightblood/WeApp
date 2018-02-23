@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     >
 
+    <include layout="@layout/ui_title_bar"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,14 +21,15 @@
 
             <com.guo.duoduo.library.RadarScanView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"></com.guo.duoduo.library.RadarScanView>
+                android:layout_height="match_parent"/>
 
             <TextView
                 android:id="@+id/activity_radar_scan_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:textColor="@color/color8" />
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"/>
 
             <com.guo.duoduo.randomtextview.RandomTextView
                 android:id="@+id/activity_radar_rand_textview"
@@ -42,36 +45,37 @@
             android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize"/>
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/activity_radar_rocket_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true">
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:gravity="center">
 
             <ImageView
                 android:id="@+id/activity_radar_rocket_body"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/rocket" />
 
-            <ImageView
-                android:id="@+id/activity_radar_rocket_fire"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/activity_radar_rocket_body"
-                android:layout_marginTop="20dp"
-                android:src="@mipmap/ic_launcher" />
-
-        </RelativeLayout>
+                android:text="@string/hint_share_prepared"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+                />
+        </LinearLayout>
     </RelativeLayout>
 
-    <android.support.design.widget.FloatingActionButton
+    <!--<android.support.design.widget.FloatingActionButton
         android:id="@+id/activity_radar_scan_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/dp_10"
-        android:src="@android:drawable/ic_input_delete" />
+        android:src="@android:drawable/ic_input_delete" />-->
 
 </android.support.design.widget.CoordinatorLayout>

@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.flyco.tablayout.SegmentTabLayout;
@@ -25,6 +26,7 @@ import com.weapp.zlf.weapp.MainApplication;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.AnniversaryBean;
 import com.weapp.zlf.weapp.bean.TodoBean;
+import com.weapp.zlf.weapp.common.utils.Constant;
 import com.weapp.zlf.weapp.common.utils.DeviceUuidFactory;
 import com.weapp.zlf.weapp.common.utils.SPUtils;
 import com.weapp.zlf.weapp.common.utils.TimeUtils;
@@ -32,6 +34,7 @@ import com.weapp.zlf.weapp.common.utils.ToastUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
 import com.weapp.zlf.weapp.event.AnniversaryEvent;
 import com.weapp.zlf.weapp.event.TodoEvent;
+import com.weapp.zlf.weapp.p2pmanager.p2pcore.P2PManager;
 import com.weapp.zlf.weapp.ui.fragment.BaseFragment;
 import com.weapp.zlf.weapp.ui.fragment.CanlenderFragment;
 import com.weapp.zlf.weapp.ui.fragment.DiaryFragment;
@@ -43,6 +46,7 @@ import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import io.reactivex.Observable;
@@ -67,8 +71,8 @@ public class MainActivity extends BaseActivity {
     private TextView mTvTitle;
     @ViewInject(R.id.iv_top_l)
     private ImageView mIvTopLeft;
-    @ViewInject(R.id.iv_top_r)
-    private ImageView mIvTopRight;
+    @ViewInject(R.id.rl_top_r)
+    private RelativeLayout mRlTopRight;
 
     /*@ViewInject(R.id.rv_mood)
     private RecyclerView mRvMood;
@@ -264,7 +268,7 @@ public class MainActivity extends BaseActivity {
 
     @Event(R.id.ll_test)
     private void testClick(View view) {
-        TestActivity.launch(this);
+        TestActivity.Companion.launch(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -349,9 +353,9 @@ public class MainActivity extends BaseActivity {
                 mTabLayout.setCurrentTab(position);
                 mTvTitle.setText(mTitleName[position]);
                 if (position == 0) {
-                    mIvTopRight.setVisibility(View.VISIBLE);
+                    mRlTopRight.setVisibility(View.VISIBLE);
                 } else {
-                    mIvTopRight.setVisibility(View.INVISIBLE);
+                    mRlTopRight.setVisibility(View.INVISIBLE);
                 }
             }
 
@@ -373,15 +377,18 @@ public class MainActivity extends BaseActivity {
         mDlContainer.openDrawer(GravityCompat.START);
     }
 
-    @Event(value = R.id.iv_top_r)
+    @Event(value = R.id.rl_top_r)
     private void rightClick(View view) {
-        ToastUtils.showLongToast("正在紧张施工中。。。");
+//        ToastUtils.showLongToast("正在紧张施工中。。。");
 //        DiarySearchActivity.launch(this);
+        Utils.getContext().changeDb();
     }
+
 
     @Event(value = R.id.ll_search)
     private void searchClick(View view) {
         DiaryShareActivity.launch(this);
+        mDlContainer.closeDrawer(GravityCompat.START);
     }
 /*
     @Event(value = {R.id.tv_reset, R.id.tv_submit})

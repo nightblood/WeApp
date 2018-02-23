@@ -12,8 +12,8 @@ import com.weapp.zlf.weapp.common.utils.FileUtils;
 import com.weapp.zlf.weapp.common.utils.SPUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
 import com.weapp.zlf.weapp.event.UserInfoChangeEvent;
+import com.weapp.zlf.weapp.p2pmanager.p2pcore.P2PManager;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.xutils.DbManager;
@@ -21,6 +21,10 @@ import org.xutils.db.table.TableEntity;
 import org.xutils.x;
 
 import java.io.File;
+import java.io.IOException;
+
+import static com.weapp.zlf.weapp.common.utils.Constant.DB_DIRS;
+import static com.weapp.zlf.weapp.common.utils.Constant.PHOTO_DIRS;
 
 /**
  * Created by zhuliangfei on 2018/1/5.
@@ -31,6 +35,7 @@ public class MainApplication extends Application {
     private static final String TAG = MainApplication.class.getSimpleName();
     public static UserInfo mUserInfo;
     private DbManager mDbManager;
+    public static int mDirIndex;
 
     @Override
     public void onCreate() {
@@ -50,11 +55,15 @@ public class MainApplication extends Application {
     }
 
     private void initConstants() {
-        Constant.DIR_DB = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
-        Constant.DIR_DIARY_PHOTO = getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath();
+//        Constant.DIR_DB = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
+//        Constant.DIR_DIARY_PHOTO = getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath();
+        SPUtils spUtils = new SPUtils("user_info");
+        mDirIndex = spUtils.getInt("dir_index", 0);
+        Constant.DIR_DIARY_PHOTO = PHOTO_DIRS[mDirIndex];
+        Constant.DIR_DB = DB_DIRS[mDirIndex];
+
         FileUtils.createOrExistsDir(getFilesDir());
-        FileUtils.createOrExistsDir(Constant.DIR_DB);
-        FileUtils.createOrExistsDir(Constant.DIR_DIARY_PHOTO);
+
     }
 
     private void initUserInfo() {
@@ -68,14 +77,15 @@ public class MainApplication extends Application {
     }
 
     private void initDb() {
-        /**
-         * 初始化DaoConfig配置
-         */
+        File file = new File(Constant.DIR_DB);
+        FileUtils.createOrExistsDir(Constant.DIR_DB);
+        FileUtils.createOrExistsDir(Constant.DIR_DIARY_PHOTO);
         DbManager.DaoConfig daoConfig = new DbManager.DaoConfig()
+
                 //设置数据库名，默认xutils.db
                 .setDbName(Constant.DB_NAME)
                 //设置数据库路径，默认存储在app的私有目录
-                .setDbDir(new File(Constant.DIR_DB))
+                .setDbDir(file)
                 //设置数据库的版本号
                 .setDbVersion(1)
                 //设置数据库打开的监听
@@ -98,13 +108,28 @@ public class MainApplication extends Application {
                     public void onTableCreated(DbManager db, TableEntity<?> table){
 //                        Log.i("JAVA", "onTableCreated：" + table.getName());
                     }
-                });
-        //设置是否允许事务，默认true
-        //.setAllowTransaction(true)
-
+                })//设置是否允许事务，默认true
+                .setAllowTransaction(false);
         mDbManager = x.getDb(daoConfig);
+    }
 
+    public void changeDb() {
+        if (mDbManager != null) {
+            try {
+                mDbManager.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        mDirIndex = (mDirIndex + 1) % DB_DIRS.length;
+        SPUtils spUtils = new SPUtils("user_info");
+        spUtils.putInt("dir_index", mDirIndex);
 
+        Constant.DIR_DB = DB_DIRS[mDirIndex];
+        Constant.DIR_DIARY_PHOTO = PHOTO_DIRS[mDirIndex];
+        Log.d(TAG, "initConstants: db_dir: "  + Constant.DIR_DB + ", pic_dir: " + Constant.DIR_DIARY_PHOTO);
+
+        initDb();
     }
     public DbManager getDbManager() {
         return mDbManager;

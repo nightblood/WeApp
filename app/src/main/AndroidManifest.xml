@@ -63,11 +63,6 @@
         <activity android:name=".ui.activity.TestActivity" android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
         <activity android:name=".ui.activity.DiaryEditActivity" />
 
-        <receiver android:name=".ui.widge.alarmclock.LoongggAlarmReceiver">
-            <intent-filter>
-                <action android:name="com.weapp.zlf"/>
-            </intent-filter>
-        </receiver>
         <receiver android:name="com.weapp.zlf.weapp.ui.activity.AlarmReceiver">
             <intent-filter>
                 <action android:name="NOTIFICATION"/>

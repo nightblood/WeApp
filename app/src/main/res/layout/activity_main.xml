@@ -56,11 +56,27 @@
                    android:layout_width="0dp"
                    android:layout_height="match_parent"
                    android:layout_weight="1"/>
-               <ImageView
+               <!--<ImageView
                    android:id="@+id/iv_top_r"
                    android:layout_width="25dp"
                    android:layout_height="25dp"
-                   android:src="@drawable/icon_search"/>
+                   android:src="@drawable/icon_search"/>-->
+               <RelativeLayout
+                   android:id="@+id/rl_top_r"
+                   android:layout_width="50dp"
+                   android:layout_height="50dp"
+                   >
+                   <com.makeramen.roundedimageview.RoundedImageView
+                       android:layout_width="10dp"
+                       android:layout_height="10dp"
+                       android:src="@drawable/icon_moon"/>
+                   <com.makeramen.roundedimageview.RoundedImageView
+                       android:layout_width="25dp"
+                       android:layout_height="25dp"
+                       android:src="@drawable/icon_earth"
+                       android:layout_centerInParent="true"/>
+
+               </RelativeLayout>
            </LinearLayout>
 
            <TextView

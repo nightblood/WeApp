@@ -1,5 +1,6 @@
 package com.weapp.zlf.weapp.ui.adapter;
 
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -8,6 +9,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.bean.ImageBean;
+import com.weapp.zlf.weapp.common.utils.FileUtils;
 import com.weapp.zlf.weapp.common.utils.ScreenUtils;
 import com.weapp.zlf.weapp.common.utils.SizeUtils;
 
@@ -34,6 +36,12 @@ public class PhotoAdapter extends BaseQuickAdapter<ImageBean, BaseViewHolder> {
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
         layoutParams.height = mItemHeight;
         layoutParams.width = mItemWidth;
-        Glide.with(mContext).load(item.getImage()).into(view);
+        if (FileUtils.isFileExists(item.getImage())) {
+            Log.d(TAG, "convert: exist, " + item.getImage());
+            Glide.with(mContext).load(item.getImage()).into(view);
+        } else {
+            Log.d(TAG, "convert: not exists, " + item.getImage());
+
+        }
     }
 }

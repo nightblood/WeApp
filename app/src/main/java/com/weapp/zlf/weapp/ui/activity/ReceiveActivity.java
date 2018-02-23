@@ -10,16 +10,11 @@ import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.guo.duoduo.p2pmanager.p2pconstant.P2PConstant;
-import com.guo.duoduo.p2pmanager.p2pcore.P2PManager;
-import com.guo.duoduo.p2pmanager.p2pentity.P2PFileInfo;
-import com.guo.duoduo.p2pmanager.p2pentity.P2PNeighbor;
-import com.guo.duoduo.p2pmanager.p2pinterface.Melon_Callback;
-import com.guo.duoduo.p2pmanager.p2pinterface.ReceiveFile_Callback;
 import com.guo.duoduo.randomtextview.RandomTextView;
 import com.guo.duoduo.rippleoutlayout.RippleOutLayout;
 import com.guo.duoduo.rippleoutview.RippleView;
@@ -28,11 +23,19 @@ import com.weapp.zlf.weapp.common.Cache;
 import com.weapp.zlf.weapp.common.accesspoint.AccessPointManager;
 import com.weapp.zlf.weapp.common.utils.Constant;
 import com.weapp.zlf.weapp.common.utils.NetworkUtils;
+import com.weapp.zlf.weapp.common.utils.SPUtils;
 import com.weapp.zlf.weapp.common.utils.ToastUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
+import com.weapp.zlf.weapp.p2pmanager.p2pconstant.P2PConstant;
+import com.weapp.zlf.weapp.p2pmanager.p2pcore.P2PManager;
+import com.weapp.zlf.weapp.p2pmanager.p2pentity.P2PFileInfo;
+import com.weapp.zlf.weapp.p2pmanager.p2pentity.P2PNeighbor;
+import com.weapp.zlf.weapp.p2pmanager.p2pinterface.Melon_Callback;
+import com.weapp.zlf.weapp.p2pmanager.p2pinterface.ReceiveFile_Callback;
 import com.weapp.zlf.weapp.ui.adapter.FileTransferAdapter;
 
 import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.ViewInject;
 
 import java.net.UnknownHostException;
 import java.util.Random;
@@ -41,31 +44,41 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 
 @ContentView(R.layout.activity_receive)
-public class ReceiveActivity extends BaseActivity
-        implements
-        AccessPointManager.OnWifiApStateChangeListener {
+public class ReceiveActivity extends BaseActivity implements AccessPointManager.OnWifiApStateChangeListener {
 
+    @ViewInject(R.id.iv_title_right)
+    private ImageView mIvRight;
+    @ViewInject(R.id.tv_title_name)
+    private TextView mTvTitle;
     private static final String tag = ReceiveActivity.class.getSimpleName();
 
     private AccessPointManager mWifiApManager = null;
     private Random random = new Random();
     private SweetAlertDialog progressDialog;
+    @ViewInject(R.id.activity_receive_radar_wifi)
     private TextView wifiName;
 
+    @ViewInject(R.id.activity_receive_ripple_layout)
     private RippleOutLayout rippleOutLayout;
+    @ViewInject(R.id.activity_receive_rand_textview)
     private RandomTextView randomTextView;
 
     private P2PManager p2PManager;
     private String alias;
 
+    @ViewInject(R.id.activity_receive_layout)
     private RelativeLayout receiveLayout;
+    @ViewInject(R.id.activity_receive_listview)
     private ListView receiveListView;
     private FileTransferAdapter transferAdapter;
 
     @Override
     protected void initView() {
         super.initView();
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.activity_receive_fab);
+        mIvRight.setVisibility(View.GONE);
+        mTvTitle.setText(getString(R.string.share_diary));
+
+       /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.activity_receive_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,28 +93,22 @@ public class ReceiveActivity extends BaseActivity
                                     }
                                 }).show();
             }
-        });
-        Intent intent = getIntent();
-        if (intent != null) {
+        });*/
 
-            alias = intent.getStringExtra("name");
-        } else
+//            alias = Build.DEVICE;
+        SPUtils spUtils = new SPUtils("user_info");
+        alias = spUtils.getString("name");
+        if (TextUtils.isEmpty(alias))
             alias = Build.DEVICE;
-
         TextView radar_scan_name = (TextView) findViewById(R.id.activity_receive_scan_name);
         radar_scan_name.setText(alias);
 
-        wifiName = (TextView) findViewById(R.id.activity_receive_radar_wifi);
 
-        receiveLayout = (RelativeLayout) findViewById(R.id.activity_receive_layout);
         receiveLayout.setVisibility(View.VISIBLE);
-        receiveListView = (ListView) findViewById(R.id.activity_receive_listview);
         receiveListView.setVisibility(View.GONE);
 
-        rippleOutLayout = (RippleOutLayout) findViewById(R.id.activity_receive_ripple_layout);
         rippleOutLayout.startRippleAnimation();
 
-        randomTextView = (RandomTextView) findViewById(R.id.activity_receive_rand_textview);
         randomTextView.setMode(RippleView.MODE_IN);
         randomTextView
                 .setOnRippleViewClickListener(new RandomTextView.OnRippleViewClickListener() {
@@ -119,10 +126,8 @@ public class ReceiveActivity extends BaseActivity
             intWifiHotSpot();
         } else {
             Log.d(tag, "useWiFi");
-            wifiName.setText(String.format(getString(R.string.send_connect_to),
-                    NetworkUtils.getCurrentSSID(ReceiveActivity.this)));
+            wifiName.setText(String.format(getString(R.string.send_connect_to), NetworkUtils.getCurrentSSID(ReceiveActivity.this)));
         }
-
         initP2P();
     }
 
@@ -234,8 +239,7 @@ public class ReceiveActivity extends BaseActivity
     }
 
     private void createAccessPoint() {
-        mWifiApManager.createWifiApSSID(Constant.WIFI_HOT_SPOT_SSID_PREFIX
-                + Build.MODEL + "-" + random.nextInt(1000));
+        mWifiApManager.createWifiApSSID(Constant.WIFI_HOT_SPOT_SSID_PREFIX + Build.MODEL + "-" + random.nextInt(1000));
 
         if (!mWifiApManager.startWifiAp()) {
             if (progressDialog != null)

@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
+
+    <include layout="@layout/ui_title_bar"/>
 
     <RelativeLayout
         android:id="@+id/activity_receive_layout"
@@ -26,7 +27,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:textColor="@color/colorPrimary" />
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"/>
         </com.guo.duoduo.rippleoutlayout.RippleOutLayout>
 
         <com.guo.duoduo.randomtextview.RandomTextView
@@ -52,11 +54,11 @@
         android:layout_margin="@dimen/dp_10"
         android:gravity="center_horizontal" />
 
-    <android.support.design.widget.FloatingActionButton
+   <!-- <android.support.design.widget.FloatingActionButton
         android:id="@+id/activity_receive_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/dp_10"
-        android:src="@android:drawable/ic_input_delete" />
+        android:src="@android:drawable/ic_input_delete" />-->
 </android.support.design.widget.CoordinatorLayout>

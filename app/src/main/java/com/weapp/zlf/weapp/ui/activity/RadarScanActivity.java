@@ -11,26 +11,31 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.guo.duoduo.p2pmanager.p2pconstant.P2PConstant;
-import com.guo.duoduo.p2pmanager.p2pcore.P2PManager;
-import com.guo.duoduo.p2pmanager.p2pentity.P2PFileInfo;
-import com.guo.duoduo.p2pmanager.p2pentity.P2PNeighbor;
-import com.guo.duoduo.p2pmanager.p2pinterface.Melon_Callback;
-import com.guo.duoduo.p2pmanager.p2pinterface.SendFile_Callback;
 import com.guo.duoduo.randomtextview.RandomTextView;
 import com.guo.duoduo.rippleoutview.RippleView;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.common.Cache;
 import com.weapp.zlf.weapp.common.accesspoint.AccessPointManager;
 import com.weapp.zlf.weapp.common.utils.NetworkUtils;
+import com.weapp.zlf.weapp.common.utils.SPUtils;
 import com.weapp.zlf.weapp.common.utils.ToastUtils;
+import com.weapp.zlf.weapp.p2pmanager.p2pconstant.P2PConstant;
+import com.weapp.zlf.weapp.p2pmanager.p2pcore.P2PManager;
+import com.weapp.zlf.weapp.p2pmanager.p2pentity.P2PFileInfo;
+import com.weapp.zlf.weapp.p2pmanager.p2pentity.P2PNeighbor;
+import com.weapp.zlf.weapp.p2pmanager.p2pinterface.Melon_Callback;
+import com.weapp.zlf.weapp.p2pmanager.p2pinterface.SendFile_Callback;
 import com.weapp.zlf.weapp.ui.adapter.FileTransferAdapter;
 
 import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.Event;
+import org.xutils.view.annotation.ViewInject;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -44,29 +49,38 @@ import java.util.List;
 public class RadarScanActivity extends BaseActivity {
     private static final String TAG = RadarScanActivity.class.getSimpleName();
 
+    @ViewInject(R.id.activity_radar_rand_textview)
     private RandomTextView randomTextView;
     private P2PManager p2PManager;
     private String alias;
+    @ViewInject(R.id.activity_radar_scan_relative)
     private RelativeLayout scanRelative;
-    private RelativeLayout scanRocket;
+    @ViewInject(R.id.activity_radar_rocket_layout)
+    private LinearLayout scanRocket;
+    @ViewInject(R.id.activity_radar_scan_listview)
     private ListView fileSendListView;
     private List<P2PNeighbor> neighbors = new ArrayList<>();
     private P2PNeighbor curNeighbor;
     private FileTransferAdapter transferAdapter;
+    @ViewInject(R.id.iv_title_right)
+    private ImageView mIvRight;
+    @ViewInject(R.id.tv_title_name)
+    private TextView mTvTitle;
 
     @Override
     protected void initView() {
         super.initView();
-        Intent intent = getIntent();
-        if (intent != null)
-            alias = intent.getStringExtra("name");
-        else
+        mIvRight.setVisibility(View.GONE);
+        mTvTitle.setText(getString(R.string.share_diary));
+        SPUtils spUtils = new SPUtils("user_info");
+        alias = spUtils.getString("name");
+        if (TextUtils.isEmpty(alias))
             alias = Build.DEVICE;
 
         TextView radar_scan_name = (TextView) findViewById(R.id.activity_radar_scan_name);
         radar_scan_name.setText(alias);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.activity_radar_scan_fab);
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.activity_radar_scan_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,17 +95,11 @@ public class RadarScanActivity extends BaseActivity {
                                     }
                                 }).show();
             }
-        });
+        });*/
 
-        scanRelative = (RelativeLayout) findViewById(R.id.activity_radar_scan_relative);
         scanRelative.setVisibility(View.VISIBLE);
-        scanRocket = (RelativeLayout) findViewById(R.id.activity_radar_rocket_layout);
         scanRocket.setVisibility(View.GONE);
-
-        fileSendListView = (ListView) findViewById(R.id.activity_radar_scan_listview);
         fileSendListView.setVisibility(View.GONE);
-
-        randomTextView = (RandomTextView) findViewById(R.id.activity_radar_rand_textview);
         randomTextView.setMode(RippleView.MODE_OUT);
         randomTextView
                 .setOnRippleViewClickListener(new RandomTextView.OnRippleViewClickListener() {
@@ -227,6 +235,11 @@ public class RadarScanActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    @Event(R.id.iv_title_left)
+    private void leftClick(View view) {
+        finish();
     }
 
     @Override

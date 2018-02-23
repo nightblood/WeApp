@@ -2,12 +2,16 @@ package com.weapp.zlf.weapp.bean;
 
 import android.text.TextUtils;
 
+import com.weapp.zlf.weapp.common.utils.Constant;
 import com.weapp.zlf.weapp.common.utils.TimeUtils;
+import com.weapp.zlf.weapp.common.utils.Utils;
 
 import org.xutils.db.annotation.Column;
 import org.xutils.db.annotation.Table;
 
+import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -82,8 +86,12 @@ public class DiaryBean implements Serializable{
 //            images = Arrays.asList(split);
 //        }
         if (!TextUtils.isEmpty(imageStr)){
+            images = new ArrayList<>();
             String[] split = imageStr.split("&&");
-            images = Arrays.asList(split);
+            for (String image : split) {
+                images.add(Constant.DIR_DIARY_PHOTO + File.separator + image);
+            }
+//            images = Arrays.asList(split);
         }
         return images;
     }
@@ -95,9 +103,9 @@ public class DiaryBean implements Serializable{
             if (images.get(i).equals("btn_add"))
                 continue;
             if (i == images.size() - 1) {
-                builder.append(images.get(i));
+                builder.append(images.get(i).substring(images.get(i).lastIndexOf(File.separator)+1));
             } else {
-                builder.append(images.get(i)).append("&&");
+                builder.append(images.get(i).substring(images.get(i).lastIndexOf(File.separator)+1)).append("&&");
             }
         }
         imageStr = builder.toString();

@@ -1,7 +1,8 @@
 package com.weapp.zlf.weapp.common;
 
 
-import com.guo.duoduo.p2pmanager.p2pentity.P2PFileInfo;
+
+import com.weapp.zlf.weapp.p2pmanager.p2pentity.P2PFileInfo;
 
 import java.util.ArrayList;
 import java.util.List;
