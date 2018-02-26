@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="60dip"
+    xmlns:tools="http://schemas.android.com/tools"
     android:descendantFocusability="blocksDescendants"
     android:orientation="vertical">
 
@@ -14,6 +15,7 @@
         <RelativeLayout
             android:layout_width="0dip"
             android:layout_height="55dip"
+            android:paddingLeft="@dimen/dp_10"
             android:layout_weight="1">
 
             <ImageView
@@ -23,7 +25,8 @@
                 android:layout_centerVertical="true"
                 android:layout_margin="2dip"
                 android:contentDescription="@string/app_name"
-                android:focusable="false" />
+                android:focusable="false"
+                tools:background="@color/colorPrimary"/>
 
             <TextView
                 android:id="@+id/file_name"
@@ -31,11 +34,13 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="10dip"
+                android:layout_marginLeft="@dimen/dp_10"
                 android:layout_toRightOf="@id/file_image"
                 android:maxLength="30"
                 android:maxLines="1"
                 android:textColor="#666666"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                tools:text="@string/app_name"/>
 
             <TextView
                 android:id="@+id/file_size"
@@ -43,9 +48,11 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_toRightOf="@id/file_image"
+                android:layout_marginLeft="@dimen/dp_10"
                 android:paddingBottom="10dip"
                 android:textColor="#666666"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                tools:text="@string/app_name"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -63,7 +70,8 @@
                 android:focusable="false"
                 android:maxLines="1"
                 android:textColor="#666666"
-                android:textSize="12sp"></TextView>
+                android:textSize="12sp"
+                tools:text="@string/app_name"/>
         </RelativeLayout>
     </LinearLayout>
 

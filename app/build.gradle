@@ -110,6 +110,7 @@ dependencies {
     compile project(path: ':RadarScanView')
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile "org.jetbrains.anko:anko:0.10.4"
+    compile 'com.alibaba:fastjson:1.1.67.android'
 //    compile project(path: ':alarmmanagerclock')
 }
 repositories {

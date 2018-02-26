@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.weapp.zlf.weapp.MainApplication;
 import com.weapp.zlf.weapp.R;
@@ -45,10 +46,12 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
+import org.xutils.x;
 
 import java.io.File;
 import java.util.ArrayList;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -56,6 +59,8 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+
+import static cn.pedant.SweetAlert.SweetAlertDialog.PROGRESS_TYPE;
 
 @ContentView(R.layout.activity_main)
 public class MainActivity extends BaseActivity {
@@ -112,6 +117,7 @@ public class MainActivity extends BaseActivity {
 //        initNavView();
         initToDoDialog();
         checkPermissions();
+        mRlTopRight.setSelected(Constant.DB_DIRS[0].equals(Constant.DIR_DB));
 
 //        initService("hello", "world");
     }
@@ -378,12 +384,22 @@ public class MainActivity extends BaseActivity {
     }
 
     @Event(value = R.id.rl_top_r)
-    private void rightClick(View view) {
-//        ToastUtils.showLongToast("正在紧张施工中。。。");
+    private void rightClick(final View view) {
+        ToastUtils.showLongToast("正在紧张施工中。。。");
 //        DiarySearchActivity.launch(this);
-        Utils.getContext().changeDb();
+       /* Utils.getContext().changeDb();
+        ((DiaryFragment) mFragments.get(0)).onTabReselect();
+        final SweetAlertDialog dialog = new SweetAlertDialog(this, PROGRESS_TYPE);
+        dialog.setTitleText("正在切换...");
+        dialog.show();
+        x.task().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dialog.dismiss();
+                view.setSelected(Constant.DB_DIRS[0].equals(Constant.DIR_DB));
+            }
+        }, 1500);*/
     }
-
 
     @Event(value = R.id.ll_search)
     private void searchClick(View view) {

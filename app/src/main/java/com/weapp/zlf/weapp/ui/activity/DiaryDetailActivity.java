@@ -404,7 +404,7 @@ public class DiaryDetailActivity extends BaseActivity implements BaseQuickAdapte
             } else {
                 ivMood.setVisibility(View.GONE);
             }
-            if (!TimeUtils.isToday(item.getTimeMillis())) {
+            if (!TimeUtils.isToday(item.getTimeMillis()) || item.getGender() == 1) {
                 helper.setVisible(R.id.iv_edit, false);
             } else {
                 helper.setVisible(R.id.iv_edit, true);

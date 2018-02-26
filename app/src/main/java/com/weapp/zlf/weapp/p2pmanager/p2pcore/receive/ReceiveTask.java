@@ -60,8 +60,8 @@ public class ReceiveTask extends Thread {
                         + "; path: " + fileDir.getAbsolutePath());
                 if (!fileDir.exists())
                     fileDir.mkdirs();
-                else
-                    FileUtils.deleteFilesInDir(fileDir);
+//                else
+//                    FileUtils.deleteFilesInDir(fileDir);
 
                 receiveFile = new File(fileDir, fileInfo.name);
                 if (receiveFile.exists())

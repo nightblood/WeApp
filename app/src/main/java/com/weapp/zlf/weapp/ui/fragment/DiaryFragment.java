@@ -230,7 +230,7 @@ public class DiaryFragment extends BaseFragment implements BaseQuickAdapter.OnIt
         mAdapter.loadMoreEnd();
     }
 
-    private void refresh() {
+    public void refresh() {
         if (mMood == Integer.MAX_VALUE && mTag == Integer.MAX_VALUE && mWeather == Integer.MAX_VALUE && mStartTime == 0 && mEndTime == 0) {
             mOffset = 0;
             load();
@@ -278,6 +278,7 @@ public class DiaryFragment extends BaseFragment implements BaseQuickAdapter.OnIt
                         .where("year", "=", split[0])
                         .and("month", "=", split[1])
                         .and("date", "=", split[2])
+                        .and("gender", "=", 0)
                         .findFirst();
                 if (bean != null)
                     observableEmitter.onNext(bean);

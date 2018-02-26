@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.common.Cache;
 import com.weapp.zlf.weapp.common.utils.DeviceUtils;
@@ -67,7 +68,8 @@ public class FileTransferAdapter extends BaseAdapter {
             if (file.type == P2PConstant.TYPE.DATABASE) {
                 holder.file_image.setImageResource(R.mipmap.ic_launcher);
             } else if (file.type == P2PConstant.TYPE.PIC) {
-                holder.file_image.setImageResource(R.drawable.icon_photo);
+                Glide.with(context).load(file.path).into(holder.file_image);
+//                holder.file_image.setImageResource(R.drawable.icon_photo);
             }
 
             holder.file_name.setText(file.name);

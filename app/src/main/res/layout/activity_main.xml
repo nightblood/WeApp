@@ -66,14 +66,12 @@
                    android:layout_width="50dp"
                    android:layout_height="50dp"
                    >
-                   <com.makeramen.roundedimageview.RoundedImageView
-                       android:layout_width="10dp"
-                       android:layout_height="10dp"
-                       android:src="@drawable/icon_moon"/>
-                   <com.makeramen.roundedimageview.RoundedImageView
+
+                   <ImageView
+                       android:id="@+id/riv_switch"
                        android:layout_width="25dp"
                        android:layout_height="25dp"
-                       android:src="@drawable/icon_earth"
+                       android:background="@drawable/icon_switch_database"
                        android:layout_centerInParent="true"/>
 
                </RelativeLayout>

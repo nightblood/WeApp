@@ -8,11 +8,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.weapp.zlf.weapp.R;
+import com.weapp.zlf.weapp.bean.DiaryBean;
 import com.weapp.zlf.weapp.bean.ImageBean;
 import com.weapp.zlf.weapp.common.Cache;
 import com.weapp.zlf.weapp.common.utils.Constant;
+import com.weapp.zlf.weapp.common.utils.FileUtils;
 import com.weapp.zlf.weapp.common.utils.SPUtils;
 import com.weapp.zlf.weapp.common.utils.ToastUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
@@ -20,6 +23,7 @@ import com.weapp.zlf.weapp.p2pmanager.p2pconstant.P2PConstant;
 import com.weapp.zlf.weapp.p2pmanager.p2pentity.P2PFileInfo;
 
 import org.xutils.DbManager;
+import org.xutils.ex.DbException;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
@@ -107,16 +111,8 @@ public class DiaryShareActivity extends BaseActivity{
                     list.add(fileInfo);
                 }
 
-                P2PFileInfo fileInfo = new P2PFileInfo();
-                fileInfo.path = DB_DIRS[0] + File.separator + Constant.DB_NAME;
-                fileInfo.name = Constant.DB_NAME;
-                fileInfo.type = P2PConstant.TYPE.DATABASE;
-                fileInfo.size = new File(fileInfo.path).length();
+                addDatabaseFile(dbManager);
 
-                Log.d(TAG, "subscribe: " + fileInfo.path);
-                if (!Cache.selectedList.contains(fileInfo)) {
-                    Cache.selectedList.add(fileInfo);
-                }
                 observableEmitter.onNext(list);
             }
         })
@@ -145,6 +141,68 @@ public class DiaryShareActivity extends BaseActivity{
 
                     }
                 });
+    }
+
+    private void addDatabaseFile(DbManager dbManager) {
+        /*P2PFileInfo fileInfo = new P2PFileInfo();
+        fileInfo.path = DB_DIRS[0] + File.separator + Constant.DB_NAME;
+        fileInfo.name = Constant.DB_NAME;
+        fileInfo.type = P2PConstant.TYPE.DATABASE;
+        fileInfo.size = new File(fileInfo.path).length();
+
+        Log.d(TAG, "subscribe: " + fileInfo.path);
+        if (!Cache.selectedList.contains(fileInfo)) {
+            Cache.selectedList.add(fileInfo);
+        }*/
+        try {
+            List<DiaryBean> list = dbManager.selector(DiaryBean.class)
+                    .orderBy("id", false)
+                    .limit(14)
+                    .findAll();
+
+            FileUtils.createOrExistsDir(Constant.DIR_TEMP);
+            File diaryFile = new File(Constant.DIR_TEMP + File.separator + Constant.NAME_DIARY_DB);
+            File photoFile = new File(Constant.DIR_TEMP + File.separator + Constant.NAME_PHOTO_DB);
+            FileUtils.createFileByDeleteOldFile(diaryFile);
+            FileUtils.createFileByDeleteOldFile(photoFile);
+
+            if (list != null && !list.isEmpty()) {
+                List<ImageBean> beans;
+                List<ImageBean> imageBeans = new ArrayList<>();
+
+                for (DiaryBean diaryBean : list) {
+
+                    beans = dbManager.selector(ImageBean.class)
+                            .where("diary_id", "=", diaryBean.getId())
+                            .findAll();
+                    if (null != beans && !beans.isEmpty()) {
+                        imageBeans.addAll(beans);
+                    }
+                }
+
+                if (!imageBeans.isEmpty()) {
+                    add2CacheList(JSON.toJSONString(imageBeans),photoFile);
+                } else {
+                    FileUtils.deleteFile(photoFile);
+                }
+               add2CacheList(JSON.toJSONString(list),diaryFile);
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void add2CacheList(String content, File file) {
+        FileUtils.writeFileFromString(file, content, false);
+
+        P2PFileInfo fileInfo = new P2PFileInfo();
+        fileInfo.path = file.getAbsolutePath();
+        fileInfo.name = file.getName();
+        fileInfo.type = P2PConstant.TYPE.DATABASE;
+        fileInfo.size = new File(fileInfo.path).length();
+        if (!Cache.selectedList.contains(fileInfo)) {
+            Cache.selectedList.add(fileInfo);
+        }
     }
     @Event(R.id.btn_receive)
     private void receiveClick(View view) {

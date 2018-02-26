@@ -28,13 +28,13 @@ public class ImageBean {
     private String image;
 
     public String getImage() {
-        return Constant.PHOTO_DIRS[MainApplication.mDirIndex] + File.separator + image;
+        return Constant.DIR_DIARY_PHOTO + File.separator + image;
     }
 
     public void setImage(String image) {
         if (TextUtils.isEmpty(image))
             return;
-        this.image = image.substring(image.lastIndexOf(File.separator) + 1);
+        this.image = image.substring(image.lastIndexOf(File.separator) +1);
     }
 
     public int getId() {

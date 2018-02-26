@@ -1,5 +1,6 @@
 package com.weapp.zlf.weapp.ui.activity;
 
+import android.graphics.Color;
 import android.text.TextUtils;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -34,6 +35,12 @@ public class DiaryListAdapter extends BaseQuickAdapter<DiaryBean, BaseViewHolder
         helper.setText(R.id.tv_week, item.getWeek());
         helper.setText(R.id.tv_date, item.getDate());
 
+        if (1== item.getGender()) {
+            helper.setBackgroundColor(R.id.ll_item, Color.parseColor("#770099bb"));
+        } else {
+//            helper.setBackgroundRes(R.id.ll_item, R.drawable.bg_clickable_item);
+            helper.setBackgroundColor(R.id.ll_item, Color.parseColor("#aaffffff"));
+        }
 
         if (Integer.MAX_VALUE != item.getMood()) {
             helper.setVisible(R.id.iv_mood, true);

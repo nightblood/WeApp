@@ -15,13 +15,18 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.guo.duoduo.randomtextview.RandomTextView;
 import com.guo.duoduo.rippleoutlayout.RippleOutLayout;
 import com.guo.duoduo.rippleoutview.RippleView;
 import com.weapp.zlf.weapp.R;
+import com.weapp.zlf.weapp.bean.DiaryBean;
+import com.weapp.zlf.weapp.bean.ImageBean;
 import com.weapp.zlf.weapp.common.Cache;
 import com.weapp.zlf.weapp.common.accesspoint.AccessPointManager;
 import com.weapp.zlf.weapp.common.utils.Constant;
+import com.weapp.zlf.weapp.common.utils.FileUtils;
 import com.weapp.zlf.weapp.common.utils.NetworkUtils;
 import com.weapp.zlf.weapp.common.utils.SPUtils;
 import com.weapp.zlf.weapp.common.utils.ToastUtils;
@@ -34,10 +39,15 @@ import com.weapp.zlf.weapp.p2pmanager.p2pinterface.Melon_Callback;
 import com.weapp.zlf.weapp.p2pmanager.p2pinterface.ReceiveFile_Callback;
 import com.weapp.zlf.weapp.ui.adapter.FileTransferAdapter;
 
+import org.xutils.DbManager;
+import org.xutils.ex.DbException;
 import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -196,6 +206,16 @@ public class ReceiveActivity extends BaseActivity implements AccessPointManager.
             @Override
             public void AfterReceiving() {
                 ToastUtils.showLongToast(getString(R.string.file_receive_completed) + " " + Cache.selectedList.get(0));
+                P2PFileInfo diaryInfo = null;
+                P2PFileInfo imageInfo = null;
+                for (P2PFileInfo info : Cache.selectedList) {
+                    if (Constant.NAME_DIARY_DB.equals(info.name)) {
+                        diaryInfo = info;
+                    } else if (Constant.NAME_PHOTO_DB.equals(info.name)){
+                        imageInfo = info;
+                    }
+                }
+                add2Database(diaryInfo, imageInfo);
 //                finish();
             }
 
@@ -209,6 +229,45 @@ public class ReceiveActivity extends BaseActivity implements AccessPointManager.
                 }
             }
         });
+    }
+
+    private void add2Database(P2PFileInfo diaryInfo, P2PFileInfo imageInfo) {
+
+        if (diaryInfo == null)
+            return;
+        List<ImageBean> imageBeans = null;
+        if (imageInfo != null) {
+            String imageContent = FileUtils.readFile2String(imageInfo.path, "utf-8");
+            imageBeans = JSON.parseArray(imageContent, ImageBean.class);
+        }
+
+        String diaryContent = FileUtils.readFile2String(diaryInfo.path, "utf-8");
+        List<DiaryBean> diaryBeans = JSON.parseArray(diaryContent, DiaryBean.class);
+        DbManager dbManager = Utils.getContext().getDbManager();
+
+        List<ImageBean> tempImageBeans = null;
+        for (DiaryBean bean : diaryBeans) {
+            try {
+                if (null != imageBeans) {
+                    tempImageBeans = new ArrayList<>();
+                    for (ImageBean imageBean : imageBeans) {
+                        if (imageBean.getDiaryId() == bean.getId()) {
+                            tempImageBeans.add(imageBean);
+                        }
+                    }
+                }
+                bean.setGender(1);
+                dbManager.saveBindingId(bean);
+                if (tempImageBeans != null) {
+                    for (ImageBean imageBean : tempImageBeans) {
+                        imageBean.setDiaryId(bean.getId());
+                        dbManager.saveBindingId(imageBean);
+                    }
+                }
+            } catch (DbException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -286,6 +345,10 @@ public class ReceiveActivity extends BaseActivity implements AccessPointManager.
         wifiName.setText(String.format(getString(R.string.send_connect_to), mWifiApManager.getWifiApSSID()));
     }
 
+    @Event(R.id.iv_title_left)
+    private void leftClick(View view) {
+        finish();
+    }
     public static void launch(Context context) {
         Intent intent = new Intent(context, ReceiveActivity.class);
         context.startActivity(intent);
