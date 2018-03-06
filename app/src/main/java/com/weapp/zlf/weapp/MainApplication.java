@@ -2,17 +2,14 @@ package com.weapp.zlf.weapp;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
 
-import com.didi.virtualapk.PluginManager;
 import com.weapp.zlf.weapp.bean.UserInfo;
 import com.weapp.zlf.weapp.common.utils.Constant;
 import com.weapp.zlf.weapp.common.utils.FileUtils;
 import com.weapp.zlf.weapp.common.utils.SPUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
 import com.weapp.zlf.weapp.event.UserInfoChangeEvent;
-import com.weapp.zlf.weapp.p2pmanager.p2pcore.P2PManager;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -22,6 +19,8 @@ import org.xutils.x;
 
 import java.io.File;
 import java.io.IOException;
+
+import me.iwf.photopicker.utils.PermissionsUtils;
 
 import static com.weapp.zlf.weapp.common.utils.Constant.DB_DIRS;
 import static com.weapp.zlf.weapp.common.utils.Constant.PHOTO_DIRS;
@@ -44,14 +43,14 @@ public class MainApplication extends Application {
         x.Ext.setDebug(BuildConfig.DEBUG); // 是否输出debug日志, 开启debug会影响性能.
         Utils.init(this);
         initConstants();
-        initDb();
+//        initDb();
         initUserInfo();
     }
 
     @Override
     protected void attachBaseContext(Context context)  {
         super.attachBaseContext(context);
-        PluginManager.getInstance(context).init();
+//        PluginManager.getInstance(context).init();
     }
 
     private void initConstants() {
@@ -63,7 +62,6 @@ public class MainApplication extends Application {
         Constant.DIR_DB = DB_DIRS[mDirIndex];
 
         FileUtils.createOrExistsDir(getFilesDir());
-
     }
 
     private void initUserInfo() {
@@ -76,7 +74,7 @@ public class MainApplication extends Application {
         Log.d(TAG, "onCreate: " + mUserInfo.getId() + ", " + mUserInfo.getName() + ", " + mUserInfo.getHonor()+ ", " + mUserInfo.getPortrait());
     }
 
-    private void initDb() {
+    public void initDb() {
         File file = new File(Constant.DIR_DB);
         FileUtils.createOrExistsDir(Constant.DIR_DB);
         FileUtils.createOrExistsDir(Constant.DIR_DIARY_PHOTO);

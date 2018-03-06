@@ -35,5 +35,14 @@
     <string name="share_diary">分享日记</string>
     <string name="picture_compressing">照片压缩中(%1$d/%2$d)</string>
     <string name="hint_share_prepared">准备就绪</string>
+    <string name="habit">习惯</string>
+    <string name="add_habit">添加习惯</string>
+    <string name="hint_input_habit">请输入习惯名称</string>
+    <string name="custom">自定义</string>
+    <string name="start">开始</string>
+    <string name="today_tomato_data">今日数据</string>
+    <string name="tomato_num">番茄个数</string>
+    <string name="tomato_time">番茄时间</string>
+    <string name="hint_write_permission_dinied">程序异常，请授权WeApp外部存储读写权限</string>
 
 </resources>

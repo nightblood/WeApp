@@ -1,5 +1,6 @@
 package com.weapp.zlf.weapp.ui.adapter;
 
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.Display;
@@ -7,8 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.MultiTransformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.FitCenter;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -16,10 +19,12 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.weapp.zlf.weapp.R;
 import com.weapp.zlf.weapp.common.utils.SizeUtils;
+import com.yinglan.shadowimageview.ShadowImageView;
 
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.BitmapTransformation;
+import jp.wasabeef.glide.transformations.ColorFilterTransformation;
 
 /**
  * Created by zhuliangfei on 2018/1/26.
@@ -45,10 +50,12 @@ public class DiaryPhotoAdapter extends BaseQuickAdapter<String, BaseViewHolder> 
                 imageView.setImageDrawable(drawable);
             }
         });*/
+        RequestOptions options = new RequestOptions()
+                .transform(new MultiTransformation<>(new CenterCrop(), new RoundedCorners(10)));
         if (item.equals("NONE")) {
-            Glide.with(mContext).load(R.drawable.icon_image).apply(RequestOptions.bitmapTransform(new FitCenter())).into(imageView);
+            Glide.with(mContext).load(R.drawable.icon_image).apply(options).into(imageView);
         } else {
-            Glide.with(mContext).load(item).apply(RequestOptions.bitmapTransform(new FitCenter())).into(imageView);
+            Glide.with(mContext).load(item).apply(options).into(imageView);
         }
     }
 }

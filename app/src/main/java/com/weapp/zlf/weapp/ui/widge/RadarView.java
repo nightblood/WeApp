@@ -82,7 +82,6 @@ public class RadarView extends View {
         post(run);
     }
 
-
     private void init() {
         mPaintLine = new Paint();
         mPaintLine.setColor(getResources().getColor(R.color.colorAccent));

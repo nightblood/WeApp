@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/WeApp.iml" filepath="$PROJECT_DIR$/WeApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/base_recyclerview_adapter_helper/base_recyclerview_adapter_helper.iml" filepath="$PROJECT_DIR$/base_recyclerview_adapter_helper/base_recyclerview_adapter_helper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/beautifulparallax/beautifulparallax.iml" filepath="$PROJECT_DIR$/beautifulparallax/beautifulparallax.iml" />
       <module fileurl="file://$PROJECT_DIR$/httpServer/httpServer.iml" filepath="$PROJECT_DIR$/httpServer/httpServer.iml" />
       <module fileurl="file://$PROJECT_DIR$/p2pmanager/p2pmanager.iml" filepath="$PROJECT_DIR$/p2pmanager/p2pmanager.iml" />
       <module fileurl="file://$PROJECT_DIR$/randomtextview/randomtextview.iml" filepath="$PROJECT_DIR$/randomtextview/randomtextview.iml" />

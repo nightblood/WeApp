@@ -3,17 +3,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="300dp"
-    android:orientation="horizontal"
-    android:padding="@dimen/dp_10"
-    android:paddingTop="@dimen/dp_5"
-    android:paddingBottom="@dimen/dp_5"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:gravity="center"
     android:background="@color/white">
 
     <ImageView
         android:id="@+id/iv_item"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_5"
+        android:background="@color/white"/>
 </LinearLayout>
 

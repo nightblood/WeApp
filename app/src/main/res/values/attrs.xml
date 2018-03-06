@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="PanoramaImageView">
+        <attr name="piv_enablePanoramaMode" format="boolean" />
+        <attr name="piv_invertScrollDirection" format="boolean" />
+        <attr name="piv_show_scrollbar" format="boolean" />
+    </declare-styleable>
+
     <declare-styleable name="RoundTextView">
         <attr name="color" format="color"/>
         <attr name="text_size" format="dimension"/>
@@ -18,5 +24,8 @@
             <enum name="more" value="1"/>
         </attr>
         <attr name="top_max" format="dimension"/>
+    </declare-styleable>
+    <declare-styleable name="CountDownView">
+
     </declare-styleable>
 </resources>

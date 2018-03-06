@@ -1,6 +1,7 @@
 package com.weapp.zlf.weapp.ui.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -18,10 +19,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
-import com.makeramen.roundedimageview.RoundedImageView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.weapp.zlf.weapp.MainApplication;
 import com.weapp.zlf.weapp.R;
@@ -35,7 +36,6 @@ import com.weapp.zlf.weapp.common.utils.ToastUtils;
 import com.weapp.zlf.weapp.common.utils.Utils;
 import com.weapp.zlf.weapp.event.AnniversaryEvent;
 import com.weapp.zlf.weapp.event.TodoEvent;
-import com.weapp.zlf.weapp.p2pmanager.p2pcore.P2PManager;
 import com.weapp.zlf.weapp.ui.fragment.BaseFragment;
 import com.weapp.zlf.weapp.ui.fragment.CanlenderFragment;
 import com.weapp.zlf.weapp.ui.fragment.DiaryFragment;
@@ -46,12 +46,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
-import org.xutils.x;
 
-import java.io.File;
 import java.util.ArrayList;
 
-import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -59,8 +56,6 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-
-import static cn.pedant.SweetAlert.SweetAlertDialog.PROGRESS_TYPE;
 
 @ContentView(R.layout.activity_main)
 public class MainActivity extends BaseActivity {
@@ -119,7 +114,21 @@ public class MainActivity extends BaseActivity {
         checkPermissions();
         mRlTopRight.setSelected(Constant.DB_DIRS[0].equals(Constant.DIR_DB));
 
+        initPlugin();
 //        initService("hello", "world");
+    }
+
+    private void initPlugin() {
+        // 加载plugin.apk插件包
+        /*PluginManager pluginManager = PluginManager.getInstance(this);
+        File apk = new File(getExternalStorageDirectory(), "plugin.apk");
+        if (apk.exists()) {
+            try {
+                pluginManager.loadPlugin(apk);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }*/
     }
 
     private void initService(String title, String content, long timeMillis) {
@@ -276,6 +285,10 @@ public class MainActivity extends BaseActivity {
     private void testClick(View view) {
         TestActivity.Companion.launch(this);
     }
+    @Event(R.id.ll_habit)
+    private void tomatoClick(View view) {
+        HabitListActivity.launch(this);
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void todoEvent(TodoEvent event) {
@@ -386,6 +399,7 @@ public class MainActivity extends BaseActivity {
     @Event(value = R.id.rl_top_r)
     private void rightClick(final View view) {
         ToastUtils.showLongToast("正在紧张施工中。。。");
+
 //        DiarySearchActivity.launch(this);
        /* Utils.getContext().changeDb();
         ((DiaryFragment) mFragments.get(0)).onTabReselect();
@@ -516,6 +530,11 @@ public class MainActivity extends BaseActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    public static void launch(Activity activity) {
+        activity.startActivity(new Intent(activity, MainActivity.class));
+        activity.finish();
     }
 
     private class MyViewPagerAdapter extends FragmentPagerAdapter {

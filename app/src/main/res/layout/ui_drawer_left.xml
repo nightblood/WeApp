@@ -2,17 +2,29 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="left"
     android:layout_gravity="start"
     android:background="@color/white"
     android:orientation="vertical">
 
-    <ImageView
+    <com.yinglan.shadowimageview.ShadowImageView
+        android:id="@+id/shadow"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_margin="@dimen/dp_40"
+        android:layout_gravity="center_horizontal"
+        app:shadowRound="40dp"
+        app:shadowSrc="@drawable/clover"
+        app:shadowColor="@color/colorPrimary"/>
+
+
+    <!--<com.weapp.zlf.weapp.ui.widge.PanoramaImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
         android:layout_margin="@dimen/dp_40"
-        android:src="@drawable/clover" />
+        android:src="@drawable/clover" />-->
 
     <ScrollView
         android:layout_width="match_parent"
@@ -67,6 +79,28 @@
                     android:text="分享日记" />
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/ll_habit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/dp_20"
+                android:visibility="visible">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:src="@drawable/tomato" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_30"
+                    android:textSize="@dimen/sp_16"
+                    android:text="习惯养成" />
+            </LinearLayout>
             <LinearLayout
                 android:id="@+id/ll_test"
                 android:layout_width="match_parent"

@@ -1,6 +1,10 @@
 package com.weapp.zlf.weapp.ui.adapter;
 
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.StrikethroughSpan;
 import android.view.View;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -37,8 +41,9 @@ public class TodoAdapter extends BaseQuickAdapter<TodoBean, BaseViewHolder>{
 
     @Override
     protected void convert(final BaseViewHolder helper, final TodoBean item) {
-        helper.setText(R.id.tv_title, item.getTitle());
-        helper.setText(R.id.tv_content, item.getContent());
+        final TextView tvTitle = helper.getView(R.id.tv_title);
+//        helper.setText(R.id.tv_title, item.getTitle());
+//        helper.setText(R.id.tv_content, item.getContent());
         helper.setText(R.id.tv_time, item.getTime());
         helper.setBackgroundColor(R.id.v_tag, item.getTagColor());
         helper.setText(R.id.tv_tag, item.getTagName());
@@ -47,9 +52,13 @@ public class TodoAdapter extends BaseQuickAdapter<TodoBean, BaseViewHolder>{
         final SwipeLayout root = helper.getView(R.id.item_root);
         root.addDrag(SwipeLayout.DragEdge.Right, helper.getView(R.id.bottom_wrapper));
         if (item.getIsDone() == 1) {
-            root.setAlpha(0.5f);
+            SpannableString spannableString = new SpannableString(" " + item.getTitle() + " ");
+            spannableString.setSpan(new StrikethroughSpan(), 0, item.getTitle().length() + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            tvTitle.setText(spannableString);
+//            root.setAlpha(0.5f);
         } else {
-            root.setAlpha(1f);
+            tvTitle.setText(item.getTitle());
+//            root.setAlpha(1f);
         }
 
         helper.getView(R.id.star).setOnClickListener(new View.OnClickListener() {
@@ -65,9 +74,14 @@ public class TodoAdapter extends BaseQuickAdapter<TodoBean, BaseViewHolder>{
                 root.close();
                 if (item.getIsDone() == 1) {
                     item.setIsDone(0);
-                    root.setAlpha(1f);
+                    tvTitle.setText(item.getTitle());
+
+//                    root.setAlpha(1f);
                 } else {
-                    root.setAlpha(0.5f);
+//                    root.setAlpha(0.5f);
+                    SpannableString spannableString = new SpannableString(" " + item.getTitle() + " ");
+                    spannableString.setSpan(new StrikethroughSpan(), 0, item.getTitle().length() + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    tvTitle.setText(spannableString);
                     item.setIsDone(1);
                 }
                 setDbDoneField(item);

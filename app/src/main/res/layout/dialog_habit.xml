@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg_round_white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_40"
+        android:orientation="horizontal"
+        android:background="@color/colorPrimary"
+        android:gravity="center_vertical"
+        android:paddingRight="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_10">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_habit"
+            android:textSize="@dimen/dp_20"
+            android:textColor="@color/white"
+            />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:id="@+id/iv_submit"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/icon_submit1"/>
+
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:src="@drawable/icon_x"/>
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/et_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_input_habit"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/white">
+        <TextView
+            android:id="@+id/tv_20_min"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/dp_5"
+            android:padding="@dimen/dp_5"
+            android:gravity="center"
+            android:text="20分钟"
+            android:background="@drawable/select_round_bottom"
+            />
+        <TextView
+            android:id="@+id/tv_30_min"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/dp_5"
+            android:padding="@dimen/dp_5"
+            android:gravity="center"
+            android:background="@drawable/select_round_bottom"
+            android:text="30分钟"/>
+        <TextView
+            android:id="@+id/tv_40_min"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/dp_5"
+            android:padding="@dimen/dp_5"
+            android:gravity="center"
+            android:background="@drawable/select_round_bottom"
+            android:text="40分钟"/>
+        <EditText
+            android:id="@+id/et_min"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/custom"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/dp_5"
+            android:padding="@dimen/dp_5"
+            android:gravity="center"
+            android:background="@drawable/bg_round_white"
+            android:textSize="@dimen/sp_12"
+            android:inputType="number"
+            />
+    </LinearLayout>
+</LinearLayout>

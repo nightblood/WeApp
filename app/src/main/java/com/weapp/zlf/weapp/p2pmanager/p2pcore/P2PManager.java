@@ -34,8 +34,7 @@ public class P2PManager {
 
     private static final String tag = P2PManager.class.getSimpleName();
 
-    private static String SAVE_DIR = Environment.getExternalStorageDirectory().getPath()
-            + File.separator + P2PConstant.FILE_SHARE_SAVE_PATH;
+    private static String SAVE_DIR = Environment.getExternalStorageDirectory().getPath() + File.separator + P2PConstant.FILE_SHARE_SAVE_PATH;
 
     private P2PNeighbor meMelonInfo;
     private Melon_Callback melon_callback;

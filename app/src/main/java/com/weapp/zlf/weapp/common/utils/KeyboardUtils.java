@@ -38,7 +38,10 @@ public class KeyboardUtils {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
-
+    public static void closeKeybord(EditText mEditText, Context mContext) {
+        InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
+    }
     /**
      * 点击屏幕空白区域隐藏软键盘
      * <p>根据EditText所在坐标和用户点击的坐标相对比，来判断是否隐藏键盘</p>

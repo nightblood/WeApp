@@ -16,6 +16,7 @@ public class Constant {
     public static final String FREE_SERVER = "192.168.43.1";
     public static final String NAME_DIARY_DB = "temp_diary_database";
     public static final String NAME_PHOTO_DB = "temp_photo_database";
+    public static final String DIR_WALLPAPER = Environment.getExternalStorageDirectory().getPath() + File.separator + "zuimei-wallpaper";
     public static String DIR_DIARY_PHOTO; // 当前照片路径
     public static String DIR_DB; // 当前数据库路径
     public static final String[] DB_DIRS = new String[] {P2PManager.getSaveDir() + File.separator + "Database",

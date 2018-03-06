@@ -1,7 +1,11 @@
 package com.weapp.zlf.weapp.ui.activity;
 
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.URLSpan;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -36,10 +40,17 @@ public class DiaryListAdapter extends BaseQuickAdapter<DiaryBean, BaseViewHolder
         helper.setText(R.id.tv_date, item.getDate());
 
         if (1== item.getGender()) {
-            helper.setBackgroundColor(R.id.ll_item, Color.parseColor("#770099bb"));
+            helper.setTextColor(R.id.tv_title, ContextCompat.getColor(mContext, R.color.color8));
+            helper.setTextColor(R.id.tv_time, ContextCompat.getColor(mContext, R.color.color8));
+            helper.setTextColor(R.id.tv_content, ContextCompat.getColor(mContext, R.color.color8));
+            helper.setTextColor(R.id.tv_week, ContextCompat.getColor(mContext, R.color.color8));
+            helper.setTextColor(R.id.tv_date, ContextCompat.getColor(mContext, R.color.color8));
         } else {
-//            helper.setBackgroundRes(R.id.ll_item, R.drawable.bg_clickable_item);
-            helper.setBackgroundColor(R.id.ll_item, Color.parseColor("#aaffffff"));
+            helper.setTextColor(R.id.tv_title, ContextCompat.getColor(mContext, R.color.colorPrimary));
+            helper.setTextColor(R.id.tv_time, ContextCompat.getColor(mContext, R.color.colorPrimary));
+            helper.setTextColor(R.id.tv_content, ContextCompat.getColor(mContext, R.color.colorPrimary));
+            helper.setTextColor(R.id.tv_week, ContextCompat.getColor(mContext, R.color.colorPrimary));
+            helper.setTextColor(R.id.tv_date, ContextCompat.getColor(mContext, R.color.colorPrimary));
         }
 
         if (Integer.MAX_VALUE != item.getMood()) {
